@@ -1,0 +1,830 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Canvas x:Key="wt_overcast_snowy" Width="354.33071" Height="354.33071" x:Shared="False">
+    <Canvas.RenderTransform>
+      <TranslateTransform X="0" Y="0"/>
+    </Canvas.RenderTransform>
+    <Canvas.Resources>
+      <LinearGradientBrush x:Key="linearGradient13056" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.53854817"/>
+            <GradientStop Color="#FF91B4CF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient1976-5" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFF6F9FC" Offset="0"/>
+            <GradientStop Color="#FFFBFDFE" Offset="0.36808839"/>
+            <GradientStop Color="#FFFFFFFF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2020" Figures="m 3431.07 6219.11 c -9.35 45.09 -49.27 79.01 -97.14 79.01 -20.9 0 -40.27 -6.58 -56.28 -17.64 0.05 1.68 0.25 3.36 0.25 5.07 0 72.05 -58.41 130.45 -130.43 130.45 -65.18 0 -119.01 -47.84 -128.75 -110.25 -1.02 6.57 -1.7 13.28 -1.7 20.16 0 72.05 58.4 130.43 130.45 130.43 72.02 0 130.43 -58.38 130.43 -130.43 0 -1.71 -0.2 -3.39 -0.25 -5.09 16.01 11.09 35.38 17.63 56.28 17.63 54.8 0 99.2 -44.4 99.2 -99.15 0 -6.93 -0.71 -13.67 -2.06 -20.19" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2008" Figures="m 3018.64 6414.19 c -9.68 60.52 -61.98 106.82 -125.23 106.82 -63.27 0 -115.54 -46.3 -125.25 -106.82 -1.05 6.58 -1.73 13.28 -1.73 20.16 0 70.16 56.83 126.99 126.98 126.99 70.12 0 126.96 -56.83 126.96 -126.99 0 -6.88 -0.69 -13.58 -1.73 -20.16" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1996" Figures="m 2585.93 6254.46 c -1.05 6.58 -1.73 13.29 -1.73 20.16 0 70.58 57.22 127.8 127.75 127.8 19.59 0 38.08 -4.54 54.67 -12.41 0.49 -16.1 3.88 -31.48 9.82 -45.53 -18.93 11.11 -40.91 17.6 -64.49 17.6 -63.65 0 -116.31 -46.65 -126.02 -107.62" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1986" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1968" Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient1976" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF3D78A6" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1958" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1946" Figures="m 3613.52 6443.57 c -13.31 64.4 -70.35 112.84 -138.73 112.84 -29.91 0 -57.56 -9.37 -80.41 -25.19 0.07 2.42 0.35 4.81 0.35 7.26 0 102.91 -83.43 186.33 -186.36 186.33 -93.09 0 -170.01 -68.31 -183.9 -157.53 -1.46 9.44 -2.45 19.01 -2.45 28.83 0 102.92 83.44 186.33 186.35 186.33 102.93 0 186.36 -83.41 186.36 -186.33 0 -2.45 -0.28 -4.84 -0.35 -7.26 22.85 15.82 50.5 25.2 80.41 25.2 78.26 0 141.7 -63.44 141.7 -141.68 0 -9.87 -1.05 -19.5 -2.97 -28.8" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1934" Figures="m 3024.33 6722.22 c -13.84 86.46 -88.52 152.6 -178.89 152.6 -90.35 0 -165.07 -66.14 -178.91 -152.6 -1.48 9.41 -2.5 18.98 -2.5 28.83 0 100.19 81.21 181.4 181.41 181.4 100.18 0 181.4 -81.21 181.4 -181.4 0 -9.85 -0.99 -19.42 -2.51 -28.83" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1922" Figures="m 2406.21 6494.05 c -1.49 9.41 -2.48 18.98 -2.48 28.81 0 100.82 81.73 182.55 182.53 182.55 27.98 0 54.36 -6.49 78.07 -17.74 0.72 -23.01 5.53 -44.96 14.03 -65.03 -27.04 15.86 -58.45 25.14 -92.1 25.14 -90.98 0 -166.19 -66.66 -180.05 -153.73" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1912" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1894" Figures="m 3474.79 6297.49 c -3.8 0 -7.57 0.12 -11.31 0.36 -22.36 49.24 -72.01 83.57 -129.55 83.57 -4.67 0 -9.4 -0.24 -14.16 -0.74 -23.56 74.03 -93.18 125.97 -172.3 125.97 -30.13 0 -59.07 -7.32 -85.15 -21.37 -22 73.33 -90.01 125.55 -168.91 125.55 -91.39 0 -166.73 -69.76 -175.62 -158.85 -1.98 0.09 -3.91 0.12 -5.84 0.12 -88.22 0 -161.59 -64.71 -175.18 -149.16 -100.66 22.56 -175.87 112.46 -175.87 219.92 0 124.45 100.91 225.35 225.36 225.35 12.11 0 23.94 -1.21 35.54 -3.05 l 0 0 0 0 c -0.05 1.96 -0.3 3.88 -0.3 5.89 0 123.68 100.25 223.93 223.94 223.93 114.6 0 208.96 -86.13 222.19 -197.17 38.93 30.19 87.68 48.35 140.74 48.35 111.26 0 204.08 -78.99 225.42 -183.94 13.18 3.19 26.86 5.03 41 5.03 96.61 0 174.9 -78.29 174.9 -174.88 0 -96.58 -78.29 -174.88 -174.9 -174.88 m 0 258.92 c 68.38 0 125.42 -48.44 138.73 -112.84 1.92 9.3 2.97 18.93 2.97 28.8 0 78.24 -63.44 141.68 -141.7 141.68 -29.91 0 -57.56 -9.38 -80.41 -25.2 0.07 2.42 0.35 4.81 0.35 7.26 0 102.92 -83.43 186.33 -186.36 186.33 -102.91 0 -186.35 -83.41 -186.35 -186.33 0 -9.82 0.99 -19.39 2.45 -28.83 13.89 89.22 90.81 157.53 183.9 157.53 102.93 0 186.36 -83.42 186.36 -186.33 0 -2.45 -0.28 -4.84 -0.35 -7.26 22.85 15.82 50.5 25.19 80.41 25.19 m -888.53 149 c -100.8 0 -182.53 -81.73 -182.53 -182.55 0 -9.83 0.99 -19.4 2.48 -28.81 13.86 87.07 89.07 153.73 180.05 153.73 33.65 0 65.06 -9.28 92.1 -25.14 l 0 0 0 0 c -8.5 20.07 -13.31 42.02 -14.03 65.03 -23.71 11.25 -50.09 17.74 -78.07 17.74 m 259.18 169.41 c 90.37 0 165.05 -66.14 178.89 -152.6 1.52 9.41 2.51 18.98 2.51 28.83 0 100.19 -81.22 181.4 -181.4 181.4 -100.2 0 -181.41 -81.21 -181.41 -181.4 0 -9.85 1.02 -19.42 2.5 -28.83 13.84 86.46 88.56 152.6 178.91 152.6" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient1902" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.45629302"/>
+            <GradientStop Color="#FFF6F9FC" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-3.43e-5 -784.19 -784.19 3.43e-5 3005.3 6945.35"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1884" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient9114" MappingMode="Absolute" StartPoint="224,733" EndPoint="325,800">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.53854817"/>
+            <GradientStop Color="#FF91B4CF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.0080811 0 0 1.1001594 -29.2828 77.215866"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13098" MappingMode="Absolute" StartPoint="313,762" EndPoint="221,746">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFF6F9FC" Offset="0"/>
+            <GradientStop Color="#FFFBFDFE" Offset="0.36808839"/>
+            <GradientStop Color="#FFFFFFFF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.013632 0 0 1.1135238 -129.57523 29.561294"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1996-0" Figures="m 2585.93 6254.46 c -1.05 6.58 -1.73 13.29 -1.73 20.16 0 70.58 57.22 127.8 127.75 127.8 19.59 0 38.08 -4.54 54.67 -12.41 0.49 -16.1 3.88 -31.48 9.82 -45.53 -18.93 11.11 -40.91 17.6 -64.49 17.6 -63.65 0 -116.31 -46.65 -126.02 -107.62" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient13138" MappingMode="Absolute" StartPoint="139,947" EndPoint="189,947">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.45629302"/>
+            <GradientStop Color="#FFF6F9FC" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <TranslateTransform X="-68.035714" Y="-34.285714"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1958-8" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1968-3" Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1986-4" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient13261" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF3D78A6" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13263" MappingMode="Absolute" StartPoint="224,733" EndPoint="325,800">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.53854817"/>
+            <GradientStop Color="#FF91B4CF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.0080811 0 0 1.1001594 -29.2828 77.215866"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13265" MappingMode="Absolute" StartPoint="313,762" EndPoint="221,746">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFF6F9FC" Offset="0"/>
+            <GradientStop Color="#FFFBFDFE" Offset="0.36808839"/>
+            <GradientStop Color="#FFFFFFFF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.013632 0 0 1.1135238 -129.57523 29.561294"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13267" MappingMode="Absolute" StartPoint="139,947" EndPoint="189,947">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.45629302"/>
+            <GradientStop Color="#FFF6F9FC" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <TranslateTransform X="-68.035714" Y="-34.285714"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13282" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF3D78A6" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1884-7" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1894-4" Figures="m 3474.79 6297.49 c -3.8 0 -7.57 0.12 -11.31 0.36 -22.36 49.24 -72.01 83.57 -129.55 83.57 -4.67 0 -9.4 -0.24 -14.16 -0.74 -23.56 74.03 -93.18 125.97 -172.3 125.97 -30.13 0 -59.07 -7.32 -85.15 -21.37 -22 73.33 -90.01 125.55 -168.91 125.55 -91.39 0 -166.73 -69.76 -175.62 -158.85 -1.98 0.09 -3.91 0.12 -5.84 0.12 -88.22 0 -161.59 -64.71 -175.18 -149.16 -100.66 22.56 -175.87 112.46 -175.87 219.92 0 124.45 100.91 225.35 225.36 225.35 12.11 0 23.94 -1.21 35.54 -3.05 l 0 0 0 0 c -0.05 1.96 -0.3 3.88 -0.3 5.89 0 123.68 100.25 223.93 223.94 223.93 114.6 0 208.96 -86.13 222.19 -197.17 38.93 30.19 87.68 48.35 140.74 48.35 111.26 0 204.08 -78.99 225.42 -183.94 13.18 3.19 26.86 5.03 41 5.03 96.61 0 174.9 -78.29 174.9 -174.88 0 -96.58 -78.29 -174.88 -174.9 -174.88 m 0 258.92 c 68.38 0 125.42 -48.44 138.73 -112.84 1.92 9.3 2.97 18.93 2.97 28.8 0 78.24 -63.44 141.68 -141.7 141.68 -29.91 0 -57.56 -9.38 -80.41 -25.2 0.07 2.42 0.35 4.81 0.35 7.26 0 102.92 -83.43 186.33 -186.36 186.33 -102.91 0 -186.35 -83.41 -186.35 -186.33 0 -9.82 0.99 -19.39 2.45 -28.83 13.89 89.22 90.81 157.53 183.9 157.53 102.93 0 186.36 -83.42 186.36 -186.33 0 -2.45 -0.28 -4.84 -0.35 -7.26 22.85 15.82 50.5 25.19 80.41 25.19 m -888.53 149 c -100.8 0 -182.53 -81.73 -182.53 -182.55 0 -9.83 0.99 -19.4 2.48 -28.81 13.86 87.07 89.07 153.73 180.05 153.73 33.65 0 65.06 -9.28 92.1 -25.14 l 0 0 0 0 c -8.5 20.07 -13.31 42.02 -14.03 65.03 -23.71 11.25 -50.09 17.74 -78.07 17.74 m 259.18 169.41 c 90.37 0 165.05 -66.14 178.89 -152.6 1.52 9.41 2.51 18.98 2.51 28.83 0 100.19 -81.22 181.4 -181.4 181.4 -100.2 0 -181.41 -81.21 -181.41 -181.4 0 -9.85 1.02 -19.42 2.5 -28.83 13.84 86.46 88.56 152.6 178.91 152.6" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient1902-9" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF3D78A6" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-3.43e-5 -784.19 -784.19 3.43e-5 3005.3 6945.35"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath1912-1" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1922-0" Figures="m 2406.21 6494.05 c -1.49 9.41 -2.48 18.98 -2.48 28.81 0 100.82 81.73 182.55 182.53 182.55 27.98 0 54.36 -6.49 78.07 -17.74 0.72 -23.01 5.53 -44.96 14.03 -65.03 -27.04 15.86 -58.45 25.14 -92.1 25.14 -90.98 0 -166.19 -66.66 -180.05 -153.73" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1934-8" Figures="m 3024.33 6722.22 c -13.84 86.46 -88.52 152.6 -178.89 152.6 -90.35 0 -165.07 -66.14 -178.91 -152.6 -1.48 9.41 -2.5 18.98 -2.5 28.83 0 100.19 81.21 181.4 181.41 181.4 100.18 0 181.4 -81.21 181.4 -181.4 0 -9.85 -0.99 -19.42 -2.51 -28.83" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1946-9" Figures="m 3613.52 6443.57 c -13.31 64.4 -70.35 112.84 -138.73 112.84 -29.91 0 -57.56 -9.37 -80.41 -25.19 0.07 2.42 0.35 4.81 0.35 7.26 0 102.91 -83.43 186.33 -186.36 186.33 -93.09 0 -170.01 -68.31 -183.9 -157.53 -1.46 9.44 -2.45 19.01 -2.45 28.83 0 102.92 83.44 186.33 186.35 186.33 102.93 0 186.36 -83.41 186.36 -186.33 0 -2.45 -0.28 -4.84 -0.35 -7.26 22.85 15.82 50.5 25.2 80.41 25.2 78.26 0 141.7 -63.44 141.7 -141.68 0 -9.87 -1.05 -19.5 -2.97 -28.8" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1958-4" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1968-39" Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1986-7" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1996-3" Figures="m 2585.93 6254.46 c -1.05 6.58 -1.73 13.29 -1.73 20.16 0 70.58 57.22 127.8 127.75 127.8 19.59 0 38.08 -4.54 54.67 -12.41 0.49 -16.1 3.88 -31.48 9.82 -45.53 -18.93 11.11 -40.91 17.6 -64.49 17.6 -63.65 0 -116.31 -46.65 -126.02 -107.62" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2008-0" Figures="m 3018.64 6414.19 c -9.68 60.52 -61.98 106.82 -125.23 106.82 -63.27 0 -115.54 -46.3 -125.25 -106.82 -1.05 6.58 -1.73 13.28 -1.73 20.16 0 70.16 56.83 126.99 126.98 126.99 70.12 0 126.96 -56.83 126.96 -126.99 0 -6.88 -0.69 -13.58 -1.73 -20.16" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2020-7" Figures="m 3431.07 6219.11 c -9.35 45.09 -49.27 79.01 -97.14 79.01 -20.9 0 -40.27 -6.58 -56.28 -17.64 0.05 1.68 0.25 3.36 0.25 5.07 0 72.05 -58.41 130.45 -130.43 130.45 -65.18 0 -119.01 -47.84 -128.75 -110.25 -1.02 6.57 -1.7 13.28 -1.7 20.16 0 72.05 58.4 130.43 130.45 130.43 72.02 0 130.43 -58.38 130.43 -130.43 0 -1.71 -0.2 -3.39 -0.25 -5.09 16.01 11.09 35.38 17.63 56.28 17.63 54.8 0 99.2 -44.4 99.2 -99.15 0 -6.93 -0.71 -13.67 -2.06 -20.19" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1958-2" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1968-0" Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath1986-0" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient13754" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF3D78A6" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-2.4e-5 -548.957 -548.957 2.4e-5 3005.3 6570.39"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13756" MappingMode="Absolute" StartPoint="224,733" EndPoint="325,800">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.53854817"/>
+            <GradientStop Color="#FF91B4CF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.0080811 0 0 1.1001594 -29.2828 77.215866"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13758" MappingMode="Absolute" StartPoint="313,762" EndPoint="221,746">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFF6F9FC" Offset="0"/>
+            <GradientStop Color="#FFFBFDFE" Offset="0.36808839"/>
+            <GradientStop Color="#FFFFFFFF" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="1.013632 0 0 1.1135238 -129.57523 29.561294"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient13760" MappingMode="Absolute" StartPoint="139,947" EndPoint="189,947">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.45629302"/>
+            <GradientStop Color="#FFF6F9FC" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <TranslateTransform X="-68.035714" Y="-34.285714"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2140-3" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient2148-4" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="86.3491 237.258 237.258 -86.3491 355.879 2307.71"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2158-2" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2170-9" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13337" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13350" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13354" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2260-3" Figures="m 1410.05 2303.93 c -7.07 0 -14.27 1.22 -21.31 3.78 -32.33 11.75 -49.02 47.51 -37.26 79.84 11.79 32.35 107.61 113.45 107.61 113.45 0 0 21.28 -123.72 9.51 -156.06 -9.21 -25.29 -33.1 -41.01 -58.55 -41.01 m -10.25 122.03 c -17.34 -17.84 -31.15 -34.12 -34.53 -43.42 -9.01 -24.67 3.79 -52.1 28.48 -61.07 5.33 -1.94 10.77 -2.86 16.12 -2.86 17.87 0 34.71 10.24 42.82 26.9 -7.43 -4.43 -15.97 -6.91 -24.75 -6.91 -5.28 0 -10.64 0.9 -15.9 2.81 -24.69 9 -37.47 36.4 -28.49 61.11 2.06 5.6 8.15 13.91 16.25 23.44" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient2268" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="86.3532 237.269 237.269 -86.3532 1388.74 2307.71"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2278-3" Figures="m 1409.87 2318.61 c -5.35 0 -10.79 0.92 -16.12 2.86 -24.69 8.97 -37.49 36.4 -28.48 61.07 3.38 9.3 17.19 25.58 34.53 43.42 -8.1 -9.53 -14.19 -17.84 -16.25 -23.44 -8.98 -24.71 3.8 -52.11 28.49 -61.11 5.26 -1.91 10.62 -2.81 15.9 -2.81 8.78 0 17.32 2.48 24.75 6.91 -8.11 -16.66 -24.95 -26.9 -42.82 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13367" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13380" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13384" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2180" Figures="m 650.191 2056.89 c -8.851 0 -17.847 1.51 -26.648 4.72 -40.422 14.69 -61.262 59.42 -46.547 99.83 14.707 40.41 134.496 141.79 134.496 141.79 0 0 26.61 -154.64 11.887 -195.08 -11.516 -31.63 -41.383 -51.26 -73.188 -51.26 m -12.808 152.56 c -21.672 -22.31 -38.957 -42.67 -43.172 -54.28 -11.242 -30.87 4.738 -65.11 35.609 -76.34 6.657 -2.43 13.461 -3.57 20.149 -3.57 22.328 0 43.383 12.78 53.523 33.62 -9.277 -5.54 -19.945 -8.62 -30.906 -8.62 -6.606 0 -13.316 1.12 -19.891 3.5 -30.886 11.28 -46.836 45.5 -35.617 76.37 2.559 7.04 10.156 17.41 20.305 29.32" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient2188" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="107.947 296.601 296.601 -107.947 623.55 2061.61"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2198" Figures="m 649.969 2075.26 c -6.688 0 -13.492 1.14 -20.149 3.57 -30.871 11.23 -46.851 45.47 -35.609 76.34 4.215 11.61 21.5 31.97 43.172 54.28 -10.149 -11.91 -17.746 -22.28 -20.305 -29.32 -11.219 -30.87 4.731 -65.09 35.617 -76.37 6.575 -2.38 13.285 -3.5 19.891 -3.5 10.961 0 21.629 3.08 30.906 8.62 -10.14 -20.84 -31.195 -33.62 -53.523 -33.62" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2210" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13399" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13412" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13416" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2260" Figures="m 1410.05 2303.93 c -7.07 0 -14.27 1.22 -21.31 3.78 -32.33 11.75 -49.02 47.51 -37.26 79.84 11.79 32.35 107.61 113.45 107.61 113.45 0 0 21.28 -123.72 9.51 -156.06 -9.21 -25.29 -33.1 -41.01 -58.55 -41.01 m -10.25 122.03 c -17.34 -17.84 -31.15 -34.12 -34.53 -43.42 -9.01 -24.67 3.79 -52.1 28.48 -61.07 5.33 -1.94 10.77 -2.86 16.12 -2.86 17.87 0 34.71 10.24 42.82 26.9 -7.43 -4.43 -15.97 -6.91 -24.75 -6.91 -5.28 0 -10.64 0.9 -15.9 2.81 -24.69 9 -37.47 36.4 -28.49 61.11 2.06 5.6 8.15 13.91 16.25 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2278" Figures="m 1409.87 2318.61 c -5.35 0 -10.79 0.92 -16.12 2.86 -24.69 8.97 -37.49 36.4 -28.48 61.07 3.38 9.3 17.19 25.58 34.53 43.42 -8.1 -9.53 -14.19 -17.84 -16.25 -23.44 -8.98 -24.71 3.8 -52.11 28.49 -61.11 5.26 -1.91 10.62 -2.81 15.9 -2.81 8.78 0 17.32 2.48 24.75 6.91 -8.11 -16.66 -24.95 -26.9 -42.82 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13433" Figures="m 1410.05 2303.93 c -7.07 0 -14.27 1.22 -21.31 3.78 -32.33 11.75 -49.02 47.51 -37.26 79.84 11.79 32.35 107.61 113.45 107.61 113.45 0 0 21.28 -123.72 9.51 -156.06 -9.21 -25.29 -33.1 -41.01 -58.55 -41.01 m -10.25 122.03 c -17.34 -17.84 -31.15 -34.12 -34.53 -43.42 -9.01 -24.67 3.79 -52.1 28.48 -61.07 5.33 -1.94 10.77 -2.86 16.12 -2.86 17.87 0 34.71 10.24 42.82 26.9 -7.43 -4.43 -15.97 -6.91 -24.75 -6.91 -5.28 0 -10.64 0.9 -15.9 2.81 -24.69 9 -37.47 36.4 -28.49 61.11 2.06 5.6 8.15 13.91 16.25 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13446" Figures="m 1409.87 2318.61 c -5.35 0 -10.79 0.92 -16.12 2.86 -24.69 8.97 -37.49 36.4 -28.48 61.07 3.38 9.3 17.19 25.58 34.53 43.42 -8.1 -9.53 -14.19 -17.84 -16.25 -23.44 -8.98 -24.71 3.8 -52.11 28.49 -61.11 5.26 -1.91 10.62 -2.81 15.9 -2.81 8.78 0 17.32 2.48 24.75 6.91 -8.11 -16.66 -24.95 -26.9 -42.82 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13450" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13463" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13467" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13471" Figures="m 1410.05 2303.93 c -7.07 0 -14.27 1.22 -21.31 3.78 -32.33 11.75 -49.02 47.51 -37.26 79.84 11.79 32.35 107.61 113.45 107.61 113.45 0 0 21.28 -123.72 9.51 -156.06 -9.21 -25.29 -33.1 -41.01 -58.55 -41.01 m -10.25 122.03 c -17.34 -17.84 -31.15 -34.12 -34.53 -43.42 -9.01 -24.67 3.79 -52.1 28.48 -61.07 5.33 -1.94 10.77 -2.86 16.12 -2.86 17.87 0 34.71 10.24 42.82 26.9 -7.43 -4.43 -15.97 -6.91 -24.75 -6.91 -5.28 0 -10.64 0.9 -15.9 2.81 -24.69 9 -37.47 36.4 -28.49 61.11 2.06 5.6 8.15 13.91 16.25 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13483" Figures="m 1409.87 2318.61 c -5.35 0 -10.79 0.92 -16.12 2.86 -24.69 8.97 -37.49 36.4 -28.48 61.07 3.38 9.3 17.19 25.58 34.53 43.42 -8.1 -9.53 -14.19 -17.84 -16.25 -23.44 -8.98 -24.71 3.8 -52.11 28.49 -61.11 5.26 -1.91 10.62 -2.81 15.9 -2.81 8.78 0 17.32 2.48 24.75 6.91 -8.11 -16.66 -24.95 -26.9 -42.82 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2220" Figures="m 1024.97 2097.7 c -7.96 0 -16.04 1.36 -23.96 4.24 -36.381 13.25 -55.143 53.48 -41.893 89.84 13.246 36.37 121.063 127.62 121.063 127.62 0 0 23.93 -139.17 10.68 -175.53 -10.35 -28.49 -37.25 -46.17 -65.89 -46.17 m -11.49 137.31 c -19.511 -20.06 -35.054 -38.41 -38.863 -48.84 -10.109 -27.78 4.278 -58.62 32.053 -68.72 5.99 -2.19 12.11 -3.22 18.13 -3.22 20.09 0 39.04 11.53 48.18 30.27 -8.36 -4.98 -17.97 -7.76 -27.83 -7.76 -5.95 0 -11.99 1.01 -17.9 3.16 -27.789 10.13 -42.152 40.94 -32.055 68.72 2.325 6.33 9.145 15.68 18.285 26.39" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient2228" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFE3F0FF" Offset="0"/>
+            <GradientStop Color="#FFE3F0FF" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="97.1561 266.952 266.952 -97.1561 1001.01 2101.94"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath2238" Figures="m 1024.8 2114.23 c -6.02 0 -12.14 1.03 -18.13 3.22 -27.775 10.1 -42.162 40.94 -32.053 68.72 3.809 10.43 19.352 28.78 38.863 48.84 -9.14 -10.71 -15.96 -20.06 -18.285 -26.39 -10.097 -27.78 4.266 -58.59 32.055 -68.72 5.91 -2.15 11.95 -3.16 17.9 -3.16 9.86 0 19.47 2.78 27.83 7.76 -9.14 -18.74 -28.09 -30.27 -48.18 -30.27" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2250" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13497" Figures="m 650.191 2056.89 c -8.851 0 -17.847 1.51 -26.648 4.72 -40.422 14.69 -61.262 59.42 -46.547 99.83 14.707 40.41 134.496 141.79 134.496 141.79 0 0 26.61 -154.64 11.887 -195.08 -11.516 -31.63 -41.383 -51.26 -73.188 -51.26 m -12.808 152.56 c -21.672 -22.31 -38.957 -42.67 -43.172 -54.28 -11.242 -30.87 4.738 -65.11 35.609 -76.34 6.657 -2.43 13.461 -3.57 20.149 -3.57 22.328 0 43.383 12.78 53.523 33.62 -9.277 -5.54 -19.945 -8.62 -30.906 -8.62 -6.606 0 -13.316 1.12 -19.891 3.5 -30.886 11.28 -46.836 45.5 -35.617 76.37 2.559 7.04 10.156 17.41 20.305 29.32" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13510" Figures="m 649.969 2075.26 c -6.688 0 -13.492 1.14 -20.149 3.57 -30.871 11.23 -46.851 45.47 -35.609 76.34 4.215 11.61 21.5 31.97 43.172 54.28 -10.149 -11.91 -17.746 -22.28 -20.305 -29.32 -11.219 -30.87 4.731 -65.09 35.617 -76.37 6.575 -2.38 13.285 -3.5 19.891 -3.5 10.961 0 21.629 3.08 30.906 8.62 -10.14 -20.84 -31.195 -33.62 -53.523 -33.62" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath13514" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2140" Figures="m 377.184 2303.93 c -7.079 0 -14.274 1.22 -21.309 3.78 -32.34 11.75 -49.023 47.51 -37.25 79.84 11.77 32.35 107.59 113.45 107.59 113.45 0 0 21.281 -123.72 9.515 -156.06 -9.199 -25.29 -33.093 -41.01 -58.546 -41.01 m -10.254 122.03 c -17.344 -17.84 -31.153 -34.12 -34.524 -43.42 -9.008 -24.67 3.782 -52.1 28.473 -61.07 5.328 -1.94 10.773 -2.86 16.125 -2.86 17.867 0 34.707 10.24 42.816 26.9 -7.429 -4.43 -15.972 -6.91 -24.742 -6.91 -5.281 0 -10.644 0.9 -15.902 2.81 -24.692 9 -37.473 36.4 -28.485 61.11 2.059 5.6 8.137 13.91 16.239 23.44" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2158" Figures="m 377.004 2318.61 c -5.352 0 -10.797 0.92 -16.125 2.86 -24.691 8.97 -37.481 36.4 -28.473 61.07 3.371 9.3 17.18 25.58 34.524 43.42 -8.102 -9.53 -14.18 -17.84 -16.239 -23.44 -8.988 -24.71 3.793 -52.11 28.485 -61.11 5.258 -1.91 10.621 -2.81 15.902 -2.81 8.77 0 17.313 2.48 24.742 6.91 -8.109 -16.66 -24.949 -26.9 -42.816 -26.9" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath2170" Figures="M 0 7267.61 0 0 l 12000 0 0 7267.61 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath4198" Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient4206" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath4180" Figures="m 5313.86 575.781 -33.9 19.528 23.97 7.929 c 5.84 1.922 9.03 8.223 7.11 14.082 -1.93 5.828 -8.23 9.032 -14.12 7.102 l -42.87 -14.113 -41.25 23.793 41.77 24.128 42.9 -14.109 c 1.17 -0.391 2.34 -0.582 3.51 -0.582 4.69 0 9.05 3 10.61 7.68 1.91 5.89 -1.27 12.16 -7.13 14.109 l -23.95 7.891 33.36 19.261 c 6.55 3.739 8.78 12.161 5.01 18.68 -3.77 6.551 -12.18 8.781 -18.7 5.012 l -33.35 -19.231 5.14 24.68 c 1.27 6.008 -2.61 11.93 -8.65 13.199 -6.05 1.321 -11.95 -2.621 -13.22 -8.672 l -9.2 -44.179 -41.79 -24.149 0 48.25 33.69 30.102 c 4.59 4.09 4.99 11.156 0.89 15.758 -4.1 4.57 -11.14 4.98 -15.77 0.91 l -18.81 -16.809 0 38.489 c 0 7.589 -6.12 13.699 -13.69 13.699 -7.56 0 -13.68 -6.11 -13.68 -13.699 l 0 -38.489 -18.81 16.809 c -4.59 4.07 -11.63 3.66 -15.77 -0.91 -4.1 -4.602 -3.72 -11.668 0.89 -15.758 l 33.69 -30.102 0 -48.25 -41.79 24.149 -9.2 44.179 c -1.27 6.051 -7.14 9.993 -13.22 8.672 -6.04 -1.269 -9.92 -7.191 -8.65 -13.199 l 5.14 -24.68 -33.36 19.231 c -6.51 3.769 -14.92 1.539 -18.69 -5.012 -3.77 -6.519 -1.54 -14.941 5.01 -18.68 l 33.34 -19.261 -23.95 -7.891 c -5.84 -1.949 -9.02 -8.219 -7.11 -14.109 1.56 -4.68 5.92 -7.68 10.61 -7.68 1.17 0 2.34 0.191 3.5 0.582 l 42.9 14.109 41.78 -24.128 -41.25 -23.793 -42.87 14.113 c -5.81 1.93 -12.16 -1.274 -14.12 -7.102 -1.92 -5.859 1.27 -12.16 7.11 -14.082 l 23.96 -7.929 -33.89 -19.528 c -6.56 -3.793 -8.79 -12.16 -5 -18.699 2.51 -4.414 7.12 -6.863 11.85 -6.863 2.33 0 4.68 0.582 6.84 1.851 l 33.89 19.559 -5.14 -24.707 c -1.27 -6.024 2.61 -11.902 8.65 -13.172 l 2.28 -0.25 c 5.19 0 9.83 3.609 10.92 8.879 l 9.22 44.211 41.24 23.801 0 -47.59 -33.69 -30.102 c -4.61 -4.129 -4.99 -11.168 -0.89 -15.758 2.2 -2.453 5.27 -3.722 8.33 -3.722 2.66 0 5.31 0.941 7.44 2.812 l 18.81 16.778 0 -39.118 c 0 -7.543 6.12 -13.671 13.68 -13.671 7.57 0 13.69 6.128 13.69 13.671 l 0 39.118 18.81 -16.778 c 2.12 -1.871 4.78 -2.812 7.44 -2.812 3.06 0 6.13 1.269 8.33 3.722 4.1 4.59 3.7 11.629 -0.89 15.758 l -33.69 30.102 0 47.59 41.24 -23.801 9.22 -44.211 c 1.08 -5.27 5.73 -8.879 10.91 -8.879 l 2.29 0.25 c 6.04 1.27 9.92 7.148 8.65 13.172 l -5.15 24.707 33.9 -19.559 c 2.16 -1.269 4.51 -1.851 6.84 -1.851 4.73 0 9.33 2.449 11.85 6.863 3.79 6.539 1.54 14.906 -5 18.699 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient4188" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.3e-5 297.747 297.747 1.3e-5 5185.42 487.86"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath4216" Figures="m 4524.05 794.699 -30.5 17.61 21.56 7.101 c 5.28 1.711 8.14 7.43 6.41 12.719 -1.73 5.223 -7.4 8.082 -12.71 6.371 l -38.58 -12.699 -37.13 21.39 37.59 21.739 38.62 -12.739 c 1.06 -0.32 2.1 -0.519 3.16 -0.519 4.22 0 8.14 2.726 9.55 6.937 1.72 5.282 -1.15 10.942 -6.41 12.7 l -21.56 7.101 30.01 17.328 c 5.91 3.364 7.91 10.891 4.51 16.813 -3.39 5.89 -10.96 7.898 -16.82 4.48 l -30.02 -17.301 4.63 22.219 c 1.14 5.422 -2.35 10.77 -7.79 11.891 -5.44 1.191 -10.75 -2.328 -11.88 -7.781 l -8.29 -39.778 -37.62 -21.742 0 43.422 30.33 27.07 c 4.12 3.707 4.48 10.071 0.79 14.188 -3.68 4.133 -10.02 4.48 -14.19 0.832 l -16.93 -15.141 0 34.668 c 0 6.82 -5.51 12.332 -12.31 12.332 -6.81 0 -12.31 -5.512 -12.31 -12.332 l 0 -34.668 -16.94 15.141 c -4.12 3.648 -10.47 3.301 -14.19 -0.832 -3.69 -4.117 -3.35 -10.481 0.8 -14.188 l 30.33 -27.07 0 -43.422 -37.62 21.742 -8.29 39.778 c -1.14 5.453 -6.42 8.972 -11.89 7.781 -5.44 -1.121 -8.93 -6.469 -7.79 -11.891 l 4.65 -22.219 -30.04 17.301 c -5.86 3.418 -13.41 1.41 -16.82 -4.48 -3.38 -5.922 -1.39 -13.449 4.52 -16.813 l 29.99 -17.328 -21.54 -7.101 c -5.27 -1.758 -8.13 -7.418 -6.41 -12.7 1.4 -4.211 5.32 -6.937 9.54 -6.937 1.06 0 2.11 0.199 3.17 0.519 l 38.61 12.739 37.59 -21.739 -37.12 -21.39 -38.58 12.699 c -5.23 1.711 -10.96 -1.148 -12.71 -6.371 -1.74 -5.289 1.14 -11.008 6.41 -12.719 l 21.55 -7.101 -30.5 -17.61 c -5.91 -3.398 -7.9 -10.937 -4.51 -16.828 2.28 -3.961 6.41 -6.16 10.67 -6.16 2.1 0 4.21 0.551 6.16 1.648 l 30.5 17.602 -4.63 -22.223 c -1.14 -5.386 2.35 -10.726 7.78 -11.886 l 2.07 -0.211 c 4.66 0 8.83 3.269 9.82 8.031 l 8.29 39.777 37.13 21.403 0 -42.86 -30.33 -27.07 c -4.15 -3.692 -4.49 -10.07 -0.8 -14.16 1.98 -2.242 4.75 -3.364 7.49 -3.364 2.4 0 4.79 0.852 6.7 2.551 l 16.94 15.082 0 -35.179 c 0 -6.801 5.5 -12.332 12.31 -12.332 6.8 0 12.31 5.531 12.31 12.332 l 0 35.179 16.93 -15.082 c 1.91 -1.699 4.31 -2.551 6.7 -2.551 2.75 0 5.52 1.122 7.49 3.364 3.69 4.09 3.33 10.468 -0.79 14.16 l -30.33 27.07 0 42.86 37.12 -21.403 8.3 -39.777 c 0.97 -4.762 5.17 -8.031 9.82 -8.031 l 2.06 0.211 c 5.44 1.16 8.93 6.5 7.79 11.886 l -4.64 22.223 30.51 -17.602 c 1.94 -1.097 4.06 -1.648 6.15 -1.648 4.26 0 8.4 2.199 10.67 6.16 3.4 5.891 1.39 13.43 -4.51 16.828 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient4224" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 4408.47 715.58"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient4170" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.9333333e-6 -44.111066 44.111066 -1.9333333e-6 130.41375 987.61844"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath4216-6" Figures="m 4524.05 794.699 -30.5 17.61 21.56 7.101 c 5.28 1.711 8.14 7.43 6.41 12.719 -1.73 5.223 -7.4 8.082 -12.71 6.371 l -38.58 -12.699 -37.13 21.39 37.59 21.739 38.62 -12.739 c 1.06 -0.32 2.1 -0.519 3.16 -0.519 4.22 0 8.14 2.726 9.55 6.937 1.72 5.282 -1.15 10.942 -6.41 12.7 l -21.56 7.101 30.01 17.328 c 5.91 3.364 7.91 10.891 4.51 16.813 -3.39 5.89 -10.96 7.898 -16.82 4.48 l -30.02 -17.301 4.63 22.219 c 1.14 5.422 -2.35 10.77 -7.79 11.891 -5.44 1.191 -10.75 -2.328 -11.88 -7.781 l -8.29 -39.778 -37.62 -21.742 0 43.422 30.33 27.07 c 4.12 3.707 4.48 10.071 0.79 14.188 -3.68 4.133 -10.02 4.48 -14.19 0.832 l -16.93 -15.141 0 34.668 c 0 6.82 -5.51 12.332 -12.31 12.332 -6.81 0 -12.31 -5.512 -12.31 -12.332 l 0 -34.668 -16.94 15.141 c -4.12 3.648 -10.47 3.301 -14.19 -0.832 -3.69 -4.117 -3.35 -10.481 0.8 -14.188 l 30.33 -27.07 0 -43.422 -37.62 21.742 -8.29 39.778 c -1.14 5.453 -6.42 8.972 -11.89 7.781 -5.44 -1.121 -8.93 -6.469 -7.79 -11.891 l 4.65 -22.219 -30.04 17.301 c -5.86 3.418 -13.41 1.41 -16.82 -4.48 -3.38 -5.922 -1.39 -13.449 4.52 -16.813 l 29.99 -17.328 -21.54 -7.101 c -5.27 -1.758 -8.13 -7.418 -6.41 -12.7 1.4 -4.211 5.32 -6.937 9.54 -6.937 1.06 0 2.11 0.199 3.17 0.519 l 38.61 12.739 37.59 -21.739 -37.12 -21.39 -38.58 12.699 c -5.23 1.711 -10.96 -1.148 -12.71 -6.371 -1.74 -5.289 1.14 -11.008 6.41 -12.719 l 21.55 -7.101 -30.5 -17.61 c -5.91 -3.398 -7.9 -10.937 -4.51 -16.828 2.28 -3.961 6.41 -6.16 10.67 -6.16 2.1 0 4.21 0.551 6.16 1.648 l 30.5 17.602 -4.63 -22.223 c -1.14 -5.386 2.35 -10.726 7.78 -11.886 l 2.07 -0.211 c 4.66 0 8.83 3.269 9.82 8.031 l 8.29 39.777 37.13 21.403 0 -42.86 -30.33 -27.07 c -4.15 -3.692 -4.49 -10.07 -0.8 -14.16 1.98 -2.242 4.75 -3.364 7.49 -3.364 2.4 0 4.79 0.852 6.7 2.551 l 16.94 15.082 0 -35.179 c 0 -6.801 5.5 -12.332 12.31 -12.332 6.8 0 12.31 5.531 12.31 12.332 l 0 35.179 16.93 -15.082 c 1.91 -1.699 4.31 -2.551 6.7 -2.551 2.75 0 5.52 1.122 7.49 3.364 3.69 4.09 3.33 10.468 -0.79 14.16 l -30.33 27.07 0 42.86 37.12 -21.403 8.3 -39.777 c 0.97 -4.762 5.17 -8.031 9.82 -8.031 l 2.06 0.211 c 5.44 1.16 8.93 6.5 7.79 11.886 l -4.64 22.223 30.51 -17.602 c 1.94 -1.097 4.06 -1.648 6.15 -1.648 4.26 0 8.4 2.199 10.67 6.16 3.4 5.891 1.39 13.43 -4.51 16.828 z" FillRule="NonZero"/>
+      <PathGeometry x:Key="clipPath4198-5" Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient4206-9" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <PathGeometry x:Key="clipPath4180-8" Figures="m 5313.86 575.781 -33.9 19.528 23.97 7.929 c 5.84 1.922 9.03 8.223 7.11 14.082 -1.93 5.828 -8.23 9.032 -14.12 7.102 l -42.87 -14.113 -41.25 23.793 41.77 24.128 42.9 -14.109 c 1.17 -0.391 2.34 -0.582 3.51 -0.582 4.69 0 9.05 3 10.61 7.68 1.91 5.89 -1.27 12.16 -7.13 14.109 l -23.95 7.891 33.36 19.261 c 6.55 3.739 8.78 12.161 5.01 18.68 -3.77 6.551 -12.18 8.781 -18.7 5.012 l -33.35 -19.231 5.14 24.68 c 1.27 6.008 -2.61 11.93 -8.65 13.199 -6.05 1.321 -11.95 -2.621 -13.22 -8.672 l -9.2 -44.179 -41.79 -24.149 0 48.25 33.69 30.102 c 4.59 4.09 4.99 11.156 0.89 15.758 -4.1 4.57 -11.14 4.98 -15.77 0.91 l -18.81 -16.809 0 38.489 c 0 7.589 -6.12 13.699 -13.69 13.699 -7.56 0 -13.68 -6.11 -13.68 -13.699 l 0 -38.489 -18.81 16.809 c -4.59 4.07 -11.63 3.66 -15.77 -0.91 -4.1 -4.602 -3.72 -11.668 0.89 -15.758 l 33.69 -30.102 0 -48.25 -41.79 24.149 -9.2 44.179 c -1.27 6.051 -7.14 9.993 -13.22 8.672 -6.04 -1.269 -9.92 -7.191 -8.65 -13.199 l 5.14 -24.68 -33.36 19.231 c -6.51 3.769 -14.92 1.539 -18.69 -5.012 -3.77 -6.519 -1.54 -14.941 5.01 -18.68 l 33.34 -19.261 -23.95 -7.891 c -5.84 -1.949 -9.02 -8.219 -7.11 -14.109 1.56 -4.68 5.92 -7.68 10.61 -7.68 1.17 0 2.34 0.191 3.5 0.582 l 42.9 14.109 41.78 -24.128 -41.25 -23.793 -42.87 14.113 c -5.81 1.93 -12.16 -1.274 -14.12 -7.102 -1.92 -5.859 1.27 -12.16 7.11 -14.082 l 23.96 -7.929 -33.89 -19.528 c -6.56 -3.793 -8.79 -12.16 -5 -18.699 2.51 -4.414 7.12 -6.863 11.85 -6.863 2.33 0 4.68 0.582 6.84 1.851 l 33.89 19.559 -5.14 -24.707 c -1.27 -6.024 2.61 -11.902 8.65 -13.172 l 2.28 -0.25 c 5.19 0 9.83 3.609 10.92 8.879 l 9.22 44.211 41.24 23.801 0 -47.59 -33.69 -30.102 c -4.61 -4.129 -4.99 -11.168 -0.89 -15.758 2.2 -2.453 5.27 -3.722 8.33 -3.722 2.66 0 5.31 0.941 7.44 2.812 l 18.81 16.778 0 -39.118 c 0 -7.543 6.12 -13.671 13.68 -13.671 7.57 0 13.69 6.128 13.69 13.671 l 0 39.118 18.81 -16.778 c 2.12 -1.871 4.78 -2.812 7.44 -2.812 3.06 0 6.13 1.269 8.33 3.722 4.1 4.59 3.7 11.629 -0.89 15.758 l -33.69 30.102 0 47.59 41.24 -23.801 9.22 -44.211 c 1.08 -5.27 5.73 -8.879 10.91 -8.879 l 2.29 0.25 c 6.04 1.27 9.92 7.148 8.65 13.172 l -5.15 24.707 33.9 -19.559 c 2.16 -1.269 4.51 -1.851 6.84 -1.851 4.73 0 9.33 2.449 11.85 6.863 3.79 6.539 1.54 14.906 -5 18.699 z" FillRule="NonZero"/>
+      <LinearGradientBrush x:Key="linearGradient4170-7" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.5890956e-6 -36.256915 36.256915 -1.5890956e-6 254.6199 993.93176"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16907" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.3e-5 297.747 297.747 1.3e-5 5185.42 487.86"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16909" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 4408.47 715.58"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16917" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16925" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16927" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.3e-5 297.747 297.747 1.3e-5 5185.42 487.86"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16935" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16937" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16939" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.17e-5 267.972 267.972 1.17e-5 5542.62 660.87"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="linearGradient16947" MappingMode="Absolute" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+          <GradientStopCollection>
+            <GradientStop Color="#FFB4DDF0" Offset="0"/>
+            <GradientStop Color="#FFB4DDF0" Offset="0.21864012"/>
+            <GradientStop Color="#FF89C9E2" Offset="1"/>
+          </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+        <LinearGradientBrush.Transform>
+          <MatrixTransform Matrix="-1.3e-5 297.747 297.747 1.3e-5 5185.42 487.86"/>
+        </LinearGradientBrush.Transform>
+      </LinearGradientBrush>
+    </Canvas.Resources>
+    <!--Unknown tag: sodipodi:namedview-->
+    <!--Unknown tag: metadata-->
+    <Canvas>
+      <Canvas.RenderTransform>
+        <TranslateTransform X="0" Y="-698.0315"/>
+      </Canvas.RenderTransform>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="1 0 0 0.81918675 0 138.44064"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Canvas.RenderTransform>
+            <MatrixTransform Matrix="1.4382078 0 0 1.3956809 -82.453433 -474.1639"/>
+          </Canvas.RenderTransform>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF0070AD">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6591.13 c -91.39 0 -166.73 -69.79 -175.62 -158.86 -1.98 0.07 -3.91 0.13 -5.84 0.13 -97.85 0 -177.44 -79.65 -177.44 -177.49 0 -97.86 79.59 -177.48 177.44 -177.48 26.03 0 51.62 5.76 75.08 16.79 30.02 -53.54 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.7 25.5 -28.36 61.63 -44.7 100.61 -44.7 54.74 0 103.74 33.42 124.84 82.36 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.78 142.17 142.15 0 78.38 -63.76 142.15 -142.17 142.15 -4.67 0 -9.4 -0.28 -14.16 -0.77 -23.56 74.02 -93.18 125.99 -172.3 125.99 -30.13 0 -59.07 -7.34 -85.15 -21.4 -22 73.34 -90.01 125.58 -168.91 125.58 m 0 -19.72 c 80.22 0 146.25 -60.3 155.52 -138.02 27.26 21.13 61.37 33.84 98.54 33.84 77.85 0 142.83 -55.3 157.77 -128.75 9.21 2.23 18.82 3.52 28.69 3.52 67.62 0 122.45 -54.8 122.45 -122.42 0 -67.62 -54.83 -122.42 -122.45 -122.42 -25.47 0 -49.1 7.78 -68.72 21.13 -11.3 -52.27 -57.74 -91.45 -113.42 -91.45 -41.84 0 -78.44 22.23 -98.85 55.46 -27.73 -33.86 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.15 -140.16 94.61 -24.3 -15.3 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.62 -157.74 157.75 0 87.12 70.65 157.77 157.74 157.77 8.5 0 16.76 -0.86 24.9 -2.15 -0.05 1.37 -0.22 2.72 -0.22 4.13 0 86.57 70.18 156.75 156.78 156.75" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="{StaticResource linearGradient13261}">
+                <Path.Data>
+                  <PathGeometry Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF7DA8C7">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6610.83 c -91.39 0 -166.73 -69.76 -175.62 -158.85 -1.98 0.09 -3.91 0.12 -5.84 0.12 -97.85 0 -177.44 -79.62 -177.44 -177.48 0 -97.84 79.59 -177.46 177.44 -177.46 26.03 0 51.62 5.75 75.08 16.78 30.02 -53.56 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.71 25.5 -28.36 61.63 -44.71 100.61 -44.71 54.74 0 103.74 33.43 124.84 82.37 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.77 142.17 142.14 0 78.38 -63.76 142.12 -142.17 142.12 -4.67 0 -9.4 -0.24 -14.16 -0.74 -23.56 74.03 -93.18 125.97 -172.3 125.97 -30.13 0 -59.07 -7.32 -85.15 -21.37 -22 73.33 -90.01 125.55 -168.91 125.55 m 0 -19.7 c 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Path Fill="{StaticResource linearGradient13263}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 183.26058 919.47201 c 5.9468 -18.43451 18.69799 -29.06034 37.42682 -27.42022 17.38852 1.07243 27.9172 13.00472 29.501 34.24031 17.56856 -8.75555 31.60259 -5.00565 40.53856 18.16573 0.75357 -5.1525 1.37013 -18.45796 -8.58469 -27.83428 -11.64094 -8.83879 -20.58166 -7.46372 -31.32251 -1.86632 0.30111 -5.1428 -3.69028 -31.06594 -27.00217 -37.32685 -14.74429 -2.27156 -23.09665 1.37982 -31.05251 9.42994 -8.01124 8.58595 -10.34449 21.3521 -9.5045 32.61169 z" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13265}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 118.62559 891.14346 c 6.09464 -14.68566 10.80421 -26.42175 32.72005 -27.58702 9.08033 0.0365 15.71826 3.65812 22.12903 9.04739 6.13812 6.5088 8.27513 14.60191 10.36149 21.27624 0.66113 -8.29868 0.40617 -15.52967 -4.07263 -24.35832 -7.45356 -12.4089 -14.30833 -15.08185 -25.3408 -17.59766 -8.61566 -0.4121 -16.84687 0.45082 -25.61231 9.44506 -5.3633 5.83986 -12.27147 13.93649 -10.18483 29.77431 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13267}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 71.428476 932.21354 c 1.49129 -4.99767 1.76754 -9.36823 8.20749 -16.92005 4.44691 -3.63921 6.43547 -7.31879 18.56155 -10.35407 5.665974 -0.65691 9.542704 -0.43442 12.184964 0.25254 4.04504 0.72075 7.29467 2.12327 10.16466 3.85121 -0.58009 -1.85195 -1.03959 -3.70389 -1.45209 -5.55584 -0.30503 -2.02031 -0.49409 -4.04061 -0.63135 -6.06092 -4.25701 -2.14966 -9.5067 -3.32143 -15.27855 -3.28299 -5.809924 -0.0313 -11.362674 1.6518 -16.667524 4.98763 -4.01804 2.45802 -7.93422 6.03648 -11.61676 12.18496 -1.61993 3.22021 -2.92251 6.65199 -3.53553 10.54347 -0.5435 3.45135 -0.57145 6.90271 0.0631 10.35406 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+        <Canvas>
+          <Canvas.RenderTransform>
+            <MatrixTransform Matrix="1 0 0 1.0457435 -56.219361 -78.038639"/>
+          </Canvas.RenderTransform>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF0070AD">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6591.13 c -91.39 0 -166.73 -69.79 -175.62 -158.86 -1.98 0.07 -3.91 0.13 -5.84 0.13 -97.85 0 -177.44 -79.65 -177.44 -177.49 0 -97.86 79.59 -177.48 177.44 -177.48 26.03 0 51.62 5.76 75.08 16.79 30.02 -53.54 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.7 25.5 -28.36 61.63 -44.7 100.61 -44.7 54.74 0 103.74 33.42 124.84 82.36 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.78 142.17 142.15 0 78.38 -63.76 142.15 -142.17 142.15 -4.67 0 -9.4 -0.28 -14.16 -0.77 -23.56 74.02 -93.18 125.99 -172.3 125.99 -30.13 0 -59.07 -7.34 -85.15 -21.4 -22 73.34 -90.01 125.58 -168.91 125.58 m 0 -19.72 c 80.22 0 146.25 -60.3 155.52 -138.02 27.26 21.13 61.37 33.84 98.54 33.84 77.85 0 142.83 -55.3 157.77 -128.75 9.21 2.23 18.82 3.52 28.69 3.52 67.62 0 122.45 -54.8 122.45 -122.42 0 -67.62 -54.83 -122.42 -122.45 -122.42 -25.47 0 -49.1 7.78 -68.72 21.13 -11.3 -52.27 -57.74 -91.45 -113.42 -91.45 -41.84 0 -78.44 22.23 -98.85 55.46 -27.73 -33.86 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.15 -140.16 94.61 -24.3 -15.3 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.62 -157.74 157.75 0 87.12 70.65 157.77 157.74 157.77 8.5 0 16.76 -0.86 24.9 -2.15 -0.05 1.37 -0.22 2.72 -0.22 4.13 0 86.57 70.18 156.75 156.78 156.75" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="{StaticResource linearGradient13282}">
+                <Path.Data>
+                  <PathGeometry Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF7DA8C7">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6610.83 c -91.39 0 -166.73 -69.76 -175.62 -158.85 -1.98 0.09 -3.91 0.12 -5.84 0.12 -97.85 0 -177.44 -79.62 -177.44 -177.48 0 -97.84 79.59 -177.46 177.44 -177.46 26.03 0 51.62 5.75 75.08 16.78 30.02 -53.56 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.71 25.5 -28.36 61.63 -44.71 100.61 -44.71 54.74 0 103.74 33.43 124.84 82.37 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.77 142.17 142.14 0 78.38 -63.76 142.12 -142.17 142.12 -4.67 0 -9.4 -0.24 -14.16 -0.74 -23.56 74.03 -93.18 125.97 -172.3 125.97 -30.13 0 -59.07 -7.32 -85.15 -21.37 -22 73.33 -90.01 125.55 -168.91 125.55 m 0 -19.7 c 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Path Fill="{StaticResource linearGradient9114}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 183.26058 919.47201 c 5.9468 -18.43451 18.69799 -29.06034 37.42682 -27.42022 17.38852 1.07243 27.9172 13.00472 29.501 34.24031 17.56856 -8.75555 31.60259 -5.00565 40.53856 18.16573 0.75357 -5.1525 1.37013 -18.45796 -8.58469 -27.83428 -11.64094 -8.83879 -20.58166 -7.46372 -31.32251 -1.86632 0.30111 -5.1428 -3.69028 -31.06594 -27.00217 -37.32685 -14.74429 -2.27156 -23.09665 1.37982 -31.05251 9.42994 -8.01124 8.58595 -10.34449 21.3521 -9.5045 32.61169 z" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13098}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 118.62559 891.14346 c 6.09464 -14.68566 10.80421 -26.42175 32.72005 -27.58702 9.08033 0.0365 15.71826 3.65812 22.12903 9.04739 6.13812 6.5088 8.27513 14.60191 10.36149 21.27624 0.66113 -8.29868 0.40617 -15.52967 -4.07263 -24.35832 -7.45356 -12.4089 -14.30833 -15.08185 -25.3408 -17.59766 -8.61566 -0.4121 -16.84687 0.45082 -25.61231 9.44506 -5.3633 5.83986 -12.27147 13.93649 -10.18483 29.77431 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13138}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 71.428476 932.21354 c 1.49129 -4.99767 1.76754 -9.36823 8.20749 -16.92005 4.44691 -3.63921 6.43547 -7.31879 18.56155 -10.35407 5.665974 -0.65691 9.542704 -0.43442 12.184964 0.25254 4.04504 0.72075 7.29467 2.12327 10.16466 3.85121 -0.58009 -1.85195 -1.03959 -3.70389 -1.45209 -5.55584 -0.30503 -2.02031 -0.49409 -4.04061 -0.63135 -6.06092 -4.25701 -2.14966 -9.5067 -3.32143 -15.27855 -3.28299 -5.809924 -0.0313 -11.362674 1.6518 -16.667524 4.98763 -4.01804 2.45802 -7.93422 6.03648 -11.61676 12.18496 -1.61993 3.22021 -2.92251 6.65199 -3.53553 10.54347 -0.5435 3.45135 -0.57145 6.90271 0.0631 10.35406 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+        <Canvas>
+          <Canvas.RenderTransform>
+            <MatrixTransform Matrix="-0.56946565 -0.14982468 -0.178306 0.4785033 545.57191 477.69303"/>
+          </Canvas.RenderTransform>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF0070AD">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6591.13 c -91.39 0 -166.73 -69.79 -175.62 -158.86 -1.98 0.07 -3.91 0.13 -5.84 0.13 -97.85 0 -177.44 -79.65 -177.44 -177.49 0 -97.86 79.59 -177.48 177.44 -177.48 26.03 0 51.62 5.76 75.08 16.79 30.02 -53.54 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.7 25.5 -28.36 61.63 -44.7 100.61 -44.7 54.74 0 103.74 33.42 124.84 82.36 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.78 142.17 142.15 0 78.38 -63.76 142.15 -142.17 142.15 -4.67 0 -9.4 -0.28 -14.16 -0.77 -23.56 74.02 -93.18 125.99 -172.3 125.99 -30.13 0 -59.07 -7.34 -85.15 -21.4 -22 73.34 -90.01 125.58 -168.91 125.58 m 0 -19.72 c 80.22 0 146.25 -60.3 155.52 -138.02 27.26 21.13 61.37 33.84 98.54 33.84 77.85 0 142.83 -55.3 157.77 -128.75 9.21 2.23 18.82 3.52 28.69 3.52 67.62 0 122.45 -54.8 122.45 -122.42 0 -67.62 -54.83 -122.42 -122.45 -122.42 -25.47 0 -49.1 7.78 -68.72 21.13 -11.3 -52.27 -57.74 -91.45 -113.42 -91.45 -41.84 0 -78.44 22.23 -98.85 55.46 -27.73 -33.86 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.15 -140.16 94.61 -24.3 -15.3 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.62 -157.74 157.75 0 87.12 70.65 157.77 157.74 157.77 8.5 0 16.76 -0.86 24.9 -2.15 -0.05 1.37 -0.22 2.72 -0.22 4.13 0 86.57 70.18 156.75 156.78 156.75" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="{StaticResource linearGradient13754}">
+                <Path.Data>
+                  <PathGeometry Figures="m 3151.79 6046.54 c -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 l 0 0 c -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 m 182.14 251.58 c 47.87 0 87.79 -33.92 97.14 -79.01 1.35 6.52 2.06 13.26 2.06 20.19 0 54.75 -44.4 99.15 -99.2 99.15 -20.9 0 -40.27 -6.54 -56.28 -17.63 0.05 1.7 0.25 3.38 0.25 5.09 0 72.05 -58.41 130.43 -130.43 130.43 -72.05 0 -130.45 -58.38 -130.45 -130.43 0 -6.88 0.68 -13.59 1.7 -20.16 9.74 62.41 63.57 110.25 128.75 110.25 72.02 0 130.43 -58.4 130.43 -130.45 0 -1.71 -0.2 -3.39 -0.25 -5.07 16.01 11.06 35.38 17.64 56.28 17.64 m -621.98 104.3 c -70.53 0 -127.75 -57.22 -127.75 -127.8 0 -6.87 0.68 -13.58 1.73 -20.16 9.71 60.97 62.37 107.62 126.02 107.62 23.58 0 45.56 -6.49 64.49 -17.6 l 0 0 c -5.94 14.05 -9.33 29.43 -9.82 45.53 -16.59 7.87 -35.08 12.41 -54.67 12.41 m 181.46 118.59 c 63.25 0 115.55 -46.3 125.23 -106.82 1.04 6.58 1.73 13.28 1.73 20.16 0 70.16 -56.84 126.99 -126.96 126.99 -70.15 0 -126.98 -56.83 -126.98 -126.99 0 -6.88 0.68 -13.58 1.73 -20.16 9.71 60.52 61.98 106.82 125.25 106.82" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Canvas>
+            <Canvas.RenderTransform>
+              <MatrixTransform Matrix="0.25865127 0 0 -0.25865127 -597.32338 2550.191"/>
+            </Canvas.RenderTransform>
+            <Canvas>
+              <Path Fill="#FF7DA8C7">
+                <Path.Data>
+                  <PathGeometry Figures="m 2893.41 6610.83 c -91.39 0 -166.73 -69.76 -175.62 -158.85 -1.98 0.09 -3.91 0.12 -5.84 0.12 -97.85 0 -177.44 -79.62 -177.44 -177.48 0 -97.84 79.59 -177.46 177.44 -177.46 26.03 0 51.62 5.75 75.08 16.78 30.02 -53.56 86.35 -87.1 148.94 -87.1 43.08 0 83.91 16.04 115.21 44.71 25.5 -28.36 61.63 -44.71 100.61 -44.71 54.74 0 103.74 33.43 124.84 82.37 17.94 -7.92 37.38 -12.05 57.3 -12.05 78.41 0 142.17 63.77 142.17 142.14 0 78.38 -63.76 142.12 -142.17 142.12 -4.67 0 -9.4 -0.24 -14.16 -0.74 -23.56 74.03 -93.18 125.97 -172.3 125.97 -30.13 0 -59.07 -7.32 -85.15 -21.37 -22 73.33 -90.01 125.55 -168.91 125.55 m 0 -19.7 c 80.22 0 146.25 -60.29 155.52 -138.04 27.26 21.15 61.37 33.86 98.54 33.86 77.85 0 142.83 -55.29 157.77 -128.77 9.21 2.22 18.82 3.55 28.69 3.55 67.62 0 122.45 -54.83 122.45 -122.43 0 -67.61 -54.83 -122.41 -122.45 -122.41 -25.47 0 -49.1 7.78 -68.72 21.09 -11.3 -52.24 -57.74 -91.44 -113.42 -91.44 -41.84 0 -78.44 22.26 -98.85 55.46 -27.73 -33.83 -69.82 -55.46 -116.97 -55.46 -63.5 0 -117.74 39.18 -140.16 94.64 -24.3 -15.33 -52.99 -24.29 -83.86 -24.29 -87.09 0 -157.74 70.61 -157.74 157.73 0 87.13 70.65 157.78 157.74 157.78 8.5 0 16.76 -0.88 24.9 -2.15 -0.05 1.38 -0.22 2.73 -0.22 4.1 0 86.6 70.18 156.78 156.78 156.78" FillRule="nonzero"/>
+                </Path.Data>
+              </Path>
+            </Canvas>
+          </Canvas>
+          <Path Fill="{StaticResource linearGradient13756}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 183.26058 919.47201 c 5.9468 -18.43451 18.69799 -29.06034 37.42682 -27.42022 17.38852 1.07243 27.9172 13.00472 29.501 34.24031 17.56856 -8.75555 31.60259 -5.00565 40.53856 18.16573 0.75357 -5.1525 1.37013 -18.45796 -8.58469 -27.83428 -11.64094 -8.83879 -20.58166 -7.46372 -31.32251 -1.86632 0.30111 -5.1428 -3.69028 -31.06594 -27.00217 -37.32685 -14.74429 -2.27156 -23.09665 1.37982 -31.05251 9.42994 -8.01124 8.58595 -10.34449 21.3521 -9.5045 32.61169 z" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13758}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 118.62559 891.14346 c 6.09464 -14.68566 10.80421 -26.42175 32.72005 -27.58702 9.08033 0.0365 15.71826 3.65812 22.12903 9.04739 6.13812 6.5088 8.27513 14.60191 10.36149 21.27624 0.66113 -8.29868 0.40617 -15.52967 -4.07263 -24.35832 -7.45356 -12.4089 -14.30833 -15.08185 -25.3408 -17.59766 -8.61566 -0.4121 -16.84687 0.45082 -25.61231 9.44506 -5.3633 5.83986 -12.27147 13.93649 -10.18483 29.77431 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+          <Path Fill="{StaticResource linearGradient13760}" StrokeThickness="1" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+            <Path.Data>
+              <PathGeometry Figures="m 71.428476 932.21354 c 1.49129 -4.99767 1.76754 -9.36823 8.20749 -16.92005 4.44691 -3.63921 6.43547 -7.31879 18.56155 -10.35407 5.665974 -0.65691 9.542704 -0.43442 12.184964 0.25254 4.04504 0.72075 7.29467 2.12327 10.16466 3.85121 -0.58009 -1.85195 -1.03959 -3.70389 -1.45209 -5.55584 -0.30503 -2.02031 -0.49409 -4.04061 -0.63135 -6.06092 -4.25701 -2.14966 -9.5067 -3.32143 -15.27855 -3.28299 -5.809924 -0.0313 -11.362674 1.6518 -16.667524 4.98763 -4.01804 2.45802 -7.93422 6.03648 -11.61676 12.18496 -1.61993 3.22021 -2.92251 6.65199 -3.53553 10.54347 -0.5435 3.45135 -0.57145 6.90271 0.0631 10.35406 z" FillRule="evenodd"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Path Fill="{StaticResource linearGradient4170}">
+        <Path.Data>
+          <PathGeometry Figures="m 149.43909 974.59152 -5.02 -2.8984 3.54933 -1.1667 c 0.868 -0.2839 1.33867 -1.22561 1.05467 -2.08908 -0.28667 -0.8656 -1.22 -1.33906 -2.09067 -1.05786 l -6.35333 2.09479 -6.11067 -3.524 6.18933 -3.57333 6.35467 2.09053 c 0.17467 0.0547 0.34667 0.0844 0.52 0.0844 0.69467 0 1.34133 -0.44267 1.57067 -1.1416 0.28533 -0.86414 -0.18667 -1.8 -1.05467 -2.08654 l -3.54667 -1.1692 4.94 -2.85106 c 0.96934 -0.55987 1.30134 -1.79947 0.74134 -2.76934 -0.55734 -0.96773 -1.80267 -1.30106 -2.768 -0.7396 l -4.94267 2.84907 0.76267 -3.65733 c 0.18666 -0.8948 -0.388 -1.76774 -1.28134 -1.9584 -0.89733 -0.19374 -1.77066 0.38906 -1.95733 1.28386 l -1.36533 6.55054 -6.18934 3.57346 0 -7.14533 4.99067 -4.45987 c 0.68 -0.60933 0.73867 -1.65466 0.132 -2.33746 -0.608 -0.67867 -1.65067 -0.7376 -2.33867 -0.13187 l -2.784 2.49173 0 -5.70786 c 0 -1.12027 -0.908 -2.02547 -2.028 -2.02547 -1.12133 0 -2.02933 0.9052 -2.02933 2.02547 l 0 5.70786 -2.784 -2.49173 c -0.68133 -0.60573 -1.72533 -0.5468 -2.33867 0.13187 -0.60666 0.6828 -0.548 1.72813 0.13334 2.33746 l 4.98933 4.45987 0 7.14533 -6.18933 -3.57346 -1.364 -6.55054 c -0.188 -0.8948 -1.05467 -1.4776 -1.95734 -1.28386 -0.89466 0.19066 -1.46933 1.0636 -1.28133 1.9584 l 0.76267 3.65733 -4.94267 -2.84907 c -0.96533 -0.56146 -2.21067 -0.22813 -2.76933 0.7396 -0.56 0.96987 -0.228 2.20947 0.74266 2.76934 l 4.93867 2.85106 -3.54667 1.1692 c -0.868 0.28654 -1.33866 1.2224 -1.05466 2.08654 0.22933 0.69893 0.876 1.1416 1.57066 1.1416 0.17334 0 0.34534 -0.0297 0.52 -0.0844 l 6.35467 -2.09054 6.18933 3.57334 -6.11066 3.52399 -6.352 -2.09479 c -0.86134 -0.2812 -1.80267 0.19226 -2.092 1.05786 -0.284 0.86347 0.188 1.80519 1.05466 2.08909 l 3.54934 1.1666 -5.02 2.8984 c -0.972 0.5579 -1.30134 1.80162 -0.74267 2.77242 0.37333 0.6506 1.056 1.0131 1.75733 1.0131 0.344 0 0.692 -0.088 1.012 -0.2719 l 5.02134 -2.89742 -0.76267 3.65362 c -0.188 0.8942 0.38667 1.7704 1.28133 1.9584 l 0.34 0.036 c 0.76667 0 1.45467 -0.5386 1.61734 -1.3198 l 1.36533 -6.55052 6.108 -3.52399 0 7.05321 -4.98933 4.4588 c -0.68134 0.6095 -0.74 1.6521 -0.13334 2.3333 0.32667 0.3678 0.78134 0.5532 1.23467 0.5532 0.39467 0 0.78667 -0.1385 1.104 -0.4213 l 2.784 -2.4865 0 5.7942 c 0 1.123 0.908 2.0334 2.02933 2.0334 1.12 0 2.028 -0.9104 2.028 -2.0334 l 0 -5.7942 2.784 2.4865 c 0.31734 0.2828 0.70934 0.4213 1.104 0.4213 0.45334 0 0.908 -0.1854 1.23467 -0.5532 0.60667 -0.6812 0.548 -1.7238 -0.132 -2.3333 l -4.99067 -4.4588 0 -7.05321 6.10934 3.52399 1.364 6.55052 c 0.164 0.7812 0.85066 1.3198 1.61733 1.3198 l 0.34 -0.036 c 0.89467 -0.188 1.46933 -1.0642 1.28133 -1.9584 l -0.76266 -3.65362 5.02133 2.89742 c 0.31867 0.1838 0.668 0.2719 1.01333 0.2719 0.7 0 1.38267 -0.3625 1.756 -1.0131 0.56 -0.9708 0.22934 -2.21452 -0.74266 -2.77242" FillRule="nonzero"/>
+        </Path.Data>
+      </Path>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.13333333 0 0 -0.13333333 -500.77152 1045.3691"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Canvas.RenderTransform>
+            <TranslateTransform X="-41.668794" Y="15.152289"/>
+          </Canvas.RenderTransform>
+          <Path Fill="{StaticResource linearGradient16927}">
+            <Path.Data>
+              <PathGeometry Figures="m 5313.86 575.781 -33.9 19.528 23.97 7.929 c 5.84 1.922 9.03 8.223 7.11 14.082 -1.93 5.828 -8.23 9.032 -14.12 7.102 l -42.87 -14.113 -41.25 23.793 41.77 24.128 42.9 -14.109 c 1.17 -0.391 2.34 -0.582 3.51 -0.582 4.69 0 9.05 3 10.61 7.68 1.91 5.89 -1.27 12.16 -7.13 14.109 l -23.95 7.891 33.36 19.261 c 6.55 3.739 8.78 12.161 5.01 18.68 -3.77 6.551 -12.18 8.781 -18.7 5.012 l -33.35 -19.231 5.14 24.68 c 1.27 6.008 -2.61 11.93 -8.65 13.199 -6.05 1.321 -11.95 -2.621 -13.22 -8.672 l -9.2 -44.179 -41.79 -24.149 0 48.25 33.69 30.102 c 4.59 4.09 4.99 11.156 0.89 15.758 -4.1 4.57 -11.14 4.98 -15.77 0.91 l -18.81 -16.809 0 38.489 c 0 7.589 -6.12 13.699 -13.69 13.699 -7.56 0 -13.68 -6.11 -13.68 -13.699 l 0 -38.489 -18.81 16.809 c -4.59 4.07 -11.63 3.66 -15.77 -0.91 -4.1 -4.602 -3.72 -11.668 0.89 -15.758 l 33.69 -30.102 0 -48.25 -41.79 24.149 -9.2 44.179 c -1.27 6.051 -7.14 9.993 -13.22 8.672 -6.04 -1.269 -9.92 -7.191 -8.65 -13.199 l 5.14 -24.68 -33.36 19.231 c -6.51 3.769 -14.92 1.539 -18.69 -5.012 -3.77 -6.519 -1.54 -14.941 5.01 -18.68 l 33.34 -19.261 -23.95 -7.891 c -5.84 -1.949 -9.02 -8.219 -7.11 -14.109 1.56 -4.68 5.92 -7.68 10.61 -7.68 1.17 0 2.34 0.191 3.5 0.582 l 42.9 14.109 41.78 -24.128 -41.25 -23.793 -42.87 14.113 c -5.81 1.93 -12.16 -1.274 -14.12 -7.102 -1.92 -5.859 1.27 -12.16 7.11 -14.082 l 23.96 -7.929 -33.89 -19.528 c -6.56 -3.793 -8.79 -12.16 -5 -18.699 2.51 -4.414 7.12 -6.863 11.85 -6.863 2.33 0 4.68 0.582 6.84 1.851 l 33.89 19.559 -5.14 -24.707 c -1.27 -6.024 2.61 -11.902 8.65 -13.172 l 2.28 -0.25 c 5.19 0 9.83 3.609 10.92 8.879 l 9.22 44.211 41.24 23.801 0 -47.59 -33.69 -30.102 c -4.61 -4.129 -4.99 -11.168 -0.89 -15.758 2.2 -2.453 5.27 -3.722 8.33 -3.722 2.66 0 5.31 0.941 7.44 2.812 l 18.81 16.778 0 -39.118 c 0 -7.543 6.12 -13.671 13.68 -13.671 7.57 0 13.69 6.128 13.69 13.671 l 0 39.118 18.81 -16.778 c 2.12 -1.871 4.78 -2.812 7.44 -2.812 3.06 0 6.13 1.269 8.33 3.722 4.1 4.59 3.7 11.629 -0.89 15.758 l -33.69 30.102 0 47.59 41.24 -23.801 9.22 -44.211 c 1.08 -5.27 5.73 -8.879 10.91 -8.879 l 2.29 0.25 c 6.04 1.27 9.92 7.148 8.65 13.172 l -5.15 24.707 33.9 -19.559 c 2.16 -1.269 4.51 -1.851 6.84 -1.851 4.73 0 9.33 2.449 11.85 6.863 3.79 6.539 1.54 14.906 -5 18.699" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.09206531 0.05823496 0.05823496 -0.09206531 -299.34767 684.83958"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16937}">
+            <Path.Data>
+              <PathGeometry Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.13005845 -0.02936964 -0.02936964 -0.13005845 -479.12958 1199.8489"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient4224}">
+            <Path.Data>
+              <PathGeometry Figures="m 4524.05 794.699 -30.5 17.61 21.56 7.101 c 5.28 1.711 8.14 7.43 6.41 12.719 -1.73 5.223 -7.4 8.082 -12.71 6.371 l -38.58 -12.699 -37.13 21.39 37.59 21.739 38.62 -12.739 c 1.06 -0.32 2.1 -0.519 3.16 -0.519 4.22 0 8.14 2.726 9.55 6.937 1.72 5.282 -1.15 10.942 -6.41 12.7 l -21.56 7.101 30.01 17.328 c 5.91 3.364 7.91 10.891 4.51 16.813 -3.39 5.89 -10.96 7.898 -16.82 4.48 l -30.02 -17.301 4.63 22.219 c 1.14 5.422 -2.35 10.77 -7.79 11.891 -5.44 1.191 -10.75 -2.328 -11.88 -7.781 l -8.29 -39.778 -37.62 -21.742 0 43.422 30.33 27.07 c 4.12 3.707 4.48 10.071 0.79 14.188 -3.68 4.133 -10.02 4.48 -14.19 0.832 l -16.93 -15.141 0 34.668 c 0 6.82 -5.51 12.332 -12.31 12.332 -6.81 0 -12.31 -5.512 -12.31 -12.332 l 0 -34.668 -16.94 15.141 c -4.12 3.648 -10.47 3.301 -14.19 -0.832 -3.69 -4.117 -3.35 -10.481 0.8 -14.188 l 30.33 -27.07 0 -43.422 -37.62 21.742 -8.29 39.778 c -1.14 5.453 -6.42 8.972 -11.89 7.781 -5.44 -1.121 -8.93 -6.469 -7.79 -11.891 l 4.65 -22.219 -30.04 17.301 c -5.86 3.418 -13.41 1.41 -16.82 -4.48 -3.38 -5.922 -1.39 -13.449 4.52 -16.813 l 29.99 -17.328 -21.54 -7.101 c -5.27 -1.758 -8.13 -7.418 -6.41 -12.7 1.4 -4.211 5.32 -6.937 9.54 -6.937 1.06 0 2.11 0.199 3.17 0.519 l 38.61 12.739 37.59 -21.739 -37.12 -21.39 -38.58 12.699 c -5.23 1.711 -10.96 -1.148 -12.71 -6.371 -1.74 -5.289 1.14 -11.008 6.41 -12.719 l 21.55 -7.101 -30.5 -17.61 c -5.91 -3.398 -7.9 -10.937 -4.51 -16.828 2.28 -3.961 6.41 -6.16 10.67 -6.16 2.1 0 4.21 0.551 6.16 1.648 l 30.5 17.602 -4.63 -22.223 c -1.14 -5.386 2.35 -10.726 7.78 -11.886 l 2.07 -0.211 c 4.66 0 8.83 3.269 9.82 8.031 l 8.29 39.777 37.13 21.403 0 -42.86 -30.33 -27.07 c -4.15 -3.692 -4.49 -10.07 -0.8 -14.16 1.98 -2.242 4.75 -3.364 7.49 -3.364 2.4 0 4.79 0.852 6.7 2.551 l 16.94 15.082 0 -35.179 c 0 -6.801 5.5 -12.332 12.31 -12.332 6.8 0 12.31 5.531 12.31 12.332 l 0 35.179 16.93 -15.082 c 1.91 -1.699 4.31 -2.551 6.7 -2.551 2.75 0 5.52 1.122 7.49 3.364 3.69 4.09 3.33 10.468 -0.79 14.16 l -30.33 27.07 0 42.86 37.12 -21.403 8.3 -39.777 c 0.97 -4.762 5.17 -8.031 9.82 -8.031 l 2.06 0.211 c 5.44 1.16 8.93 6.5 7.79 11.886 l -4.64 22.223 30.51 -17.602 c 1.94 -1.097 4.06 -1.648 6.15 -1.648 4.26 0 8.4 2.199 10.67 6.16 3.4 5.891 1.39 13.43 -4.51 16.828" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Path Fill="{StaticResource linearGradient4170-7}">
+        <Path.Data>
+          <PathGeometry Figures="m 270.2577 983.22435 -4.12617 -2.3823 2.91736 -0.959 c 0.71345 -0.2333 1.10032 -1.0073 0.86688 -1.7171 -0.23562 -0.7115 -1.00277 -1.1006 -1.71842 -0.8694 l -5.22209 1.7218 -5.02264 -2.8966 5.08729 -2.9371 5.2232 1.7184 c 0.14357 0.045 0.28494 0.069 0.42741 0.069 0.57098 0 1.1025 -0.3639 1.29101 -0.9384 0.23452 -0.7103 -0.15343 -1.4794 -0.86688 -1.715 l -2.91517 -0.961 4.06041 -2.3434 c 0.79674 -0.4602 1.06963 -1.4791 0.60934 -2.2763 -0.4581 -0.7953 -1.4817 -1.0693 -2.27515 -0.6079 l -4.0626 2.3418 0.62687 -3.0061 c 0.15342 -0.7355 -0.31892 -1.453 -1.05319 -1.6097 -0.73756 -0.1592 -1.45539 0.3198 -1.60882 1.0553 l -1.12223 5.3841 -5.0873 2.9372 0 -5.8731 4.10206 -3.6657 c 0.55892 -0.5008 0.60714 -1.36 0.10849 -1.9212 -0.49974 -0.5579 -1.35676 -0.6063 -1.92226 -0.1084 l -2.28829 2.048 0 -4.6915 c 0 -0.9209 -0.74633 -1.6649 -1.66691 -1.6649 -0.92167 0 -1.668 0.744 -1.668 1.6649 l 0 4.6915 -2.28829 -2.048 c -0.56002 -0.4979 -1.41813 -0.4495 -1.92227 0.1084 -0.49864 0.5612 -0.45042 1.4204 0.1096 1.9212 l 4.10096 3.6657 0 5.8731 -5.08729 -2.9372 -1.12114 -5.3841 c -0.15452 -0.7355 -0.86688 -1.2145 -1.60882 -1.0553 -0.73537 0.1567 -1.20771 0.8743 -1.05319 1.6097 l 0.62688 3.0061 -4.06261 -2.3418 c -0.79345 -0.4614 -1.81705 -0.1874 -2.27624 0.6079 -0.46029 0.7972 -0.18741 1.8161 0.61042 2.2763 l 4.05932 2.3434 -2.91517 0.961 c -0.71345 0.2356 -1.1003 1.0047 -0.86687 1.715 0.1885 0.5745 0.72002 0.9384 1.291 0.9384 0.14247 0 0.28385 -0.025 0.42741 -0.069 l 5.22319 -1.7184 5.0873 2.9371 -5.02263 2.8965 -5.221 -1.7218 c -0.70798 -0.2311 -1.4817 0.158 -1.71952 0.8695 -0.23343 0.7098 0.15453 1.4838 0.86688 1.7171 l 2.91736 0.9589 -4.12616 2.3824 c -0.79894 0.4585 -1.06964 1.4808 -0.61044 2.2787 0.30686 0.5348 0.86798 0.8327 1.44443 0.8327 0.28275 0 0.56879 -0.072 0.83181 -0.2235 l 4.12727 -2.3815 -0.62687 3.0031 c -0.15453 0.735 0.31782 1.4552 1.05318 1.6097 l 0.27946 0.03 c 0.63016 0 1.19566 -0.4427 1.32937 -1.0848 l 1.12223 -5.3842 5.02044 -2.8965 0 5.7973 -4.10096 3.6649 c -0.56002 0.501 -0.60824 1.358 -0.1096 1.9179 0.26851 0.3023 0.64222 0.4547 1.01484 0.4547 0.32439 0 0.6466 -0.1139 0.90743 -0.3463 l 2.28829 -2.0438 0 4.76251 c 0 0.9231 0.74633 1.6714 1.668 1.6714 0.92058 0 1.66691 -0.7483 1.66691 -1.6714 l 0 -4.76251 2.28829 2.0438 c 0.26084 0.2324 0.58304 0.3463 0.90743 0.3463 0.37262 0 0.74633 -0.1524 1.01483 -0.4547 0.49865 -0.5599 0.45043 -1.4169 -0.10849 -1.9179 l -4.10206 -3.6649 0 -5.7973 5.02154 2.8965 1.12114 5.3842 c 0.1348 0.6421 0.69919 1.0848 1.32936 1.0848 l 0.27946 -0.03 c 0.73537 -0.1545 1.20771 -0.8747 1.05318 -1.6097 l -0.62686 -3.0031 4.12726 2.3815 c 0.26193 0.1511 0.54906 0.2235 0.8329 0.2235 0.57536 0 1.13648 -0.2979 1.44334 -0.8327 0.46029 -0.7979 0.1885 -1.8202 -0.61043 -2.2787" FillRule="nonzero"/>
+        </Path.Data>
+      </Path>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.1095928 0 0 -0.1095928 -401.50565 1079.9026"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16907}">
+            <Path.Data>
+              <PathGeometry Figures="m 5313.86 575.781 -33.9 19.528 23.97 7.929 c 5.84 1.922 9.03 8.223 7.11 14.082 -1.93 5.828 -8.23 9.032 -14.12 7.102 l -42.87 -14.113 -41.25 23.793 41.77 24.128 42.9 -14.109 c 1.17 -0.391 2.34 -0.582 3.51 -0.582 4.69 0 9.05 3 10.61 7.68 1.91 5.89 -1.27 12.16 -7.13 14.109 l -23.95 7.891 33.36 19.261 c 6.55 3.739 8.78 12.161 5.01 18.68 -3.77 6.551 -12.18 8.781 -18.7 5.012 l -33.35 -19.231 5.14 24.68 c 1.27 6.008 -2.61 11.93 -8.65 13.199 -6.05 1.321 -11.95 -2.621 -13.22 -8.672 l -9.2 -44.179 -41.79 -24.149 0 48.25 33.69 30.102 c 4.59 4.09 4.99 11.156 0.89 15.758 -4.1 4.57 -11.14 4.98 -15.77 0.91 l -18.81 -16.809 0 38.489 c 0 7.589 -6.12 13.699 -13.69 13.699 -7.56 0 -13.68 -6.11 -13.68 -13.699 l 0 -38.489 -18.81 16.809 c -4.59 4.07 -11.63 3.66 -15.77 -0.91 -4.1 -4.602 -3.72 -11.668 0.89 -15.758 l 33.69 -30.102 0 -48.25 -41.79 24.149 -9.2 44.179 c -1.27 6.051 -7.14 9.993 -13.22 8.672 -6.04 -1.269 -9.92 -7.191 -8.65 -13.199 l 5.14 -24.68 -33.36 19.231 c -6.51 3.769 -14.92 1.539 -18.69 -5.012 -3.77 -6.519 -1.54 -14.941 5.01 -18.68 l 33.34 -19.261 -23.95 -7.891 c -5.84 -1.949 -9.02 -8.219 -7.11 -14.109 1.56 -4.68 5.92 -7.68 10.61 -7.68 1.17 0 2.34 0.191 3.5 0.582 l 42.9 14.109 41.78 -24.128 -41.25 -23.793 -42.87 14.113 c -5.81 1.93 -12.16 -1.274 -14.12 -7.102 -1.92 -5.859 1.27 -12.16 7.11 -14.082 l 23.96 -7.929 -33.89 -19.528 c -6.56 -3.793 -8.79 -12.16 -5 -18.699 2.51 -4.414 7.12 -6.863 11.85 -6.863 2.33 0 4.68 0.582 6.84 1.851 l 33.89 19.559 -5.14 -24.707 c -1.27 -6.024 2.61 -11.902 8.65 -13.172 l 2.28 -0.25 c 5.19 0 9.83 3.609 10.92 8.879 l 9.22 44.211 41.24 23.801 0 -47.59 -33.69 -30.102 c -4.61 -4.129 -4.99 -11.168 -0.89 -15.758 2.2 -2.453 5.27 -3.722 8.33 -3.722 2.66 0 5.31 0.941 7.44 2.812 l 18.81 16.778 0 -39.118 c 0 -7.543 6.12 -13.671 13.68 -13.671 7.57 0 13.69 6.128 13.69 13.671 l 0 39.118 18.81 -16.778 c 2.12 -1.871 4.78 -2.812 7.44 -2.812 3.06 0 6.13 1.269 8.33 3.722 4.1 4.59 3.7 11.629 -0.89 15.758 l -33.69 30.102 0 47.59 41.24 -23.801 9.22 -44.211 c 1.08 -5.27 5.73 -8.879 10.91 -8.879 l 2.29 0.25 c 6.04 1.27 9.92 7.148 8.65 13.172 l -5.15 24.707 33.9 -19.559 c 2.16 -1.269 4.51 -1.851 6.84 -1.851 4.73 0 9.33 2.449 11.85 6.863 3.79 6.539 1.54 14.906 -5 18.699" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.0926193 0.05858538 0.05858538 -0.0926193 -347.1592 756.2168"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16939}">
+            <Path.Data>
+              <PathGeometry Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.10690103 -0.02414026 -0.02414026 -0.10690103 -378.68729 1200.4697"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16909}">
+            <Path.Data>
+              <PathGeometry Figures="m 4524.05 794.699 -30.5 17.61 21.56 7.101 c 5.28 1.711 8.14 7.43 6.41 12.719 -1.73 5.223 -7.4 8.082 -12.71 6.371 l -38.58 -12.699 -37.13 21.39 37.59 21.739 38.62 -12.739 c 1.06 -0.32 2.1 -0.519 3.16 -0.519 4.22 0 8.14 2.726 9.55 6.937 1.72 5.282 -1.15 10.942 -6.41 12.7 l -21.56 7.101 30.01 17.328 c 5.91 3.364 7.91 10.891 4.51 16.813 -3.39 5.89 -10.96 7.898 -16.82 4.48 l -30.02 -17.301 4.63 22.219 c 1.14 5.422 -2.35 10.77 -7.79 11.891 -5.44 1.191 -10.75 -2.328 -11.88 -7.781 l -8.29 -39.778 -37.62 -21.742 0 43.422 30.33 27.07 c 4.12 3.707 4.48 10.071 0.79 14.188 -3.68 4.133 -10.02 4.48 -14.19 0.832 l -16.93 -15.141 0 34.668 c 0 6.82 -5.51 12.332 -12.31 12.332 -6.81 0 -12.31 -5.512 -12.31 -12.332 l 0 -34.668 -16.94 15.141 c -4.12 3.648 -10.47 3.301 -14.19 -0.832 -3.69 -4.117 -3.35 -10.481 0.8 -14.188 l 30.33 -27.07 0 -43.422 -37.62 21.742 -8.29 39.778 c -1.14 5.453 -6.42 8.972 -11.89 7.781 -5.44 -1.121 -8.93 -6.469 -7.79 -11.891 l 4.65 -22.219 -30.04 17.301 c -5.86 3.418 -13.41 1.41 -16.82 -4.48 -3.38 -5.922 -1.39 -13.449 4.52 -16.813 l 29.99 -17.328 -21.54 -7.101 c -5.27 -1.758 -8.13 -7.418 -6.41 -12.7 1.4 -4.211 5.32 -6.937 9.54 -6.937 1.06 0 2.11 0.199 3.17 0.519 l 38.61 12.739 37.59 -21.739 -37.12 -21.39 -38.58 12.699 c -5.23 1.711 -10.96 -1.148 -12.71 -6.371 -1.74 -5.289 1.14 -11.008 6.41 -12.719 l 21.55 -7.101 -30.5 -17.61 c -5.91 -3.398 -7.9 -10.937 -4.51 -16.828 2.28 -3.961 6.41 -6.16 10.67 -6.16 2.1 0 4.21 0.551 6.16 1.648 l 30.5 17.602 -4.63 -22.223 c -1.14 -5.386 2.35 -10.726 7.78 -11.886 l 2.07 -0.211 c 4.66 0 8.83 3.269 9.82 8.031 l 8.29 39.777 37.13 21.403 0 -42.86 -30.33 -27.07 c -4.15 -3.692 -4.49 -10.07 -0.8 -14.16 1.98 -2.242 4.75 -3.364 7.49 -3.364 2.4 0 4.79 0.852 6.7 2.551 l 16.94 15.082 0 -35.179 c 0 -6.801 5.5 -12.332 12.31 -12.332 6.8 0 12.31 5.531 12.31 12.332 l 0 35.179 16.93 -15.082 c 1.91 -1.699 4.31 -2.551 6.7 -2.551 2.75 0 5.52 1.122 7.49 3.364 3.69 4.09 3.33 10.468 -0.79 14.16 l -30.33 27.07 0 42.86 37.12 -21.403 8.3 -39.777 c 0.97 -4.762 5.17 -8.031 9.82 -8.031 l 2.06 0.211 c 5.44 1.16 8.93 6.5 7.79 11.886 l -4.64 22.223 30.51 -17.602 c 1.94 -1.097 4.06 -1.648 6.15 -1.648 4.26 0 8.4 2.199 10.67 6.16 3.4 5.891 1.39 13.43 -4.51 16.828" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.0926193 0.05858538 0.05858538 -0.0926193 -286.55005 768.33863"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16917}">
+            <Path.Data>
+              <PathGeometry Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.08183895 0.05176638 0.05176638 -0.08183895 -460.54838 757.11503"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16925}">
+            <Path.Data>
+              <PathGeometry Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.09206531 0.05823496 0.05823496 -0.09206531 -246.31466 722.21522"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Path Fill="{StaticResource linearGradient16935}">
+            <Path.Data>
+              <PathGeometry Figures="m 5658.2 739.961 -30.49 17.609 21.56 7.121 c 5.27 1.727 8.13 7.411 6.4 12.688 -1.73 5.25 -7.4 8.152 -12.71 6.383 l -38.58 -12.711 -37.13 21.461 37.59 21.679 38.62 -12.722 c 1.05 -0.321 2.1 -0.489 3.16 -0.489 4.22 0 8.14 2.7 9.54 6.911 1.73 5.25 -1.14 10.949 -6.4 12.668 l -21.56 7.101 30.01 17.34 c 5.91 3.41 7.91 10.941 4.51 16.828 -3.39 5.891 -10.96 7.922 -16.82 4.524 l -30.03 -17.34 4.64 22.226 c 1.14 5.422 -2.35 10.731 -7.79 11.883 -5.44 1.188 -10.75 -2.359 -11.88 -7.812 l -8.29 -39.778 -37.61 -21.699 0 43.43 30.32 27.066 c 4.12 3.703 4.48 10.043 0.79 14.203 -3.68 4.098 -10.02 4.461 -14.19 0.797 l -16.92 -15.098 0 34.629 c 0 6.801 -5.52 12.332 -12.32 12.332 -6.81 0 -12.32 -5.531 -12.32 -12.332 l 0 -34.629 -16.93 15.098 c -4.12 3.664 -10.46 3.301 -14.19 -0.797 -3.69 -4.16 -3.35 -10.5 0.8 -14.203 l 30.32 -27.066 0 -43.43 -37.61 21.699 -8.29 39.778 c -1.14 5.453 -6.42 9 -11.9 7.812 -5.43 -1.152 -8.92 -6.461 -7.78 -11.883 l 4.65 -22.226 -30.04 17.34 c -5.86 3.398 -13.41 1.367 -16.83 -4.524 -3.38 -5.887 -1.38 -13.418 4.53 -16.828 l 29.99 -17.34 -21.54 -7.101 c -5.27 -1.719 -8.13 -7.418 -6.41 -12.668 1.4 -4.211 5.32 -6.911 9.54 -6.911 1.06 0 2.11 0.168 3.17 0.489 l 38.61 12.722 37.59 -21.679 -37.13 -21.461 -38.58 12.711 c -5.22 1.769 -10.95 -1.133 -12.71 -6.383 -1.73 -5.277 1.14 -10.961 6.41 -12.688 l 21.56 -7.121 -30.5 -17.609 c -5.91 -3.352 -7.91 -10.922 -4.51 -16.84 2.28 -3.922 6.41 -6.133 10.67 -6.133 2.09 0 4.21 0.532 6.15 1.653 l 30.51 17.609 -4.64 -22.23 c -1.14 -5.418 2.36 -10.731 7.79 -11.848 l 2.06 -0.231 c 4.67 0 8.84 3.25 9.83 7.981 l 8.29 39.777 37.12 21.461 0 -42.859 -30.32 -27.071 c -4.15 -3.71 -4.49 -10.07 -0.8 -14.199 1.98 -2.23 4.74 -3.351 7.49 -3.351 2.4 0 4.79 0.82 6.7 2.531 l 16.93 15.129 0 -35.211 c 0 -6.828 5.51 -12.32 12.32 -12.32 6.8 0 12.32 5.492 12.32 12.32 l 0 35.211 16.92 -15.129 c 1.91 -1.711 4.3 -2.531 6.7 -2.531 2.75 0 5.51 1.121 7.49 3.351 3.69 4.129 3.33 10.489 -0.79 14.199 l -30.32 27.071 0 42.859 37.11 -21.461 8.3 -39.777 c 0.97 -4.731 5.17 -7.981 9.82 -7.981 l 2.06 0.231 c 5.44 1.117 8.93 6.43 7.78 11.848 l -4.63 22.23 30.51 -17.609 c 1.94 -1.121 4.06 -1.653 6.15 -1.653 4.26 0 8.4 2.211 10.67 6.133 3.4 5.918 1.39 13.488 -4.51 16.84" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+      <Canvas>
+        <Canvas.RenderTransform>
+          <MatrixTransform Matrix="0.13333333 0 0 -0.13333333 -571.98727 1109.5138"/>
+        </Canvas.RenderTransform>
+        <Canvas>
+          <Canvas.RenderTransform>
+            <TranslateTransform X="-41.668794" Y="15.152289"/>
+          </Canvas.RenderTransform>
+          <Path Fill="{StaticResource linearGradient16947}">
+            <Path.Data>
+              <PathGeometry Figures="m 5313.86 575.781 -33.9 19.528 23.97 7.929 c 5.84 1.922 9.03 8.223 7.11 14.082 -1.93 5.828 -8.23 9.032 -14.12 7.102 l -42.87 -14.113 -41.25 23.793 41.77 24.128 42.9 -14.109 c 1.17 -0.391 2.34 -0.582 3.51 -0.582 4.69 0 9.05 3 10.61 7.68 1.91 5.89 -1.27 12.16 -7.13 14.109 l -23.95 7.891 33.36 19.261 c 6.55 3.739 8.78 12.161 5.01 18.68 -3.77 6.551 -12.18 8.781 -18.7 5.012 l -33.35 -19.231 5.14 24.68 c 1.27 6.008 -2.61 11.93 -8.65 13.199 -6.05 1.321 -11.95 -2.621 -13.22 -8.672 l -9.2 -44.179 -41.79 -24.149 0 48.25 33.69 30.102 c 4.59 4.09 4.99 11.156 0.89 15.758 -4.1 4.57 -11.14 4.98 -15.77 0.91 l -18.81 -16.809 0 38.489 c 0 7.589 -6.12 13.699 -13.69 13.699 -7.56 0 -13.68 -6.11 -13.68 -13.699 l 0 -38.489 -18.81 16.809 c -4.59 4.07 -11.63 3.66 -15.77 -0.91 -4.1 -4.602 -3.72 -11.668 0.89 -15.758 l 33.69 -30.102 0 -48.25 -41.79 24.149 -9.2 44.179 c -1.27 6.051 -7.14 9.993 -13.22 8.672 -6.04 -1.269 -9.92 -7.191 -8.65 -13.199 l 5.14 -24.68 -33.36 19.231 c -6.51 3.769 -14.92 1.539 -18.69 -5.012 -3.77 -6.519 -1.54 -14.941 5.01 -18.68 l 33.34 -19.261 -23.95 -7.891 c -5.84 -1.949 -9.02 -8.219 -7.11 -14.109 1.56 -4.68 5.92 -7.68 10.61 -7.68 1.17 0 2.34 0.191 3.5 0.582 l 42.9 14.109 41.78 -24.128 -41.25 -23.793 -42.87 14.113 c -5.81 1.93 -12.16 -1.274 -14.12 -7.102 -1.92 -5.859 1.27 -12.16 7.11 -14.082 l 23.96 -7.929 -33.89 -19.528 c -6.56 -3.793 -8.79 -12.16 -5 -18.699 2.51 -4.414 7.12 -6.863 11.85 -6.863 2.33 0 4.68 0.582 6.84 1.851 l 33.89 19.559 -5.14 -24.707 c -1.27 -6.024 2.61 -11.902 8.65 -13.172 l 2.28 -0.25 c 5.19 0 9.83 3.609 10.92 8.879 l 9.22 44.211 41.24 23.801 0 -47.59 -33.69 -30.102 c -4.61 -4.129 -4.99 -11.168 -0.89 -15.758 2.2 -2.453 5.27 -3.722 8.33 -3.722 2.66 0 5.31 0.941 7.44 2.812 l 18.81 16.778 0 -39.118 c 0 -7.543 6.12 -13.671 13.68 -13.671 7.57 0 13.69 6.128 13.69 13.671 l 0 39.118 18.81 -16.778 c 2.12 -1.871 4.78 -2.812 7.44 -2.812 3.06 0 6.13 1.269 8.33 3.722 4.1 4.59 3.7 11.629 -0.89 15.758 l -33.69 30.102 0 47.59 41.24 -23.801 9.22 -44.211 c 1.08 -5.27 5.73 -8.879 10.91 -8.879 l 2.29 0.25 c 6.04 1.27 9.92 7.148 8.65 13.172 l -5.15 24.707 33.9 -19.559 c 2.16 -1.269 4.51 -1.851 6.84 -1.851 4.73 0 9.33 2.449 11.85 6.863 3.79 6.539 1.54 14.906 -5 18.699" FillRule="nonzero"/>
+            </Path.Data>
+          </Path>
+        </Canvas>
+      </Canvas>
+    </Canvas>
+  </Canvas>
+</ResourceDictionary>

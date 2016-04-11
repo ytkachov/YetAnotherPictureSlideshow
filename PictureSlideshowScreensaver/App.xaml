@@ -1,0 +1,30 @@
+﻿<Application x:Class="PictureSlideshowScreensaver.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Startup="Application_Startup">
+    <!-- StartupUri="MainWindow.xaml" -->
+    <Application.Resources>
+      <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="res/clear_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_partly_rainy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_partly_snowy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_rainy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_rainy_storm_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_snowy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_snowy_storm_d.xaml"/>
+        <ResourceDictionary Source="res/overcast.xaml"/>
+        <ResourceDictionary Source="res/overcast.xaml"/>
+        <ResourceDictionary Source="res/overcast_partly_rainy.xaml"/>
+        <ResourceDictionary Source="res/overcast_partly_snowy.xaml"/>
+        <ResourceDictionary Source="res/overcast_rainy.xaml"/>
+        <ResourceDictionary Source="res/overcast_rainy_storm.xaml"/>
+        <ResourceDictionary Source="res/overcast_rainy_storm_lightning.xaml"/>
+        <ResourceDictionary Source="res/overcast_snowy.xaml"/>
+        <ResourceDictionary Source="res/overcast_snowy_storm.xaml"/>
+        <ResourceDictionary Source="res/partly_cloudy_d.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
+    </Application.Resources>
+</Application>
