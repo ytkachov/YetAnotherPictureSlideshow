@@ -86,7 +86,7 @@ namespace informers
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
     private static IWeatherProvider _yandex_weather = new WeatherProviderYandex();
-    private IWeatherProvider _curr_temp_provider = null;
+    private IWeatherProvider _curr_temp_provider = new WeatherProviderNSU();
     private IWeatherProvider _forecast_provider = null;
 
     private bool _weather_status = false;
@@ -114,8 +114,8 @@ namespace informers
       set
       {
         string [] temps = value.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        _temperature_low = int.Parse(temps[0]);
-        _temperature_high = int.Parse(temps[1]);
+        _temperature_low = double.Parse(temps[0]);
+        _temperature_high = double.Parse(temps[1]);
         RaisePropertyChanged("TemperatureRange");
       }
     }
@@ -132,7 +132,7 @@ namespace informers
 
     public WeatherInformer()
     {
-      _curr_temp_provider = _yandex_weather;
+      // _curr_temp_provider = _yandex_weather;
       _forecast_provider = _yandex_weather;
 
       _weatherTick.Tick += new EventHandler(weather_Tick);

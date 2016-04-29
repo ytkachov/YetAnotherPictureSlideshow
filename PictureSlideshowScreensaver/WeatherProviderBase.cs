@@ -41,15 +41,16 @@ namespace weather
     public WeatherProviderBase()
     {
       _reader = new Thread(new ThreadStart(readdata)) { IsBackground = true };
+      _reader.SetApartmentState(ApartmentState.STA);
       _reader.Start();
     }
 
-    public void close()
+    public virtual void close()
     {
       _exit.Set();
     }
 
-    public bool get_temperature(WeatherPeriod period, out double temp_l, out double temp_h)
+    public virtual bool get_temperature(WeatherPeriod period, out double temp_l, out double temp_h)
     {
       lock (_locker)
       {
@@ -61,11 +62,11 @@ namespace weather
         }
 
         temp_l = temp_h = 0.0;
-        return false;
+        return true;
       }
     }
 
-    public bool get_pressure(WeatherPeriod period, out double pressure)
+    public virtual bool get_pressure(WeatherPeriod period, out double pressure)
     {
       lock (_locker)
       {
@@ -76,11 +77,11 @@ namespace weather
         }
 
         pressure = 0.0;
-        return false;
+        return true;
       }
     }
 
-    public bool get_humidity(WeatherPeriod period, out double hum)
+    public virtual bool get_humidity(WeatherPeriod period, out double hum)
     {
       lock (_locker)
       {
@@ -91,11 +92,11 @@ namespace weather
         }
 
         hum = 0.0;
-        return false;
+        return true;
       }
     }
 
-    public bool get_wind(WeatherPeriod period, out WindDirection direction, out double speed)
+    public virtual bool get_wind(WeatherPeriod period, out WindDirection direction, out double speed)
     {
       lock (_locker)
       {
@@ -108,11 +109,11 @@ namespace weather
 
         direction = WindDirection.Undefined;
         speed = 0.0;
-        return false;
+        return true;
       }
     }
 
-    public bool get_character(WeatherPeriod period, out WeatherType type)
+    public virtual bool get_character(WeatherPeriod period, out WeatherType type)
     {
       lock (_locker)
       {

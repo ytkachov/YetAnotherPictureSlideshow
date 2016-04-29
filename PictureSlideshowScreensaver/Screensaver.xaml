@@ -4,7 +4,7 @@
         xmlns:CustomControls="clr-namespace:CustomControls"
         xmlns:informers="clr-namespace:informers"
         xmlns:presenters="clr-namespace:presenters"
-        Title="Slideshow Screensaver by RepTail" Height="1024" Width="1280" Background="Black" Loaded="Window_Loaded" ResizeMode="NoResize" 
+        Title="Yet another picture slideshow by Yuri Tkachov" Height="1024" Width="1280" Background="Black" Loaded="Window_Loaded" ResizeMode="NoResize" 
         ShowInTaskbar="False" WindowStyle="None" WindowState="Normal" WindowStartupLocation="Manual" 
         Topmost="True" Cursor="Cross" KeyDown="Window_KeyDown" Closing="Window_Closing">
   <Grid>

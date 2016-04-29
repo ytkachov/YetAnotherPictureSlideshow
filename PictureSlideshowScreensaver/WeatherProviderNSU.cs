@@ -11,26 +11,19 @@ using W = WatiN.Core.Comparers;
 
 namespace weather
 {
-  class WeatherProviderNSU : IWeatherProvider
+  class WeatherProviderNSU : WeatherProviderBase
   {
-    Thread _reader;
-    AutoResetEvent _exit = new AutoResetEvent(false);
-
-    private Object _locker = new Object();
     private bool _succeeded = false;
-    private double _temperature = 0.0;
+    private int _temperature = 0;
     private IE browser_;
 
     public WeatherProviderNSU()
     {
-      _reader = new Thread(new ThreadStart(readdata));
-      _reader.SetApartmentState(ApartmentState.STA);
-      _reader.Start();
     }
 
-    public void close()
+    public override void close()
     {
-      _exit.Set();
+      base.close();
 
       if (browser_ != null)
         browser_.Close();
@@ -38,7 +31,7 @@ namespace weather
       browser_ = null;
     }
 
-    public bool get_temperature(WeatherPeriod time, out double temp_l, out double temp_h)
+    public override bool get_temperature(WeatherPeriod time, out double temp_l, out double temp_h)
     {
       if (time != WeatherPeriod.Now)
       {
@@ -53,12 +46,12 @@ namespace weather
       }
     }
 
-    public bool get_pressure(WeatherPeriod time, out double pressure) { pressure = 0.0;  return false; }
-    public bool get_humidity(WeatherPeriod time, out double hum) { hum = 0.0; return false; }
-    public bool get_wind(WeatherPeriod time, out WindDirection direction, out double speed) { direction = WindDirection.Undefined; speed = 0.0;  return false; }
-    public bool get_character(WeatherPeriod time, out WeatherType type) { type = WeatherType.Undefined; return false; }
+    public override bool get_pressure(WeatherPeriod time, out double pressure) { pressure = 0.0;  return false; }
+    public override bool get_humidity(WeatherPeriod time, out double hum) { hum = 0.0; return false; }
+    public override bool get_wind(WeatherPeriod time, out WindDirection direction, out double speed) { direction = WindDirection.Undefined; speed = 0.0;  return false; }
+    public override bool get_character(WeatherPeriod time, out WeatherType type) { type = WeatherType.Undefined; return false; }
 
-    public void readdata()
+    protected override void readdata()
     {
       Settings.AutoMoveMousePointerToTopLeft = false;
       Settings.MakeNewIeInstanceVisible = false;
@@ -82,7 +75,7 @@ namespace weather
             double t = double.Parse(st.Substring(0, d));
             lock (_locker)
             {
-              _temperature = t;
+              _temperature = (int)(t + 0.5);
               _succeeded = true;
             }
           }

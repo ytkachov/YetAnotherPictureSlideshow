@@ -74,6 +74,8 @@ namespace presenters
 
     public WeatherPresenter()
     {
+      Dispatcher.ShutdownStarted += OnShutdownStarted;
+
       _weatherInformer = new WeatherInformer();
       InitializeComponent();
       (Content as FrameworkElement).DataContext = this;
@@ -81,6 +83,11 @@ namespace presenters
       BorderColor = Brushes.White;
       FillColor = Brushes.White;
       StrokeColor = Brushes.Black;
+    }
+
+    private void OnShutdownStarted(object sender, EventArgs e)
+    {
+      _weatherInformer.Close();
     }
 
     public static readonly DependencyProperty ShowProperty = DependencyProperty.Register("Show", typeof(ShowWhat), typeof(WeatherPresenter), null);

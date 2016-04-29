@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-using System.Threading;
-using System.Windows.Threading;
-
-using WatiN.Core;
-using WatiN.Core.DialogHandlers;
-using W = WatiN.Core.Comparers;
-using System.Net;
-using System.IO;
 using System.Xml;
 
 namespace weather
