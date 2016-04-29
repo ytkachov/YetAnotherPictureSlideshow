@@ -45,7 +45,9 @@ namespace weather
       _reader.Start();
     }
 
-    public virtual void close()
+    public abstract int release();
+
+    protected virtual void close()
     {
       _exit.Set();
     }

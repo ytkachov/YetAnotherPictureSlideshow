@@ -6,22 +6,40 @@ using System.Threading;
 using System.Windows.Threading;
 
 using WatiN.Core;
-using WatiN.Core.DialogHandlers;
-using W = WatiN.Core.Comparers;
 
 namespace weather
 {
   class WeatherProviderNSU : WeatherProviderBase
   {
+    private static IWeatherProvider _self = null;
+    private static int _refcounter = 0;
+
     private bool _succeeded = false;
     private int _temperature = 0;
     private IE browser_;
 
-    public WeatherProviderNSU()
+    private WeatherProviderNSU()
     {
     }
 
-    public override void close()
+    public static IWeatherProvider get()
+    {
+      if (_self == null)
+        _self = new WeatherProviderNSU();
+
+      _refcounter++;
+      return _self;
+    }
+
+    public override int release()
+    {
+      if (--_refcounter == 0)
+        close();
+
+      return _refcounter;
+    }
+
+    protected override void close()
     {
       base.close();
 

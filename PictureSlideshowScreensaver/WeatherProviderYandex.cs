@@ -41,8 +41,28 @@ namespace weather
       { "ovc_+sn",    WeatherType.OvercastRainyStorm }
     };
 
-    public WeatherProviderYandex()
+    private static IWeatherProvider _self = null;
+    private static int _refcounter = 0;
+
+    private WeatherProviderYandex()
     {
+    }
+
+    public static IWeatherProvider get()
+    {
+      if (_self == null)
+        _self = new WeatherProviderYandex();
+
+      _refcounter++;
+      return _self;
+    }
+
+    public override int release()
+    {
+      if (--_refcounter == 0)
+        close();
+
+      return _refcounter;
     }
 
     protected override void readdata()

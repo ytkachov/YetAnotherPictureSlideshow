@@ -53,8 +53,28 @@ namespace weather
       { "tstorms",        WeatherType.OvercastLightningRainy }
     };
 
-    public WeatherProviderWU()
+    private static IWeatherProvider _self = null;
+    private static int _refcounter = 0;
+
+    private WeatherProviderWU()
     {
+    }
+
+    public static IWeatherProvider get()
+    {
+      if (_self == null)
+        _self = new WeatherProviderWU();
+
+      _refcounter++;
+      return _self;
+    }
+
+    public override int release()
+    {
+      if (--_refcounter == 0)
+        close();
+
+      return _refcounter;
     }
 
     protected override void readdata()

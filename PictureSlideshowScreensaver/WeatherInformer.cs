@@ -85,8 +85,9 @@ namespace informers
   {
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
-    private static IWeatherProvider _yandex_weather = new WeatherProviderYandex();
-    private IWeatherProvider _curr_temp_provider = new WeatherProviderNSU();
+    private static IWeatherProvider _yandex_weather = WeatherProviderYandex.get();
+    private IWeatherProvider _curr_temp_provider = WeatherProviderNSU.get();
+
     private IWeatherProvider _forecast_provider = null;
 
     private bool _weather_status = false;
@@ -198,8 +199,8 @@ namespace informers
 
     public void Close()
     {
-      _curr_temp_provider.close();
-      _forecast_provider.close();
+      _curr_temp_provider.release();
+      _forecast_provider.release();
     }
 
     // INotifyPropertyChanged
