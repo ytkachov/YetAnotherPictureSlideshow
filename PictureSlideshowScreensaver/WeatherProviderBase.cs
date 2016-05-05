@@ -11,19 +11,19 @@ namespace weather
   {
     object _lock = new object();
 
-    private double _temperature_low;
-    private double _temperature_high;
-    public double _pressure;
-    public double _humidity;
-    public double _wind_speed;
-    public WindDirection _wind_direction;
-    public WeatherType _character;
+    private double? _temperature_low = null;
+    private double? _temperature_high = null;
+    public double? _pressure = null;
+    public double? _humidity = null;
+    public double? _wind_speed = null;
+    public WindDirection _wind_direction = WindDirection.Undefined;
+    public WeatherType _character = WeatherType.Undefined;
 
-    public double TemperatureLow { get { lock (_lock) { return _temperature_low; } } set { lock (_lock) { _temperature_low = value; } } }
-    public double TemperatureHigh { get { lock (_lock) { return _temperature_high; } } set { lock (_lock) { _temperature_high = value; } } }
-    public double Pressure { get { lock (_lock) { return _pressure; } } set { lock (_lock) { _pressure = value; } } }
-    public double Humidity { get { lock (_lock) { return _humidity; } } set { lock (_lock) { _humidity = value; } } }
-    public double WindSpeed { get { lock (_lock) { return _wind_speed; } } set { lock (_lock) { _wind_speed = value; } } }
+    public double? TemperatureLow { get { lock (_lock) { return _temperature_low; } } set { lock (_lock) { _temperature_low = value; } } }
+    public double? TemperatureHigh { get { lock (_lock) { return _temperature_high; } } set { lock (_lock) { _temperature_high = value; } } }
+    public double? Pressure { get { lock (_lock) { return _pressure; } } set { lock (_lock) { _pressure = value; } } }
+    public double? Humidity { get { lock (_lock) { return _humidity; } } set { lock (_lock) { _humidity = value; } } }
+    public double? WindSpeed { get { lock (_lock) { return _wind_speed; } } set { lock (_lock) { _wind_speed = value; } } }
     public WindDirection WindDirection { get { lock (_lock) { return _wind_direction; } } set { lock (_lock) { _wind_direction = value; } } }
     public WeatherType WeatherType { get { lock (_lock) { return _character; } } set { lock (_lock) { _character = value; } } }
   }
@@ -37,6 +37,7 @@ namespace weather
     protected Object _locker = new Object();
     protected Dictionary<WeatherPeriod, weather> _weather = new Dictionary<WeatherPeriod, weather>();
     protected XmlNamespaceManager _nsmgr;
+    protected string _error_descr = "";
 
     public WeatherProviderBase()
     {
@@ -52,19 +53,24 @@ namespace weather
       _exit.Set();
     }
 
+    public virtual string get_error_description()
+    {
+      return _error_descr;
+    }
+
     public virtual bool get_temperature(WeatherPeriod period, out double temp_l, out double temp_h)
     {
       lock (_locker)
       {
-        if (_weather.ContainsKey(period))
+        if (_weather.ContainsKey(period) && _weather[period].TemperatureLow != null)
         {
-          temp_l = _weather[period].TemperatureLow;
-          temp_h = _weather[period].TemperatureHigh;
+          temp_l = (double)_weather[period].TemperatureLow;
+          temp_h = (double)(_weather[period].TemperatureHigh ?? _weather[period].TemperatureLow);
           return true;
         }
 
         temp_l = temp_h = 0.0;
-        return true;
+        return false;
       }
     }
 
@@ -72,14 +78,14 @@ namespace weather
     {
       lock (_locker)
       {
-        if (_weather.ContainsKey(period))
+        if (_weather.ContainsKey(period) && _weather[period].Pressure != null)
         {
-          pressure = _weather[period].Pressure;
+          pressure = (double)_weather[period].Pressure;
           return true;
         }
 
         pressure = 0.0;
-        return true;
+        return false;
       }
     }
 
@@ -87,14 +93,14 @@ namespace weather
     {
       lock (_locker)
       {
-        if (_weather.ContainsKey(period))
+        if (_weather.ContainsKey(period) && _weather[period].Humidity != null)
         {
-          hum = _weather[period].Humidity;
+          hum = (double)_weather[period].Humidity;
           return true;
         }
 
         hum = 0.0;
-        return true;
+        return false;
       }
     }
 
@@ -102,16 +108,16 @@ namespace weather
     {
       lock (_locker)
       {
-        if (_weather.ContainsKey(period))
+        if (_weather.ContainsKey(period) && _weather[period].WindSpeed != null)
         {
           direction = _weather[period].WindDirection;
-          speed = _weather[period].WindSpeed;
+          speed = (double)_weather[period].WindSpeed;
           return true;
         }
 
         direction = WindDirection.Undefined;
         speed = 0.0;
-        return true;
+        return false;
       }
     }
 

@@ -75,6 +75,7 @@ namespace weather
     bool get_humidity(WeatherPeriod time, out double hum);
     bool get_wind(WeatherPeriod time, out WindDirection direction, out double speed);
     bool get_character(WeatherPeriod time, out WeatherType type);
+    string get_error_description();
     int release();
   }
 }
