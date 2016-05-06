@@ -24,6 +24,7 @@
         <ResourceDictionary Source="res/overcast_snowy.xaml"/>
         <ResourceDictionary Source="res/overcast_snowy_storm.xaml"/>
         <ResourceDictionary Source="res/partly_cloudy_d.xaml"/>
+        <ResourceDictionary Source="res/wd_E.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </Application.Resources>
