@@ -46,14 +46,14 @@
           <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
           </Grid.RowDefinitions>
 
           <presenters:WeatherPresenter x:Name="W_N0" WeatherPeriod="TodayMorning" Show="TemperatureRange" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" BorderColor="DarkRed" Grid.Row="0" Grid.Column="1"/>
+<!--          
           <presenters:WeatherPresenter x:Name="W_N1" WeatherPeriod="TodayDay" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="1" Grid.Column="1"/>
           <presenters:WeatherPresenter x:Name="W_N2" WeatherPeriod="TodayEvening" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="2" Grid.Column="1"/>
           <presenters:WeatherPresenter x:Name="W_N3" WeatherPeriod="TodayNight" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="3" Grid.Column="1" Margin="2,0,-2,0"/>
+-->          
         </Grid>
       </StackPanel>
     </DockPanel>

@@ -37,11 +37,33 @@ namespace informers
       { WeatherType.OvercastSnowyStorm,     new string [] { "wt_overcast_snowy_storm", "wt_overcast_snowy_storm" } },
       { WeatherType.Undefined,              new string [] { "undefined", "undefined" } }
     };
+
+    static public Dictionary<WindDirection, string> wind_direction_to_picture = new Dictionary<WindDirection, string>()
+    {
+      { WindDirection.Undefined,    "wd_udefined" },
+      { WindDirection.N,            "wd_N"    },
+      { WindDirection.NNE,          "wd_NNE"  },
+      { WindDirection.NE,           "wd_NE"   }, 
+      { WindDirection.ENE,          "wd_ENE"  },
+      { WindDirection.E,            "wd_E"    },  
+      { WindDirection.ESE,          "wd_ESE"  },
+      { WindDirection.SE,           "wd_SE"   }, 
+      { WindDirection.SSE,          "wd_SSE"  },
+      { WindDirection.S,            "wd_S"    },  
+      { WindDirection.SSW,          "wd_SSW"  },
+      { WindDirection.SW,           "wd_SW"   }, 
+      { WindDirection.WSW,          "wd_WSW"  },
+      { WindDirection.W,            "wd_W"    },   
+      { WindDirection.WNW,          "wd_WNW"  },
+      { WindDirection.NW,           "wd_NW"   }, 
+      { WindDirection.NNW,          "wd_NNW"  }
+    };
+
   }
 
   public class WeatherToPicture : MarkupExtension, IValueConverter
   {
-    public string UseColor{ get; set; }
+    public string UseColor { get; set; }
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       if (value == null)
@@ -62,11 +84,35 @@ namespace informers
     }
   }
 
+  public class WindDirectionToPicture : MarkupExtension, IValueConverter
+  {
+    public string UseColor { get; set; }
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      if (value == null)
+        return null;
+
+      WindDirection wd = (WindDirection)value;
+      return Application.Current.TryFindResource(weatherformatter.wind_direction_to_picture[wd]) as Canvas;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+      return this;
+    }
+  }
+
   public class WeatherStatusToOpacity : MarkupExtension, IValueConverter
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       bool ws = (bool)value;
+      // return 1;
       return ws ? 1 : 0;
     }
 
@@ -85,10 +131,8 @@ namespace informers
   {
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
-    private static IWeatherProvider _yandex_weather = WeatherProviderYandex.get();
     private IWeatherProvider _curr_temp_provider = WeatherProviderNSU.get();
-
-    private IWeatherProvider _forecast_provider = null;
+    private IWeatherProvider _forecast_provider = WeatherProviderYandex.get();
 
     private bool _weather_status = false;
     private double _temperature = 0.0, _temperature_low, _temperature_high;
@@ -133,9 +177,6 @@ namespace informers
 
     public WeatherInformer()
     {
-      // _curr_temp_provider = _yandex_weather;
-      _forecast_provider = _yandex_weather;
-
       _weatherTick.Tick += new EventHandler(weather_Tick);
       _weatherTick.Interval = TimeSpan.FromSeconds(5.0);
       _weatherTick.Start();
@@ -149,8 +190,8 @@ namespace informers
     private void update_Weather()
     {
       update_Temperature(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_Pressure(_forecast_provider, Weather_Period);
-      update_Weather(_forecast_provider, Weather_Period);
+      update_Pressure(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
+      update_Weather(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
     }
 
     private void update_Weather(IWeatherProvider provider, WeatherPeriod period)

@@ -26,50 +26,50 @@ namespace weather
 
     static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
-      { "sunshine_light_rain_day",            WeatherType.CloudyPartlyRainy },
-      { "sunshine_light_snow_day",            WeatherType.CloudyPartlyRainy },
-      { "sunshine_rain_day",                  WeatherType.CloudyPartlyRainy },
-      { "sunshine_none_day",                  WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_rain_day",             WeatherType.CloudyPartlyRainy },
+      { "sunshine_light_rain_day",            WeatherType.ClearPartlyRainy },
+      { "sunshine_light_snow_day",            WeatherType.ClearPartlySnowy },
+      { "sunshine_rain_day",                  WeatherType.ClearRainy },
+      { "sunshine_none_day",                  WeatherType.Clear },
+      { "partly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_snow_day",             WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_light_snow_day",       WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_none_day",             WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_rain_day",             WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_snow_day",             WeatherType.CloudySnowy },
+      { "partly_cloudy_light_snow_day",       WeatherType.CloudyPartlySnowy },
+      { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
+      { "partly_cloudy_none_day",             WeatherType.PartlyCloudy},
+      { "mostly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_snow_day",             WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_light_snow_day",       WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_thunderstorm_day",     WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_none_day",             WeatherType.CloudyPartlyRainy },
-      { "cloudy_rain_day",                    WeatherType.CloudyPartlyRainy },
-      { "cloudy_light_rain_day",              WeatherType.CloudyPartlyRainy },
-      { "cloudy_snow_day",                    WeatherType.CloudyPartlyRainy },
-      { "cloudy_light_snow_day",              WeatherType.CloudyPartlyRainy },
-      { "cloudy_thunderstorm_day",            WeatherType.CloudyPartlyRainy },
-      { "cloudy_none_day",                    WeatherType.CloudyPartlyRainy },
-      { "sunshine_light_rain_night",          WeatherType.CloudyPartlyRainy },
-      { "sunshine_light_snow_night",          WeatherType.CloudyPartlyRainy },
-      { "sunshine_none_night",                WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_rain_night",           WeatherType.CloudyPartlyRainy },
+      { "mostly_cloudy_snow_day",             WeatherType.CloudySnowy },
+      { "mostly_cloudy_light_snow_day",       WeatherType.CloudyPartlySnowy },
+      { "mostly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
+      { "mostly_cloudy_none_day",             WeatherType.Cloudy },
+      { "cloudy_rain_day",                    WeatherType.OvercastRainy },
+      { "cloudy_light_rain_day",              WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_day",                    WeatherType.OvercastSnowy },
+      { "cloudy_light_snow_day",              WeatherType.OvercastPartlySnowy },
+      { "cloudy_thunderstorm_day",            WeatherType.OvercastLightningRainy },
+      { "cloudy_none_day",                    WeatherType.Overcast },
+      { "sunshine_light_rain_night",          WeatherType.ClearPartlyRainy },
+      { "sunshine_light_snow_night",          WeatherType.ClearPartlySnowy },
+      { "sunshine_rain_night",                WeatherType.ClearRainy },
+      { "sunshine_none_night",                WeatherType.Clear },
+      { "partly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_snow_night",           WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_light_snow_night",     WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyPartlyRainy },
-      { "partly_cloudy_none_night",           WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_rain_night",           WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_snow_night",           WeatherType.CloudySnowy },
+      { "partly_cloudy_light_snow_night",     WeatherType.CloudyPartlySnowy },
+      { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
+      { "partly_cloudy_none_night",           WeatherType.PartlyCloudy},
+      { "mostly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_snow_night",           WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_light_snow_night",     WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_thunderstorm_night",   WeatherType.CloudyPartlyRainy },
-      { "mostly_cloudy_none_night",           WeatherType.CloudyPartlyRainy },
-      { "cloudy_rain_night",                  WeatherType.CloudyPartlyRainy },
-      { "cloudy_light_rain_night",            WeatherType.CloudyPartlyRainy },
-      { "cloudy_snow_night",                  WeatherType.CloudyPartlyRainy },
-      { "cloudy_light_snow_night",            WeatherType.CloudyPartlyRainy },
-      { "cloudy_thunderstorm_night",          WeatherType.CloudyPartlyRainy },
-      { "cloudy_none_night",                  WeatherType.CloudyPartlyRainy },
-      { "sunshine_rain_night",                WeatherType.CloudyPartlyRainy }
+      { "mostly_cloudy_snow_night",           WeatherType.CloudySnowy },
+      { "mostly_cloudy_light_snow_night",     WeatherType.CloudyPartlySnowy },
+      { "mostly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
+      { "mostly_cloudy_none_night",           WeatherType.Cloudy },
+      { "cloudy_rain_night",                  WeatherType.OvercastRainy },
+      { "cloudy_light_rain_night",            WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_night",                  WeatherType.OvercastSnowy },
+      { "cloudy_light_snow_night",            WeatherType.OvercastPartlySnowy },
+      { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
+      { "cloudy_none_night",                  WeatherType.Overcast }
     };
     private IE browser_;
 
@@ -108,10 +108,20 @@ namespace weather
     {
       Settings.AutoMoveMousePointerToTopLeft = false;
       Settings.MakeNewIeInstanceVisible = false;
-      browser_ = new IE();
 
       while (true)
       {
+        try
+        {
+        if (browser_ == null)
+          browser_ = new IE();
+        }
+        catch (Exception e)
+        {
+          _error_descr = e.Message;
+          continue;
+        }
+
         lock (_locker)
         {
           _weather.Clear();
@@ -122,6 +132,7 @@ namespace weather
         if (!_succeeded)
           read_nsu_current_temp(w);
 
+        _weather[WeatherPeriod.Now] = w;
         if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
           break;
       }
@@ -179,98 +190,124 @@ namespace weather
       {
         browser_.GoTo("http://pogoda.ngs.ru/academgorodok");
 
-        Div curr = browser_.Div(Find.ByClass("today-panel__info__main__item first"));
-        if (!curr.Exists)
+
+        Div info = browser_.Div(Find.ByClass("today-panel__info"));
+        if (!info.Exists)
         {
-          _error_descr = "incorrect structure 0";
+          _error_descr = "incorrect structure";
           success = false;
         }
         else
         {
-          // temperature
-          Span temp = browser_.Span(Find.ByClass("value__main"));
+          // weather character
+          ElementCollection divs = ((IElementContainer)info).Elements;
+          foreach (Element e in divs)
+          {
+            string class_name = "icon-weather-big ";
+            if (e.TagName.Equals("div", StringComparison.InvariantCultureIgnoreCase) && e.ClassName.StartsWith(class_name))
+            {
+              string wt = e.ClassName.Substring(class_name.Length);
+              w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
+
+              break;
+            }
+          }
+
+          // < div class="icon-weather-big sunshine_none_day"></div>
+
+          Div curr = browser_.Div(Find.ByClass("today-panel__info__main__item first"));
           if (!curr.Exists)
+          {
+            _error_descr = "incorrect structure 0";
             success = false;
+          }
           else
           {
-            string st = temp.Text;
-            if (string.IsNullOrEmpty(st))
-            {
-              _error_descr = "incorrect structure 1";
+            // temperature
+            Span temp = browser_.Span(Find.ByClass("value__main"));
+            if (!curr.Exists)
               success = false;
-            }
             else
             {
-              st = st.Replace(',', '.');
-              double t = double.Parse(st);
-              lock (_locker)
+              string st = temp.Text;
+              if (string.IsNullOrEmpty(st))
               {
-                w.TemperatureHigh = w.TemperatureLow = t;
+                _error_descr = "incorrect structure 1";
+                success = false;
+              }
+              else
+              {
+                st = st.Replace(',', '.');
+                double t = double.Parse(st);
+                lock (_locker)
+                {
+                  w.TemperatureHigh = w.TemperatureLow = t;
+                }
               }
             }
-          }
 
-          ElementCollection dls = curr.ElementsWithTag("dl");
-          if (dls.Count != 3)
-          {
-            _error_descr = "incorrect structure 2";
-            success = false;
-          }
-          {
-            // wind
-            ElementCollection elements = ((IElementContainer)dls[0]).Elements;
-            foreach (Element e in elements)
+            ElementCollection dls = curr.ElementsWithTag("dl");
+            if (dls.Count != 3)
             {
-              string class_name = "icon-small icon-wind-";
-              if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-              {
-                string wind = e.Text.TrimStart(' ');
-                double ws;
-                if (!double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
-                  ws = 0.0;
-
-                w.WindSpeed = ws;
-              }
-              else if (e.TagName.Equals("i", StringComparison.InvariantCultureIgnoreCase) && e.ClassName.StartsWith(class_name))
-              {
-                string wd = e.ClassName.Substring(class_name.Length);
-                w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
-              }
+              _error_descr = "incorrect structure 2";
+              success = false;
             }
-
-            // pressure
-            elements = ((IElementContainer)dls[1]).Elements;
-            foreach (Element e in elements)
             {
-              if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-              {
-                double p;
-                string wind = e.Text.TrimStart(' ');
-                if (!double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out p))
-                  p = 0.0;
 
-                w.Pressure = p;
+              // wind
+              ElementCollection elements = ((IElementContainer)dls[0]).Elements;
+              foreach (Element e in elements)
+              {
+                string class_name = "icon-small icon-wind-";
+                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
+                {
+                  string wind = e.Text.TrimStart(' ');
+                  double ws;
+                  if (!double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
+                    ws = 0.0;
+
+                  w.WindSpeed = ws;
+                }
+                else if (e.TagName.Equals("i", StringComparison.InvariantCultureIgnoreCase) && e.ClassName.StartsWith(class_name))
+                {
+                  string wd = e.ClassName.Substring(class_name.Length);
+                  w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
+                }
+              }
+
+              // pressure
+              elements = ((IElementContainer)dls[1]).Elements;
+              foreach (Element e in elements)
+              {
+                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
+                {
+                  double p;
+                  string pressure = e.Text.TrimStart(' ');
+                  if (!double.TryParse(pressure.Substring(0, pressure.IndexOf(' ')), out p))
+                    p = 0.0;
+
+                  w.Pressure = p;
+                }
+              }
+
+              // humidity
+              elements = ((IElementContainer)dls[2]).Elements;
+              foreach (Element e in elements)
+              {
+                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
+                {
+                  double h;
+                  string humidity = e.Text.TrimStart(' ');
+                  if (!double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+                    h = 0.0;
+
+                  w.Humidity = h;
+                }
               }
             }
 
-            // humidity
-            elements = ((IElementContainer)dls[2]).Elements;
-            foreach (Element e in elements)
-            {
-              if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-              {
-                double h;
-                string wind = e.Text.TrimStart(' ');
-                if (!double.TryParse(wind.Substring(0, wind.IndexOf('%', ' ')), out h))
-                  h = 0.0;
-
-                w.Humidity = h;
-              }
-            }
           }
-
         }
-
       }
       catch (Exception e)
       {

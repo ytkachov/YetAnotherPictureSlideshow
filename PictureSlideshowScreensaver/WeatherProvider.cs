@@ -48,6 +48,9 @@ namespace weather
   {
     Undefined,
     Clear,                  // ясно
+    ClearPartlyRainy,       // ясно, временами небольшой дождь
+    ClearPartlySnowy,       // ясно, временами небольшой снег
+    ClearRainy,             // ясно, дождь
     PartlyCloudy,           // + легкая облачность
     Cloudy,                 // + облачно с прояснениями
     CloudyPartlyRainy,      // + облачно, небольшой дождь
@@ -56,6 +59,7 @@ namespace weather
     CloudySnowy,            // + облачность, снег 
     CloudyRainyStorm,       // + ливень  
     CloudySnowyStorm,       // + сильный снег
+    CloudyLightningRainy,   // облачно, гроза
     Overcast,               // + пасмурно
     OvercastPartlyRainy,    // + пасмурно, временами дождь
     OvercastPartlySnowy,    // + пасмурно, временами снег
