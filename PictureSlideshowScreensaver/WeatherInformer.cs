@@ -93,8 +93,8 @@ namespace informers
         return null;
 
       WindDirection wd = (WindDirection)value;
-      // return Application.Current.TryFindResource(weatherformatter.wind_direction_to_picture[wd]) as Canvas;
-      return Application.Current.TryFindResource("wd_E") as Canvas;
+      return Application.Current.TryFindResource(weatherformatter.wind_direction_to_picture[wd]) as Canvas;
+      //return Application.Current.TryFindResource("wd_E") as Canvas;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

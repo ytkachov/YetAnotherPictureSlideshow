@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Canvas x:Key="wd_SSW" Width="141" Height="141">
+    <Canvas.RenderTransform>
+      <TranslateTransform X="0" Y="0"/>
+    </Canvas.RenderTransform>
+    <Canvas.Resources/>
+    <!--Unknown tag: sodipodi:namedview-->
+    <!--Unknown tag: metadata-->
+    <Canvas Name="layer1">
+      <Canvas.RenderTransform>
+        <TranslateTransform X="0" Y="-910.62989"/>
+      </Canvas.RenderTransform>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path696" Fill="#FFFCFFFF" StrokeThickness="1.625" Stroke="#FF000000" StrokeMiterLimit="4">
+        <Path.Data>
+          <PathGeometry Figures="m 40.790379 1025.3455 c -2.457961 -1.5484 -3.197786 -4.8068 -1.649363 -7.2649 l 36.476085 -57.90398 -19.127664 -12.04929 42.062967 -9.54336 9.556016 42.06025 -19.12769 -12.04931 -36.476085 57.90399 c -1.548423 2.4581 -4.814568 3.193 -7.264855 1.6495 z m 16.163676 3.9563 33.66836 -53.4469 20.045525 12.62749 c 1.22898 0.77418 2.85184 0.40572 3.62603 -0.82327 0.38712 -0.61454 0.49873 -1.32651 0.34919 -1.98577 l -11.53739 -50.81624 c -0.14954 -0.65926 -0.54508 -1.25613 -1.16742 -1.64817 -0.63002 -0.39687 -1.33902 -0.4958 -1.998397 -0.34611 L 49.12364 944.39995 c -0.651486 0.15466 -1.253122 0.55795 -1.640241 1.17248 -0.77419 1.22899 -0.397909 2.85679 0.831072 3.63098 l 20.037643 12.62252 -33.66836 53.44687 c -3.096846 4.9161 -1.620153 11.4203 3.303783 14.5221 l 4.44941 2.8028 c 4.923784 3.1017 11.420262 1.6202 14.517108 -3.2959" FillRule="nonzero"/>
+        </Path.Data>
+      </Path>
+    </Canvas>
+  </Canvas>
+</ResourceDictionary>

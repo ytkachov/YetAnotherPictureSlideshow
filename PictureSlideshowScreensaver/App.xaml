@@ -24,7 +24,22 @@
         <ResourceDictionary Source="res/overcast_snowy.xaml"/>
         <ResourceDictionary Source="res/overcast_snowy_storm.xaml"/>
         <ResourceDictionary Source="res/partly_cloudy_d.xaml"/>
+        <ResourceDictionary Source="res/wd_N.xaml"/>
         <ResourceDictionary Source="res/wd_E.xaml"/>
+        <ResourceDictionary Source="res/wd_S.xaml"/>
+        <ResourceDictionary Source="res/wd_W.xaml"/>
+        <ResourceDictionary Source="res/wd_NE.xaml"/>
+        <ResourceDictionary Source="res/wd_SE.xaml"/>
+        <ResourceDictionary Source="res/wd_SW.xaml"/>
+        <ResourceDictionary Source="res/wd_NW.xaml"/>
+        <ResourceDictionary Source="res/wd_NNE.xaml"/>
+        <ResourceDictionary Source="res/wd_ENE.xaml"/>
+        <ResourceDictionary Source="res/wd_ESE.xaml"/>
+        <ResourceDictionary Source="res/wd_SSE.xaml"/>
+        <ResourceDictionary Source="res/wd_SSW.xaml"/>
+        <ResourceDictionary Source="res/wd_WSW.xaml"/>
+        <ResourceDictionary Source="res/wd_WNW.xaml"/>
+        <ResourceDictionary Source="res/wd_NNW.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </Application.Resources>
