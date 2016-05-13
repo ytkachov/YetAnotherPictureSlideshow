@@ -6,6 +6,7 @@
              xmlns:CustomControls="clr-namespace:CustomControls"
              xmlns:informers="clr-namespace:informers"
              xmlns:presenters="clr-namespace:presenters"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300"
              >
@@ -24,7 +25,9 @@
     </Border>
     <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
       <StackPanel Orientation="Horizontal">
-        <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
+        <Viewbox x:Name="WD" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{c:Binding PictureSize * 0.75}" Stretch="Uniform">
+          <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
+        </Viewbox>
         <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Weather.WindSpeed}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
         <CustomControls:OutlinedTextBlock x:Name="WS_Scale"  Text="м/с" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
       </StackPanel>

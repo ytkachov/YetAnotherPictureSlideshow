@@ -137,6 +137,9 @@ namespace informers
 
     private bool _weather_status = false;
     private double _temperature = 0.0, _temperature_low, _temperature_high;
+    private double _wind_speed = 0.0;
+    private WindDirection _wind_direction = WindDirection.Undefined;
+    private double _humidity = 0.0;
     private WeatherType _weather_type = WeatherType.Undefined;
     private double _pressure = 0.0;
 
@@ -168,6 +171,9 @@ namespace informers
 
     public bool Weather_Status { get { return _weather_status; } set { _weather_status = value; RaisePropertyChanged("Weather_Status"); } }
     public double Pressure { get { return _pressure; } set { _pressure = value; RaisePropertyChanged("Pressure"); } }
+    public double Humidity { get { return _humidity; } set { _humidity = value; RaisePropertyChanged("Humidity"); } }
+    public double WindSpeed { get { return _wind_speed; } set { _wind_speed = value; RaisePropertyChanged("WindSpeed"); } }
+    public WindDirection WindDirection { get { return _wind_direction; } set { _wind_direction = value; RaisePropertyChanged("WindDirection"); } }
     public WeatherType Weather { get { return _weather_type; } set { _weather_type = value; RaisePropertyChanged("Weather"); } }
 
     private void RaisePropertyChanged(string propertyName)
@@ -192,6 +198,8 @@ namespace informers
     {
       update_Temperature(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
       update_Pressure(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
+      update_Wind(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
+      update_Humidity(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
       update_Weather(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
     }
 
@@ -231,6 +239,36 @@ namespace informers
       if (provider.get_pressure(period, out press))
       {
         Pressure = press;
+        Weather_Status = true;
+      }
+      else
+      {
+        Weather_Status = false;
+      }
+    }
+
+    private void update_Humidity(IWeatherProvider provider, WeatherPeriod period)
+    {
+      double hum;
+      if (provider.get_humidity(period, out hum))
+      {
+        Humidity = hum;
+        Weather_Status = true;
+      }
+      else
+      {
+        Weather_Status = false;
+      }
+    }
+
+    private void update_Wind(IWeatherProvider provider, WeatherPeriod period)
+    {
+      double ws;
+      WindDirection wd;
+      if (provider.get_wind(period, out wd, out ws))
+      {
+        WindDirection = wd;
+        WindSpeed = ws;
         Weather_Status = true;
       }
       else
