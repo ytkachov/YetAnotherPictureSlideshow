@@ -1,0 +1,98 @@
+<response>
+<version>0.1</version>
+<termsofService>
+http://www.wunderground.com/weather/api/d/terms.html
+</termsofService>
+<features>
+<feature>conditions</feature>
+</features>
+<current_observation>
+<image>
+<url>http://icons.wxug.com/graphics/wu2/logo_130x80.png</url>
+<title>Weather Underground</title>
+<link>http://www.wunderground.com</link>
+</image>
+<display_location>
+<full>Novosibirsk, Russia</full>
+<city>Novosibirsk</city>
+<state/>
+<state_name>Russia</state_name>
+<country>RS</country>
+<country_iso3166>RU</country_iso3166>
+<zip>00000</zip>
+<magic>3</magic>
+<wmo>29638</wmo>
+<latitude>54.850000</latitude>
+<longitude>83.110000</longitude>
+<elevation>145.00000000</elevation>
+</display_location>
+<observation_location>
+<full>Tolmachevo,</full>
+<city>Tolmachevo</city>
+<state/>
+<country>RS</country>
+<country_iso3166>RU</country_iso3166>
+<latitude>55.01259995</latitude>
+<longitude>82.65070343</longitude>
+<elevation>364 ft</elevation>
+</observation_location>
+<estimated></estimated>
+<station_id>UNNT</station_id>
+<observation_time>Last Updated on May 11, 10:30 AM NOVT</observation_time>
+<observation_time_rfc822>Wed, 11 May 2016 10:30:00 +0600</observation_time_rfc822>
+<observation_epoch>1462941000</observation_epoch>
+<local_time_rfc822>Wed, 11 May 2016 11:01:39 +0600</local_time_rfc822>
+<local_epoch>1462942899</local_epoch>
+<local_tz_short>NOVT</local_tz_short>
+<local_tz_long>Asia/Novosibirsk</local_tz_long>
+<local_tz_offset>+0600</local_tz_offset>
+<weather>Light Rain Showers</weather>
+<temperature_string>46 F (8 C)</temperature_string>
+<temp_f>46</temp_f>
+<temp_c>8</temp_c>
+<relative_humidity>71%</relative_humidity>
+<wind_string>From the SW at 18 MPH Gusting to 29 MPH</wind_string>
+<wind_dir>SW</wind_dir>
+<wind_degrees>220</wind_degrees>
+<wind_mph>18</wind_mph>
+<wind_gust_mph>29</wind_gust_mph>
+<wind_kph>29</wind_kph>
+<wind_gust_kph>47</wind_gust_kph>
+<pressure_mb>1005</pressure_mb>
+<pressure_in>29.68</pressure_in>
+<pressure_trend>0</pressure_trend>
+<dewpoint_string>37 F (3 C)</dewpoint_string>
+<dewpoint_f>37</dewpoint_f>
+<dewpoint_c>3</dewpoint_c>
+<heat_index_string>NA</heat_index_string>
+<heat_index_f>NA</heat_index_f>
+<heat_index_c>NA</heat_index_c>
+<windchill_string>39 F (4 C)</windchill_string>
+<windchill_f>39</windchill_f>
+<windchill_c>4</windchill_c>
+<feelslike_string>39 F (4 C)</feelslike_string>
+<feelslike_f>39</feelslike_f>
+<feelslike_c>4</feelslike_c>
+<visibility_mi>6.2</visibility_mi>
+<visibility_km>10.0</visibility_km>
+<solarradiation/>
+<UV>2</UV>
+<precip_1hr_string>-9999.00 in (-9999.00 mm)</precip_1hr_string>
+<precip_1hr_in>-9999.00</precip_1hr_in>
+<precip_1hr_metric>-9999.00</precip_1hr_metric>
+<precip_today_string>0.00 in (0.0 mm)</precip_today_string>
+<precip_today_in>0.00</precip_today_in>
+<precip_today_metric>0.0</precip_today_metric>
+<icon>rain</icon>
+<icon_url>http://icons.wxug.com/i/c/k/rain.gif</icon_url>
+<forecast_url>
+http://www.wunderground.com/global/stations/29638.html
+</forecast_url>
+<history_url>
+http://www.wunderground.com/history/airport/UNNT/2016/5/11/DailyHistory.html
+</history_url>
+<ob_url>
+http://www.wunderground.com/cgi-bin/findweather/getForecast?query=55.01259995,82.65070343
+</ob_url>
+</current_observation>
+</response>
