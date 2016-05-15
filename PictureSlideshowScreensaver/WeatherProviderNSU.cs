@@ -15,6 +15,26 @@ namespace weather
     private static int _refcounter = 0;
 
     private bool _succeeded = false;
+    private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
+    {
+      public StringStartsWith()
+      {
+      }
+
+      public string startswith { get; set; }
+
+      public override bool Compare(string V)
+      {
+        return V != null && V.StartsWith(startswith);
+      }
+    }
+
+    static Dictionary<string, WeatherPeriod>[] _day_periods = new Dictionary<string, WeatherPeriod>[3]
+    {
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TodayNight },            { "утро", WeatherPeriod.TodayMorning },            { "день", WeatherPeriod.TodayDay },            { "вечер", WeatherPeriod.TodayEvening } },
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TomorrowNight },         { "утро", WeatherPeriod.TomorrowMorning },         { "день", WeatherPeriod.TomorrowDay },         { "вечер", WeatherPeriod.TomorrowEvening } },
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.DayAfterTomorrowNight }, { "утро", WeatherPeriod.DayAfterTomorrowMorning }, { "день", WeatherPeriod.DayAfterTomorrowDay }, { "вечер", WeatherPeriod.DayAfterTomorrowEvening } }
+    };
 
     static Dictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
     {
@@ -107,7 +127,10 @@ namespace weather
     protected override void readdata()
     {
       Settings.AutoMoveMousePointerToTopLeft = false;
-      Settings.MakeNewIeInstanceVisible = false;
+      // Settings.MakeNewIeInstanceVisible = false;
+      Settings.AttachToBrowserTimeOut = 60; 
+      Settings.WaitUntilExistsTimeOut = 60;
+      Settings.WaitForCompleteTimeOut = 120;
 
       while (true)
       {
@@ -128,11 +151,15 @@ namespace weather
         }
 
         weather w = new weather();
-        read_ngs_current_weather(w);
-        if (!_succeeded)
-          read_nsu_current_temp(w);
+        read_nsu_current_temp(w);
 
+        browser_.GoTo("http://pogoda.ngs.ru/academgorodok/");
+        Thread.Sleep(1000);
+
+        read_ngs_current_weather(w);
         _weather[WeatherPeriod.Now] = w;
+        read_ngs_forecast();
+
         if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
           break;
       }
@@ -154,8 +181,7 @@ namespace weather
           if (st != null || !st.Contains("°"))
           {
             success = true;
-            int d = st.IndexOf("°");
-            double t = double.Parse(st.Substring(0, d));
+            double t = double.Parse(st.Substring(0, st.IndexOf("°")));
             lock (_locker)
             {
               w.TemperatureLow = w.TemperatureHigh = t;
@@ -181,6 +207,235 @@ namespace weather
       }
     }
 
+    private void read_ngs_forecast()
+    {
+      bool success = true;
+      _succeeded = true;
+
+      try
+      {
+        // browser_.GoTo("http://pogoda.ngs.ru/academgorodok/");
+        Table pgd_detailed = browser_.Table(Find.ByClass(new StringStartsWith() { startswith = "pgd-detailed-cards elements" }));
+        if (pgd_detailed == null || !pgd_detailed.Exists || pgd_detailed.GetAttributeValue("data-weather-cards-count") != "3forecast")
+        {
+          _error_descr = "incorrect structure";
+          success = false;
+        }
+
+        extract_3days_forecast(pgd_detailed);
+      }
+      catch (Exception e)
+      {
+        success = false;
+        _error_descr = e.Message;
+      }
+
+      finally
+      {
+        if (!success)
+        {
+          lock (_locker)
+          {
+            _succeeded = false;
+          }
+        }
+      }
+    }
+
+    private bool extract_3days_forecast(Table short_forecast)
+    {
+      TableRowCollection days = short_forecast.TableRows;
+      if (days.Count != 3)
+      {
+        _error_descr = "incorrect days number in forecast";
+        return false;
+      }
+
+      for (int day = 0; day < 3; day++)
+      {
+        TableRow tr = days[day];
+        if (!extract_day_forecast(day, tr))
+          return false;
+      }
+
+      return true;
+    }
+
+    private bool extract_day_forecast(int day, TableRow tr)
+    {
+      TableCell tc = tr.TableCell(Find.ByClass("elements__section-day"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find day " + day.ToString();
+        return false;
+      }
+
+      // check day of month
+      SpanCollection spans = tc.Spans;
+      if (spans.Count != 1)
+      {
+        _error_descr = "incorrect days in day" + day.ToString();
+        return false;
+      }
+
+      string dt = spans[0].Text;
+      int di;
+      if (!int.TryParse(dt.Substring(0, dt.IndexOf(' ')), out di))
+        di = 0;
+
+      if ((DateTime.Now + TimeSpan.FromDays(day)).Day + day != di)
+      {
+        _error_descr = "incorrect day";
+        return false;
+      }
+
+      tc = tr.TableCell(Find.ByClass("elements__section-daytime"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find date-time in day " + day.ToString();
+        return false;
+      }
+
+      DivCollection period_divs = tc.Divs;
+
+      // temperature
+      tc = tr.TableCell(Find.ByClass("elements__section-temperature"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find temperature in day " + day.ToString();
+        return false;
+      }
+      DivCollection temperature_divs = tc.Divs;
+
+      if (temperature_divs.Count != period_divs.Count)
+      {
+        _error_descr = "incorrect temperature count in day " + day.ToString();
+        return false;
+      }
+
+      // weather type
+      tc = tr.TableCell(Find.ByClass("elements__section-weather"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find weather type in day " + day.ToString();
+        return false;
+      }
+      DivCollection weather_divs = tc.Divs;
+
+      if (weather_divs.Count != period_divs.Count * 2)
+      {
+        _error_descr = "incorrect weather type count in day " + day.ToString();
+        return false;
+      }
+
+      // wind
+      tc = tr.TableCell(Find.ByClass("elements__section-wind"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find wind in day " + day.ToString();
+        return false;
+      }
+      DivCollection wind_divs = tc.Divs;
+
+      if (wind_divs.Count != period_divs.Count * 2)
+      {
+        _error_descr = "incorrect wind count in day " + day.ToString();
+        return false;
+      }
+
+      // pressure
+      tc = tr.TableCell(Find.ByClass("elements__section-pressure"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find pressure in day " + day.ToString();
+        return false;
+      }
+      DivCollection pressure_divs = tc.Divs;
+
+      if (pressure_divs.Count != period_divs.Count)
+      {
+        _error_descr = "incorrect pressure count in day " + day.ToString();
+        return false;
+      }
+
+      // humidity
+      tc = tr.TableCell(Find.ByClass("elements__section-humidity"));
+      if (!tc.Exists)
+      {
+        _error_descr = "cant find humidity in day " + day.ToString();
+        return false;
+      }
+      DivCollection humidity_divs = tc.Divs;
+
+      if (humidity_divs.Count != period_divs.Count)
+      {
+        _error_descr = "incorrect humidit count in day " + day.ToString();
+        return false;
+      }
+
+      int pcount = period_divs.Count;
+      for (int period = 0; period < pcount; period++)
+      {
+        weather w = new weather();
+
+        // weather period
+        string pname = period_divs[period].Text;
+        if (!_day_periods[day].Keys.Contains(pname))
+        {
+          _error_descr = "invalid period name";
+          return false;
+        }
+        WeatherPeriod wp = _day_periods[day][pname];
+
+        // temperature
+        string temperature_s = temperature_divs[period].Text;
+        w.TemperatureLow = w.TemperatureHigh = int.Parse(temperature_s);
+
+        // weather type
+        string cn = "icon-weather icon-weather-";
+        Element e = weather_divs[period * 2].Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
+        if (e == null || !e.Exists)
+        {
+          _error_descr = "cant find weather type";
+          return false;
+        }
+        string wt = e.ClassName.Substring(cn.Length);
+        wt = wt.Substring(0, wt.IndexOf(' '));
+        w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
+
+        // wind
+        cn = "icon-small icon-wind-";
+        e = wind_divs[period * 2].Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
+        if (e == null || !e.Exists)
+        {
+          _error_descr = "cant find wind direction";
+          return false;
+        }
+
+        string wd = e.ClassName.Substring(cn.Length);
+        wd = wd.Substring(0, wd.IndexOf(' '));
+        w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
+
+        string ws = wind_divs[period * 2].Text.TrimStart('\n', '\r', '\t', ' ');
+        ws = ws.Substring(0, ws.IndexOf(' '));
+        w.WindSpeed = int.Parse(ws);
+
+        // pressure
+        string pr = pressure_divs[period].Text.TrimStart('\n', '\r', '\t', ' ');
+        pr = pr.Substring(0, pr.IndexOf(' '));
+        w.Pressure = int.Parse(pr);
+
+        // humidity
+        string hu = humidity_divs[period].Text;
+        hu = hu.Substring(0, hu.IndexOf('%'));
+        w.Humidity = int.Parse(hu);
+
+        _weather[wp] = w;
+      }
+
+      return true;
+    }
+
     private void read_ngs_current_weather(weather w)
     {
       bool success = true;
@@ -188,9 +443,6 @@ namespace weather
 
       try
       {
-        browser_.GoTo("http://pogoda.ngs.ru/academgorodok");
-
-
         Div info = browser_.Div(Find.ByClass("today-panel__info"));
         if (!info.Exists)
         {
@@ -200,20 +452,18 @@ namespace weather
         else
         {
           // weather character
-          ElementCollection divs = ((IElementContainer)info).Elements;
-          foreach (Element e in divs)
+          string class_name = "icon-weather-big ";
+          Div icon_weather = info.Div(Find.ByClass(new StringStartsWith() { startswith = class_name }));
+          if (!icon_weather.Exists)
           {
-            string class_name = "icon-weather-big ";
-            if (e.TagName.Equals("div", StringComparison.InvariantCultureIgnoreCase) && e.ClassName.StartsWith(class_name))
-            {
-              string wt = e.ClassName.Substring(class_name.Length);
-              w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
-
-              break;
-            }
+            _error_descr = "incorrect structure";
+            success = false;
           }
-
-          // < div class="icon-weather-big sunshine_none_day"></div>
+          else
+          { 
+            string wt = icon_weather.ClassName.Substring(class_name.Length);
+            w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
+          }
 
           Div curr = browser_.Div(Find.ByClass("today-panel__info__main__item first"));
           if (!curr.Exists)
@@ -239,73 +489,68 @@ namespace weather
               {
                 st = st.Replace(',', '.');
                 double t = double.Parse(st);
-                lock (_locker)
-                {
                   w.TemperatureHigh = w.TemperatureLow = t;
-                }
               }
             }
 
-            ElementCollection dls = curr.ElementsWithTag("dl");
-            if (dls.Count != 3)
+            // wind
+            string cn = "icon-small icon-wind-";
+            string txt = curr.Text;
+            Element ei = curr.Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
+            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
             {
               _error_descr = "incorrect structure 2";
               success = false;
             }
+            else
             {
+              string wd = ei.ClassName.Substring(cn.Length);
+              w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
 
-              // wind
-              ElementCollection elements = ((IElementContainer)dls[0]).Elements;
-              foreach (Element e in elements)
+              Element edt = ei.Parent.NextSibling;
+              if (edt.TagName.ToLower() != "dt")
               {
-                string class_name = "icon-small icon-wind-";
-                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-                {
-                  string wind = e.Text.TrimStart(' ');
-                  double ws;
-                  if (!double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
-                    ws = 0.0;
-
+                _error_descr = "incorrect structure 2.1";
+                success = false;
+              }
+              else
+              {
+                string wind = edt.Text.TrimStart(' ');
+                double ws;
+                if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
                   w.WindSpeed = ws;
-                }
-                else if (e.TagName.Equals("i", StringComparison.InvariantCultureIgnoreCase) && e.ClassName.StartsWith(class_name))
-                {
-                  string wd = e.ClassName.Substring(class_name.Length);
-                  w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
-                }
-              }
-
-              // pressure
-              elements = ((IElementContainer)dls[1]).Elements;
-              foreach (Element e in elements)
-              {
-                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-                {
-                  double p;
-                  string pressure = e.Text.TrimStart(' ');
-                  if (!double.TryParse(pressure.Substring(0, pressure.IndexOf(' ')), out p))
-                    p = 0.0;
-
-                  w.Pressure = p;
-                }
-              }
-
-              // humidity
-              elements = ((IElementContainer)dls[2]).Elements;
-              foreach (Element e in elements)
-              {
-                if (e.TagName.Equals("dt", StringComparison.InvariantCultureIgnoreCase))
-                {
-                  double h;
-                  string humidity = e.Text.TrimStart(' ');
-                  if (!double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
-                    h = 0.0;
-
-                  w.Humidity = h;
-                }
               }
             }
 
+            // pressure 
+            ei = curr.Element(Find.ByClass("icon-small icon-pressure"));
+            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
+            {
+              _error_descr = "incorrect structure 2.2";
+              success = false;
+            }
+            else
+            {
+              double p;
+              string pr = ei.GetAttributeValue("title");
+              if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
+                w.Pressure = p;
+            }
+
+            // humidity
+            ei = curr.Element(Find.ByClass("icon-small icon-humidity"));
+            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
+            {
+              _error_descr = "incorrect structure 2.3";
+              success = false;
+            }
+            else
+            {
+              double h;
+              string humidity = ei.GetAttributeValue("title");
+              if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+                w.Humidity = h;
+            }
           }
         }
       }
