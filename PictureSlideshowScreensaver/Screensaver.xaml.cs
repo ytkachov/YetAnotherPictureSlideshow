@@ -435,15 +435,22 @@ namespace PictureSlideshowScreensaver
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             g.DrawImage(bitmap, 0, 0, b.Width, b.Height);
 
-            Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
-            Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
+            try
+            {
+              Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
+              Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
 
-            long detectionTime;
-            FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
+              long detectionTime;
+              FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
 
-            if (faces.Count != 0)
-              nextphoto._faces = faces;
+              if (faces.Count != 0)
+                nextphoto._faces = faces;
 
+            }
+            catch (Exception e)
+            {
+              string err = e.Message;
+            }
             //if (faces.Count != 0)
             //{
             //  System.Drawing.Pen rpen = new System.Drawing.Pen(System.Drawing.Brushes.Red, (float)3.0);
