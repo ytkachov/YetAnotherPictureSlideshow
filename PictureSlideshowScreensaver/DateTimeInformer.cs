@@ -15,7 +15,20 @@ class dateformatter
 
 namespace informers
 {
+  
+  class PhotoPropertiesInformer : INotifyPropertyChanged
+  {
+    private string _date_taken = "21/12/1997";
 
+    public string Date_Photo_Taken { get { return _date_taken; } set { _date_taken= value; RaisePropertyChanged("Date_Photo_Taken"); } }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void RaisePropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+  }
   class DateTimeInformer : INotifyPropertyChanged
   {
     private int    _time_Tick = 0;

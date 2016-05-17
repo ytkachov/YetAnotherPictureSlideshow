@@ -33,7 +33,7 @@ namespace PictureSlideshowScreensaver
   {
     public PhotoInfo(string nm) { _name = nm; }
     public string _name;
-    public DateTime _dateTaken;
+    public DateTime ? _dateTaken;
     public int _shown = 0;
     public UInt16 _orientation = 0;
     public List<System.Drawing.Rectangle> _faces = null;
@@ -123,7 +123,7 @@ namespace PictureSlideshowScreensaver
 
       for (int i = 0; i < _images.Length; i++)
       {
-        DateTime dt = _images[i]._dateTaken.Date;
+        DateTime dt = _images[i]._dateTaken == null ? DateTime.MinValue : _images[i]._dateTaken.Value.Date;
 
         if (!_imagesByDate.ContainsKey(dt))
           _imagesByDate.Add(dt, new List<int>());
@@ -342,6 +342,7 @@ namespace PictureSlideshowScreensaver
       {
         try
         {
+          PhotoProperties.Date_Photo_Taken = nextphoto._dateTaken == null ? "" : nextphoto._dateTaken.Value.ToString("dd/MM/yyyy");
           if (img1.Opacity == 0)
           {
             SetImage(img1, nextphoto);
@@ -366,7 +367,7 @@ namespace PictureSlideshowScreensaver
       }
     }
 
-    private int nxtimg = 0;
+    //private int nxtimg = 0;
     private void SetImage(Image img, PhotoInfo nextphoto)
     {
       if (_power.HasBattery && _power.BatteryLifePercent < 10)
@@ -542,7 +543,7 @@ namespace PictureSlideshowScreensaver
           });
 
           foreach (var img in imgs)
-            tw.Write("{0} : [{2}] {1}\n", img._shown, img._name, img._dateTaken.ToString("yyyy-MM-dd"));
+            tw.Write("{0} : [{2}] {1}\n", img._shown, img._name, img._dateTaken.Value.ToString("yyyy-MM-dd"));
         }
       }
 

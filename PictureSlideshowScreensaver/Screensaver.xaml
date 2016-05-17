@@ -9,52 +9,92 @@
         Topmost="True" Cursor="Cross" KeyDown="Window_KeyDown" Closing="Window_Closing">
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="74*"/>
-      <RowDefinition Height="75*"/>
+      <RowDefinition Height="709*"/>
+      <RowDefinition Height="315*"/>
     </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="74*"/>
-      <ColumnDefinition Width="75*"/>
-    </Grid.ColumnDefinitions>
 
-    <Image Name="img1" Opacity="1" Stretch="Uniform" Grid.RowSpan="2" Grid.ColumnSpan="2"></Image>
-    <Image Name="img2" Opacity="0" Stretch="Uniform" Grid.RowSpan="2" Grid.ColumnSpan="2"></Image>
+    <Image Name="img1" Opacity="1" Stretch="Uniform" Grid.RowSpan="2"></Image>
+    <Image Name="img2" Opacity="0" Stretch="Uniform" Grid.RowSpan="2"></Image>
 
-    <Label Grid.Row="0" HorizontalAlignment="Stretch" Name="lblUp" VerticalAlignment="Stretch" Opacity="1" MouseMove="lblScreen_MouseMove" MouseDown="lblScreen_MouseDown" KeyDown="Window_KeyDown" FontSize="16" Foreground="#FFD70000" Grid.RowSpan="1" />
-    <DockPanel Margin="8,8,8,32" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0">
-      <StackPanel DockPanel.Dock="Bottom">
+    <Grid Grid.Row="0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="20*"/>
+        <RowDefinition Height="80*"/>
+        <RowDefinition Height="20*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="43*"/>
+        <ColumnDefinition Width="277*"/>
+        <ColumnDefinition Width="43*"/>
+      </Grid.ColumnDefinitions>
+
+      <StackPanel Grid.Row="0" Grid.Column="2" Margin="10" Orientation="Vertical">
         <StackPanel.DataContext>
-          <informers:DateTimeInformer/>
+          <informers:PhotoPropertiesInformer x:Name="PhotoProperties"/>
         </StackPanel.DataContext>
-        <StackPanel Orientation="Horizontal">
-          <CustomControls:OutlinedTextBlock Text="{Binding Path=Time_Hours}" x:Name="CurrentTime_HH" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI Light" FontSize="100" StrokeThickness="2" Stroke="Black" Fill="White" />
-          <CustomControls:OutlinedTextBlock Text=":" x:Name="CurrentTime_SEP" Opacity="{Binding Path=Time_Tick}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="100"/>
-          <CustomControls:OutlinedTextBlock Text="{Binding Path=Time_Minutes}" x:Name="CurrentTime_MM" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="100"/>
+        <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
+      </StackPanel>
+
+      <Grid Grid.Row="1" Grid.Column="1">
+        <!-- Weather forecast -->
+        <Grid.RowDefinitions>
+          <RowDefinition Height="20*"/>
+          <RowDefinition Height="20*"/>
+          <RowDefinition Height="20*"/>
+          <RowDefinition Height="20*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="20*"/>
+          <ColumnDefinition Width="50*"/>
+          <ColumnDefinition Width="50*"/>
+          <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+
+      </Grid>
+
+    </Grid>
+
+    <Grid Grid.Row="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="16*"/>
+        <RowDefinition Height="89*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="513*"/>
+        <ColumnDefinition Width="767*"/>
+      </Grid.ColumnDefinitions>
+
+      <Label Grid.Row="0" HorizontalAlignment="Stretch" Name="lblUp" VerticalAlignment="Stretch" Opacity="1" MouseMove="lblScreen_MouseMove" MouseDown="lblScreen_MouseDown" KeyDown="Window_KeyDown" FontSize="16" Foreground="#FFD70000" Grid.RowSpan="1" />
+      <DockPanel Margin="8,0,8,32" VerticalAlignment="Bottom" Grid.Column="0" Height="213" Grid.Row="1">
+        <StackPanel DockPanel.Dock="Bottom">
+          <StackPanel.DataContext>
+            <informers:DateTimeInformer/>
+          </StackPanel.DataContext>
+          <StackPanel Orientation="Horizontal">
+            <CustomControls:OutlinedTextBlock Text="{Binding Path=Time_Hours}" x:Name="CurrentTime_HH" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI Light" FontSize="100" StrokeThickness="2" Stroke="Black" Fill="White" />
+            <CustomControls:OutlinedTextBlock Text=":" x:Name="CurrentTime_SEP" Opacity="{Binding Path=Time_Tick}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="100"/>
+            <CustomControls:OutlinedTextBlock Text="{Binding Path=Time_Minutes}" x:Name="CurrentTime_MM" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="100"/>
+          </StackPanel>
+          <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Full}" x:Name="CurrentDate" VerticalAlignment="Bottom" HorizontalAlignment="Left" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="60" />
         </StackPanel>
-        <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Full}" x:Name="CurrentDate" VerticalAlignment="Bottom" HorizontalAlignment="Left" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="60" />
-      </StackPanel>
-    </DockPanel>
+      </DockPanel>
 
-    <DockPanel Margin="8" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1">
-      <StackPanel DockPanel.Dock="Right">
-        <Grid Opacity="1">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="auto"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-          </Grid.RowDefinitions>
-          <presenters:WeatherPresenter x:Name="W_now" WeatherPeriod="Now" Show="TemperatureValue" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="50" FillColor="White" StrokeColor="Black" FontSize="40" FontFamily="Segoe UI Light"/>
+      <DockPanel Margin="0,0,8,8" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Height="67">
+        <StackPanel DockPanel.Dock="Right" Width="Auto">
+          <Grid Opacity="1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <presenters:WeatherPresenter x:Name="W_now" WeatherPeriod="Now" Show="TemperatureValue" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="50" FillColor="White" StrokeColor="Black" FontSize="40" FontFamily="Segoe UI Light"/>
 
-          <!--          
-          <presenters:WeatherPresenter x:Name="W_N0" WeatherPeriod="TodayMorning" Show="TemperatureRange" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" BorderColor="DarkRed" Grid.Row="0" Grid.Column="1"/>
-          <presenters:WeatherPresenter x:Name="W_N1" WeatherPeriod="TodayDay" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="1" Grid.Column="1"/>
-          <presenters:WeatherPresenter x:Name="W_N2" WeatherPeriod="TodayEvening" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="2" Grid.Column="1"/>
-          <presenters:WeatherPresenter x:Name="W_N3" WeatherPeriod="TodayNight" PictureSize="30" ChildMargin="1" ChildBorderThickness="2" ChildPadding="3" FontSize="25" FontFamily="Segoe UI Light" Grid.Row="3" Grid.Column="1" Margin="2,0,-2,0"/>
--->          
-        </Grid>
-      </StackPanel>
-    </DockPanel>
+          </Grid>
+        </StackPanel>
+      </DockPanel>
+    </Grid>
   </Grid>
 </Window>
