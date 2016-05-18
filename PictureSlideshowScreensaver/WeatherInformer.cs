@@ -133,7 +133,7 @@ namespace informers
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
     private IWeatherProvider _curr_temp_provider = WeatherProviderNSU.get();
-    private IWeatherProvider _forecast_provider = WeatherProviderYandex.get();
+    private IWeatherProvider _forecast_provider = WeatherProviderNSU.get();
 
     private bool _weather_status = false;
     private double _temperature = 0.0, _temperature_low, _temperature_high;
@@ -157,7 +157,10 @@ namespace informers
     {
       get
       {
-        return ((_temperature_low >= 0 ? "+" : "") + _temperature_low.ToString()) + ".." +
+        if (_temperature_low == _temperature_high)
+          return ((_temperature_low >= 0 ? "+" : "") + _temperature_low.ToString());
+        else
+          return ((_temperature_low >= 0 ? "+" : "") + _temperature_low.ToString()) + ".." +
                ((_temperature_high >= 0 ? "+" : "") + _temperature_high.ToString());
       }
       set
@@ -169,12 +172,13 @@ namespace informers
       }
     }
 
-    public bool Weather_Status { get { return _weather_status; } set { _weather_status = value; RaisePropertyChanged("Weather_Status"); } }
     public double Pressure { get { return _pressure; } set { _pressure = value; RaisePropertyChanged("Pressure"); } }
     public double Humidity { get { return _humidity; } set { _humidity = value; RaisePropertyChanged("Humidity"); } }
     public double WindSpeed { get { return _wind_speed; } set { _wind_speed = value; RaisePropertyChanged("WindSpeed"); } }
     public WindDirection WindDirection { get { return _wind_direction; } set { _wind_direction = value; RaisePropertyChanged("WindDirection"); } }
+
     public WeatherType Weather { get { return _weather_type; } set { _weather_type = value; RaisePropertyChanged("Weather"); } }
+    public bool Weather_Status { get { return _weather_status; } set { _weather_status = value; RaisePropertyChanged("Weather_Status"); } }
 
     private void RaisePropertyChanged(string propertyName)
     {
