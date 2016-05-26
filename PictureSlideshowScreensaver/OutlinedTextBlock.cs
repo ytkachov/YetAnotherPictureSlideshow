@@ -181,8 +181,8 @@ namespace CustomControls
       // constrain the formatted text according to the available size
       // the Math.Min call is important - without this constraint (which seems arbitrary, but is the maximum allowable text width), things blow up when availableSize is infinite in both directions
       // the Math.Max call is to ensure we don't hit zero, which will cause MaxTextHeight to throw
-      this.formattedText.MaxTextWidth = Math.Min(3579139, availableSize.Width);
-      this.formattedText.MaxTextHeight = Math.Max(0.0001d, availableSize.Height);
+      formattedText.MaxTextWidth = Math.Min(3579139, availableSize.Width);
+      formattedText.MaxTextHeight = Math.Max(0.0001d, availableSize.Height);
 
       // return the desired size
       return new Size(this.formattedText.Width, this.formattedText.Height);
@@ -193,8 +193,9 @@ namespace CustomControls
       this.EnsureFormattedText();
 
       // update the formatted text with the final size
-      this.formattedText.MaxTextWidth = finalSize.Width + 1;
-      this.formattedText.MaxTextHeight = finalSize.Height + 1;
+      // see comments from above method
+      formattedText.MaxTextWidth = Math.Min(3579139, finalSize.Width);
+      formattedText.MaxTextHeight = Math.Max(0.0001d, finalSize.Height);
 
       // need to re-generate the geometry now that the dimensions have changed
       this.textGeometry = null;
