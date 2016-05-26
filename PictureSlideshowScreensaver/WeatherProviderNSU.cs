@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Threading;
-
+using System.Xml;
 using WatiN.Core;
 
 namespace weather
@@ -143,7 +143,7 @@ namespace weather
     protected override void readdata()
     {
       Settings.AutoMoveMousePointerToTopLeft = false;
-      Settings.MakeNewIeInstanceVisible = false;
+      // Settings.MakeNewIeInstanceVisible = false;
 
       while (true)
       {
@@ -233,15 +233,45 @@ namespace weather
 
       try
       {
-        // browser_.GoTo("http://pogoda.ngs.ru/academgorodok/");
-        Table pgd_detailed = browser_.Table(Find.ByClass(new StringStartsWith() { startswith = "pgd-detailed-cards elements" }));
-        if (pgd_detailed == null || !pgd_detailed.Exists || pgd_detailed.GetAttributeValue("data-weather-cards-count") != "3forecast")
+        browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+        Thread.Sleep(5000);
+
+        XmlDocument pg = new XmlDocument();
+        pg.LoadXml(browser_.Text);
+
+        XmlNode main = doc.DocumentElement.SelectNodes("/catalog/book");
+        Div main = browser_.Div(Find.ByClass("main__wrapper"));
+        Element el = main.Element(Find.ByClass("content-subtitle__link content-subtitle__link-weather_detailed"));
+        if (el != null && el.Exists)
+          el.Click();
+        else
+        // Link detailed_forecast = browser_.Link(Find.ByTitle("подробный прогноз"));
+        //if (!detailed_forecast.Exists)
         {
           _error_descr = "incorrect structure";
           success = false;
         }
 
-        extract_3days_forecast(pgd_detailed);
+        Link detailed_forecast = browser_.Link(Find.ByTitle("подробный прогноз"));
+        if (!detailed_forecast.Exists)
+        {
+          if (detailed_forecast.Text == "подробный прогноз")
+            detailed_forecast.Click();
+
+          else if (detailed_forecast.Text != "краткий прогноз")
+          {
+            _error_descr = "incorrect structure";
+            success = false;
+          }
+
+          Table pgd_detailed = browser_.Table(Find.ByClass(new StringStartsWith() { startswith = "pgd-detailed-cards elements" }));
+          if (pgd_detailed == null || !pgd_detailed.Exists || pgd_detailed.GetAttributeValue("data-weather-cards-count") != "3forecast")
+          {
+            _error_descr = "incorrect structure";
+            success = false;
+          }
+          extract_3days_forecast(pgd_detailed);
+        }
       }
       catch (Exception e)
       {
