@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,6 +23,18 @@ namespace weather
     public static ElementCollection EChildDivs(this Element self)
     {
       return self.DomContainer.Elements.Filter(e => (self.Equals(e.Parent) && e.TagName.ToLower() == "div"));
+    }
+  }
+
+  public static class XmlExtensions
+  {
+    public static XmlNodeList SelectCellDivs(this XmlNode tr, string selector)
+    {
+      XmlNode tc = tr.SelectSingleNode(string.Format("./td[@class='{0}']", selector));
+      if (tc == null)
+        throw new Exception("cant find requested table cell");
+
+      return tc.SelectNodes("./div");
     }
   }
 
@@ -143,7 +156,7 @@ namespace weather
     protected override void readdata()
     {
       Settings.AutoMoveMousePointerToTopLeft = false;
-      // Settings.MakeNewIeInstanceVisible = false;
+      Settings.MakeNewIeInstanceVisible = false;
 
       while (true)
       {
@@ -237,41 +250,16 @@ namespace weather
         Thread.Sleep(5000);
 
         XmlDocument pg = new XmlDocument();
-        pg.LoadXml(browser_.Text);
 
-        XmlNode main = doc.DocumentElement.SelectNodes("/catalog/book");
-        Div main = browser_.Div(Find.ByClass("main__wrapper"));
-        Element el = main.Element(Find.ByClass("content-subtitle__link content-subtitle__link-weather_detailed"));
-        if (el != null && el.Exists)
-          el.Click();
-        else
-        // Link detailed_forecast = browser_.Link(Find.ByTitle("подробный прогноз"));
-        //if (!detailed_forecast.Exists)
-        {
-          _error_descr = "incorrect structure";
-          success = false;
-        }
+        Table tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements"));
+        string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
 
-        Link detailed_forecast = browser_.Link(Find.ByTitle("подробный прогноз"));
-        if (!detailed_forecast.Exists)
-        {
-          if (detailed_forecast.Text == "подробный прогноз")
-            detailed_forecast.Click();
+        pg.LoadXml(outerhtml);
 
-          else if (detailed_forecast.Text != "краткий прогноз")
-          {
-            _error_descr = "incorrect structure";
-            success = false;
-          }
+        XmlNode pgd_detailed = pg.DocumentElement;
 
-          Table pgd_detailed = browser_.Table(Find.ByClass(new StringStartsWith() { startswith = "pgd-detailed-cards elements" }));
-          if (pgd_detailed == null || !pgd_detailed.Exists || pgd_detailed.GetAttributeValue("data-weather-cards-count") != "3forecast")
-          {
-            _error_descr = "incorrect structure";
-            success = false;
-          }
-          extract_3days_forecast(pgd_detailed);
-        }
+        //XmlNode pgd_detailed = pg.DocumentElement.SelectSingleNode("//div[class='main__wrapper']//table[class='pgd-detailed-cards elements' and data-weather-cards-count='3forecast']");
+        extract_3days_forecast(pgd_detailed);
       }
       catch (Exception e)
       {
@@ -291,9 +279,9 @@ namespace weather
       }
     }
 
-    private bool extract_3days_forecast(Table short_forecast)
+    private bool extract_3days_forecast(XmlNode short_forecast)
     {
-      TableRowCollection days = short_forecast.TableRows;
+      XmlNodeList days = short_forecast.SelectNodes("./tbody/tr");
       if (days.Count != 3)
       {
         _error_descr = "incorrect days number in forecast";
@@ -302,7 +290,7 @@ namespace weather
 
       for (int day = 0; day < 3; day++)
       {
-        TableRow tr = days[day];
+        XmlNode tr = days[day];
         if (!extract_day_forecast(day, tr))
           return false;
       }
@@ -310,24 +298,24 @@ namespace weather
       return true;
     }
 
-    private bool extract_day_forecast(int day, TableRow tr)
+    private bool extract_day_forecast(int day, XmlNode tr)
     {
-      TableCell tc = tr.TableCell(Find.ByClass("elements__section-day"));
-      if (!tc.Exists)
+      XmlNode tc = tr.SelectSingleNode("./td[@class='elements__section-day']");
+      if (tc == null)
       {
         _error_descr = "cant find day " + day.ToString();
         return false;
       }
 
       // check day of month
-      SpanCollection spans = tc.Spans;
+      XmlNodeList spans = tc.SelectNodes("./div/span");
       if (spans.Count != 1)
       {
         _error_descr = "incorrect days in day" + day.ToString();
         return false;
       }
 
-      string dt = spans[0].Text;
+      string dt = spans[0].InnerText;
       int di;
       if (!int.TryParse(dt.Substring(0, dt.IndexOf(' ')), out di))
         di = 0;
@@ -338,90 +326,33 @@ namespace weather
         return false;
       }
 
-      tc = tr.TableCell(Find.ByClass("elements__section-daytime"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find date-time in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> period_divs = tc.ChildrenOfType<Div>();
+      // day's periods
+      XmlNodeList period_divs = tr.SelectCellDivs("elements__section-daytime");
 
       // temperature
-      tc = tr.TableCell(Find.ByClass("elements__section-temperature"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find temperature in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> temperature_divs = tc.ChildrenOfType<Div>();
-
+      XmlNodeList temperature_divs = tr.SelectCellDivs("elements__section-temperature");
       if (temperature_divs.Count != period_divs.Count)
-      {
-        _error_descr = "incorrect temperature count in day " + day.ToString();
-        return false;
-      }
+        throw new Exception(string.Format("incorrect temperature count in day {0}", day));
 
       // weather type
-      tc = tr.TableCell(Find.ByClass("elements__section-weather"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find weather type in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> weather_divs = tc.ChildrenOfType<Div>();
+      XmlNodeList weather_divs = tr.SelectCellDivs("elements__section-weather");
       if (weather_divs.Count != period_divs.Count)
-      {
-        _error_descr = "incorrect weather type count in day " + day.ToString();
-        return false;
-      }
+        throw new Exception(string.Format("incorrect weather type count in day {0}", day));
 
       // wind
-      tc = tr.TableCell(Find.ByClass("elements__section-wind"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find wind in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> wind_divs = tc.ChildrenOfType<Div>();
+      XmlNodeList wind_divs = tr.SelectCellDivs("elements__section-wind");
       if (wind_divs.Count != period_divs.Count)
-      {
-        _error_descr = "incorrect wind count in day " + day.ToString();
-        return false;
-      }
+        throw new Exception(string.Format("incorrect wind count in day {0}", day));
 
       // pressure
-      tc = tr.TableCell(Find.ByClass("elements__section-pressure"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find pressure in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> pressure_divs = tc.ChildrenOfType<Div>();
+      XmlNodeList pressure_divs = tr.SelectCellDivs("elements__section-pressure");
       if (pressure_divs.Count != period_divs.Count)
-      {
-        _error_descr = "incorrect pressure count in day " + day.ToString();
-        return false;
-      }
+        throw new Exception(string.Format("incorrect pressure count in day {0}", day));
 
       // humidity
-      tc = tr.TableCell(Find.ByClass("elements__section-humidity"));
-      if (!tc.Exists)
-      {
-        _error_descr = "cant find humidity in day " + day.ToString();
-        return false;
-      }
-
-      ElementCollection<Div> humidity_divs = tc.ChildrenOfType<Div>();
+      XmlNodeList humidity_divs = tr.SelectCellDivs("elements__section-humidity");
       if (humidity_divs.Count != period_divs.Count)
-      {
-        _error_descr = "incorrect humidity count in day " + day.ToString();
-        return false;
-      }
+        throw new Exception(string.Format("incorrect humidity count in day {0}", day));
 
       int pcount = period_divs.Count;
       for (int period = 0; period < pcount; period++)
@@ -429,27 +360,23 @@ namespace weather
         weather w = new weather();
 
         // weather period
-        string pname = period_divs[period].Text;
+        string pname = period_divs[period].InnerText;
         if (!_day_periods[day].Keys.Contains(pname))
-        {
-          _error_descr = "invalid period name";
-          return false;
-        }
+          throw new Exception("invalid period name");
+
         WeatherPeriod wp = _day_periods[day][pname];
 
         // temperature
-        string temperature_s = temperature_divs[period].Text.Trim().Replace('−', '-');
+        string temperature_s = temperature_divs[period].InnerText.Trim().Replace('−', '-');
         w.TemperatureLow = w.TemperatureHigh = int.Parse(temperature_s);
 
         // weather type
         string cn = "icon-weather icon-weather-";
-        Element e = weather_divs[period].Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
-        if (e == null || !e.Exists)
-        {
-          _error_descr = "cant find weather type";
-          return false;
-        }
-        string wt = e.ClassName.Substring(cn.Length);
+        XmlNode e = weather_divs[period].SelectSingleNode("./i");
+        if (e == null)
+          throw new Exception("cant find weather type");
+
+        string wt = e.SelectSingleNode("@class").Value.Substring(cn.Length);
         if (wt.IndexOf(' ') != -1)
           wt = wt.Substring(0, wt.IndexOf(' '));
 
@@ -457,30 +384,27 @@ namespace weather
 
         // wind
         cn = "icon-small icon-wind-";
-        e = wind_divs[period].Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
-        if (e == null || !e.Exists)
-        {
-          _error_descr = "cant find wind direction";
-          return false;
-        }
+        e = wind_divs[period].SelectSingleNode("./i");
+        if (e == null)
+          throw new Exception("cant find wind direction");
 
-        string wd = e.ClassName.Substring(cn.Length);
+        string wd = e.SelectSingleNode("@class").Value.Substring(cn.Length);
         if (wd.IndexOf(' ') != -1)
           wd = wd.Substring(0, wd.IndexOf(' '));
 
         w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
 
-        string ws = wind_divs[period].Text.TrimStart('\n', '\r', '\t', ' ');
+        string ws = wind_divs[period].InnerText.TrimStart('\n', '\r', '\t', ' ');
         ws = ws.Substring(0, ws.IndexOf(' '));
         w.WindSpeed = int.Parse(ws);
 
         // pressure
-        string pr = pressure_divs[period].Text.TrimStart('\n', '\r', '\t', ' ');
+        string pr = pressure_divs[period].InnerText.TrimStart('\n', '\r', '\t', ' ');
         pr = pr.Substring(0, pr.IndexOf(' '));
         w.Pressure = int.Parse(pr);
 
         // humidity
-        string hu = humidity_divs[period].Text;
+        string hu = humidity_divs[period].InnerText;
         hu = hu.Substring(0, hu.IndexOf('%'));
         w.Humidity = int.Parse(hu);
 
@@ -488,6 +412,11 @@ namespace weather
       }
 
       return true;
+    }
+
+    private XmlNodeList get_all_divs(XmlNode tr, string v)
+    {
+      throw new NotImplementedException();
     }
 
     private void read_ngs_current_weather(weather w)
