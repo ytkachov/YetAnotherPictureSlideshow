@@ -35,7 +35,7 @@
         <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
       </StackPanel>
 
-      <Grid Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.8">
+      <Grid Visibility="Hidden" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.8">
         <!-- Weather forecast -->
         <Grid.RowDefinitions>
           <RowDefinition Height="20*"/>

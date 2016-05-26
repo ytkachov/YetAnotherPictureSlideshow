@@ -193,8 +193,8 @@ namespace CustomControls
       this.EnsureFormattedText();
 
       // update the formatted text with the final size
-      this.formattedText.MaxTextWidth = finalSize.Width;
-      this.formattedText.MaxTextHeight = finalSize.Height;
+      this.formattedText.MaxTextWidth = finalSize.Width + 1;
+      this.formattedText.MaxTextHeight = finalSize.Height + 1;
 
       // need to re-generate the geometry now that the dimensions have changed
       this.textGeometry = null;
