@@ -181,11 +181,9 @@ namespace weather
 
         try
         {
-          browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/" );
-          Thread.Sleep(10000);
-
           read_ngs_current_weather(w);
           _weather[WeatherPeriod.Now] = w;
+
           read_ngs_forecast();
         }
         catch (Exception e)
@@ -257,8 +255,6 @@ namespace weather
         pg.LoadXml(outerhtml);
 
         XmlNode pgd_detailed = pg.DocumentElement;
-
-        //XmlNode pgd_detailed = pg.DocumentElement.SelectSingleNode("//div[class='main__wrapper']//table[class='pgd-detailed-cards elements' and data-weather-cards-count='3forecast']");
         extract_3days_forecast(pgd_detailed);
       }
       catch (Exception e)
@@ -426,114 +422,102 @@ namespace weather
 
       try
       {
+        browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+        Thread.Sleep(5000);
+
+        XmlDocument pg = new XmlDocument();
+
         Div info = browser_.Div(Find.ByClass("today-panel__info"));
         if (!info.Exists)
+          throw new Exception("incorrect current weather structure ");
+
+        string outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
+        pg.LoadXml(outerhtml);
+
+        XmlNode pgd_current = pg.DocumentElement;
+
+        // weather character
+        string class_name = "icon-weather-big ";
+        XmlNode icon_weather = pgd_current.SelectSingleNode(string.Format("./div/div[starts-with(@class, '{0}')]", class_name));
+        if (icon_weather == null)
+          throw new Exception("incorrect current weather structure: cant find weather type icon");
+
+        string wt = icon_weather.SelectSingleNode("@class").Value.Substring(class_name.Length);
+        w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
+
+        XmlNode curr = pgd_current.SelectSingleNode("./div/div[@class = 'today-panel__info__main__item first']");
+        if (curr == null)
+          throw new Exception("incorrect current weather structure: cant find weather panel");
+
+        // temperature
+        XmlNode temp = curr.SelectSingleNode("./div/span/span[@class = 'value__main']");
+        if (temp == null)
+          throw new Exception("incorrect current weather structure: cant find current temperature");
+
+        string st = temp.InnerText.Trim().Replace(',', '.').Replace('−', '-');
+        if (string.IsNullOrEmpty(st))
+          throw new Exception("incorrect current weather structure: incorrect current temperature string");
+        else
         {
-          _error_descr = "incorrect structure";
+          double t = double.Parse(st);
+          w.TemperatureHigh = w.TemperatureLow = t;
+        }
+
+        File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
+
+        // wind
+        string cn = "icon-small icon-wind-";
+        XmlNode ei = curr.SelectSingleNode(string.Format("./dl/dd/i[starts-with(@class, '{0}')]", cn));
+        if (ei == null)
+          throw new Exception("incorrect current weather structure: cant find wind direction");
+        else
+        {
+          string wd = ei.SelectSingleNode("@class").Value.Substring(cn.Length);
+          w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
+
+          XmlNode edt = ei.ParentNode.NextSibling;
+          if (edt == null || edt.Name.ToLower() != "dt")
+          {
+            _error_descr = "incorrect structure 2.1";
+            success = false;
+          }
+          else
+          {
+            string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
+            double ws;
+            if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
+              w.WindSpeed = ws;
+          }
+        }
+
+        // pressure 
+        ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-pressure']");
+        if (ei == null ||  ei.Name.ToLower() != "i")
+        {
+          _error_descr = "incorrect structure 2.2";
           success = false;
         }
         else
         {
-          // weather character
-          string class_name = "icon-weather-big ";
-          Div icon_weather = info.Div(Find.ByClass(new StringStartsWith() { startswith = class_name }));
-          if (!icon_weather.Exists)
-          {
-            _error_descr = "incorrect structure";
-            success = false;
-          }
-          else
-          { 
-            string wt = icon_weather.ClassName.Substring(class_name.Length);
-            w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
-          }
+          double p;
+          string pr = ei.SelectSingleNode("@title").Value;
+          if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
+            w.Pressure = p;
+        }
 
-          Div curr = browser_.Div(Find.ByClass("today-panel__info__main__item first"));
-          if (!curr.Exists)
-          {
-            _error_descr = "incorrect structure 0";
-            success = false;
-          }
-          else
-          {
-            // temperature
-            Span temp = browser_.Span(Find.ByClass("value__main"));
-            if (!curr.Exists)
-              success = false;
-            else
-            {
-              string st = temp.Text.Trim().Replace(',', '.').Replace('−', '-');
-              if (string.IsNullOrEmpty(st))
-              {
-                _error_descr = "incorrect structure 1";
-                success = false;
-              }
-              else
-              {
-                double t = double.Parse(st);
-                w.TemperatureHigh = w.TemperatureLow = t;
-              }
-            }
-
-            // wind
-            string cn = "icon-small icon-wind-";
-            string txt = curr.Text;
-            Element ei = curr.Element(Find.ByClass(new StringStartsWith() { startswith = cn }));
-            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
-            {
-              _error_descr = "incorrect structure 2";
-              success = false;
-            }
-            else
-            {
-              string wd = ei.ClassName.Substring(cn.Length);
-              w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
-
-              Element edt = ei.Parent.NextSibling;
-              if (edt.TagName.ToLower() != "dt")
-              {
-                _error_descr = "incorrect structure 2.1";
-                success = false;
-              }
-              else
-              {
-                string wind = edt.Text.TrimStart(' ');
-                double ws;
-                if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
-                  w.WindSpeed = ws;
-              }
-            }
-
-            // pressure 
-            ei = curr.Element(Find.ByClass("icon-small icon-pressure"));
-            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
-            {
-              _error_descr = "incorrect structure 2.2";
-              success = false;
-            }
-            else
-            {
-              double p;
-              string pr = ei.GetAttributeValue("title");
-              if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
-                w.Pressure = p;
-            }
-
-            // humidity
-            ei = curr.Element(Find.ByClass("icon-small icon-humidity"));
-            if (ei == null || !ei.Exists || ei.TagName.ToLower() != "i")
-            {
-              _error_descr = "incorrect structure 2.3";
-              success = false;
-            }
-            else
-            {
-              double h;
-              string humidity = ei.GetAttributeValue("title");
-              if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
-                w.Humidity = h;
-            }
-          }
+        // humidity
+        ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-humidity']");
+        if (ei == null || ei.Name.ToLower() != "i")
+        {
+          _error_descr = "incorrect structure 2.3";
+          success = false;
+        }
+        else
+        {
+          double h;
+          string humidity = ei.SelectSingleNode("@title").Value;
+          if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+            w.Humidity = h;
         }
       }
       catch (Exception e)
