@@ -463,7 +463,7 @@ namespace weather
           w.TemperatureHigh = w.TemperatureLow = t;
         }
 
-        File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
+        //File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
 
         // wind
         string cn = "icon-small icon-wind-";
