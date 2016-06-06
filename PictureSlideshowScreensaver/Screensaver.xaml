@@ -19,12 +19,13 @@
     <Grid Grid.Row="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="20*"/>
-        <RowDefinition Height="80*"/>
+        <RowDefinition Height="40*"/>
+        <RowDefinition Height="15*"/>
         <RowDefinition Height="20*"/>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="20*"/>
-        <ColumnDefinition Width="300*"/>
+        <ColumnDefinition Width="80*"/>
         <ColumnDefinition Width="20*"/>
       </Grid.ColumnDefinitions>
 
@@ -35,7 +36,7 @@
         <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
       </StackPanel>
 
-      <Grid Visibility="Hidden" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.8">
+      <Grid Visibility="Visible" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.8">
         <!-- Weather forecast -->
         <Grid.RowDefinitions>
           <RowDefinition Height="20*"/>
@@ -51,20 +52,20 @@
           <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
         
-        <presenters:WeatherPresenter Margin="10" Grid.Row="1" Grid.Column="1"  x:Name="W_TodayNight" WeatherPeriod="TodayNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="2" Grid.Column="1"  x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="3" Grid.Column="1"  x:Name="W_TodayDay" WeatherPeriod="TodayDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="4" Grid.Column="1"  x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="1" Grid.Column="1"  x:Name="W_TodayNight" WeatherPeriod="TodayNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="1"  x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="1"  x:Name="W_TodayDay" WeatherPeriod="TodayDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="1"  x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
 
-        <presenters:WeatherPresenter Margin="10" Grid.Row="1" Grid.Column="2"  x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="2" Grid.Column="2"  x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="3" Grid.Column="2"  x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="4" Grid.Column="2"  x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="1" Grid.Column="2"  x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="2"  x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="2"  x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="2"  x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
 
-        <presenters:WeatherPresenter Margin="10" Grid.Row="1" Grid.Column="3"  x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="2" Grid.Column="3"  x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="3" Grid.Column="3"  x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
-        <presenters:WeatherPresenter Margin="10" Grid.Row="4" Grid.Column="3"  x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="1" Grid.Column="3"  x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="3"  x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="3"  x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
+        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="3"  x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" Show="TemperatureRange" ChildMargin="2" ChildBorderThickness="2" ChildPadding="3" PictureSize="40" FillColor="White" StrokeColor="Black" FontSize="30" FontFamily="Segoe UI Light"/>
 
       </Grid>
 
