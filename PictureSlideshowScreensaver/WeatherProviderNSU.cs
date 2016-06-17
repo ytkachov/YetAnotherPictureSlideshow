@@ -410,11 +410,6 @@ namespace weather
       return true;
     }
 
-    private XmlNodeList get_all_divs(XmlNode tr, string v)
-    {
-      throw new NotImplementedException();
-    }
-
     private void read_ngs_current_weather(weather w)
     {
       bool success = true;
@@ -445,7 +440,11 @@ namespace weather
         string wt = icon_weather.SelectSingleNode("@class").Value.Substring(class_name.Length);
         w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
-        XmlNode curr = pgd_current.SelectSingleNode("./div/div[@class = 'today-panel__info__main__item first']");
+        XmlNode today = pgd_current.SelectSingleNode("./div[@class = 'today-panel__info__main']");
+        if (today == null)
+          throw new Exception("incorrect current weather structure: cant find today weather panel");
+
+        XmlNode curr = today.SelectSingleNode("./div[starts-with(@class, 'today-panel__info__main__item')]");
         if (curr == null)
           throw new Exception("incorrect current weather structure: cant find weather panel");
 
