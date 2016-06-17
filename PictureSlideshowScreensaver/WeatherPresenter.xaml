@@ -10,38 +10,70 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300"
              >
+  <!-- 
+  <presenters:WeatherPresenter.Style>
+    <Style>
+      <Setter Property="ChildMargin" Value="2"  />
+      <Setter Property="ChildBorderThickness" Value="2"  />
+      <Setter Property="ChildPadding" Value="3"  />
+      <Setter Property="PictureSize" Value="50"  />
+      <Setter Property="FillColor" Value="White"  />
+      <Setter Property="StrokeColor" Value="Black"  />
+      <Setter Property="FontSize" Value="40"  />
+      <Setter Property="FontFamily" Value="Segoe UI Light" />
+    </Style>
+  </presenters:WeatherPresenter.Style>
+  -->
   <StackPanel Orientation="Horizontal" >
-    <Border x:Name="T_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
-      <StackPanel Orientation="Horizontal">
-        <CustomControls:OutlinedTextBlock x:Name="TR" Visibility="{Binding Show, Converter={presenters:ShowRange}}" Text="{Binding Weather.TemperatureRange}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2" />
-        <CustomControls:OutlinedTextBlock x:Name="TV" Visibility="{Binding Show, Converter={presenters:ShowValue}}" Text="{Binding Weather.Temperature}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2" />
-        <CustomControls:OutlinedTextBlock x:Name="T_Scale"  Text="°" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
+    <StackPanel.Resources>
+      <Style TargetType="CustomControls:OutlinedTextBlock">
+        <Setter Property="FontFamily" Value="{Binding FontFamily}" />
+        <Setter Property="FontSize" Value="{Binding FontSize}" />
+        <Setter Property="Fill" Value="{Binding FillColor}" />
+        <Setter Property="Stroke" Value="{Binding StrokeColor}" />
+        <Setter Property="VerticalAlignment" Value="Center"  />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="StrokeThickness" Value="2" />
+      </Style>
+      <Style TargetType="Border">
+        <Setter Property="Padding" Value="{Binding ChildPadding}"  />
+        <Setter Property="Margin" Value="{Binding ChildMargin}"  />
+        <Setter Property="BorderThickness" Value="{Binding ChildBorderThickness}"  />
+        <Setter Property="BorderBrush" Value="{Binding BorderColor}"  />
+        <Setter Property="CornerRadius" Value="8" />
+      </Style>
+    </StackPanel.Resources>
+    <Border x:Name="T_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+        <CustomControls:OutlinedTextBlock x:Name="TR" Visibility="{Binding Show, Converter={presenters:ShowRange}}" Text="{Binding Weather.TemperatureRange}" />
+        <CustomControls:OutlinedTextBlock x:Name="TV" Visibility="{Binding Show, Converter={presenters:ShowValue}}" Text="{Binding Weather.Temperature}" />
+        <CustomControls:OutlinedTextBlock x:Name="T_Scale"  Text="°" />
       </StackPanel>
     </Border>
-    <Border x:Name="W_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
+    <Border x:Name="W_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <Viewbox x:Name="W" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding PictureSize}" Stretch="Uniform">
         <ContentControl x:Name="W_content" Content="{Binding Weather.Weather, Converter={informers:WeatherToPicture UseColor=yes}}"/>
       </Viewbox>
     </Border>
-    <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
+    <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <Viewbox x:Name="WD" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{c:Binding PictureSize * 0.75}" Stretch="Uniform">
           <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
         </Viewbox>
-        <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Weather.WindSpeed}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
-        <CustomControls:OutlinedTextBlock x:Name="WS_Scale"  Text="м/с" FontFamily="{Binding FontFamily}" FontSize="{c:Binding FontSize * 0.5}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
+        <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Weather.WindSpeed}" />
+        <CustomControls:OutlinedTextBlock x:Name="WS_Scale"  Text="м/с" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
       </StackPanel>
     </Border>
-    <Border x:Name="P_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
+    <Border x:Name="P_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
-        <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding Weather.Pressure}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
-        <CustomControls:OutlinedTextBlock x:Name="P_Scale"  Text="mm" FontFamily="{Binding FontFamily}" FontSize="{c:Binding FontSize * 0.5}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
+        <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding Weather.Pressure}" />
+        <CustomControls:OutlinedTextBlock x:Name="P_Scale"  Text="mm" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
       </StackPanel>
     </Border>
-    <Border x:Name="H_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" Padding="{Binding ChildPadding}" Margin="{Binding ChildMargin}"  BorderThickness="{Binding ChildBorderThickness}" BorderBrush="{Binding BorderColor}" CornerRadius="8">
+    <Border x:Name="H_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
-        <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding Weather.Humidity}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
-        <CustomControls:OutlinedTextBlock x:Name="H_Scale"  Text="%" FontFamily="{Binding FontFamily}" FontSize="{c:Binding FontSize * 0.5}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Stroke="{Binding StrokeColor}" Fill="{Binding FillColor}" StrokeThickness="2"/>
+        <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding Weather.Humidity}" />
+        <CustomControls:OutlinedTextBlock x:Name="H_Scale"  Text="%" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
       </StackPanel>
     </Border>
   </StackPanel>
