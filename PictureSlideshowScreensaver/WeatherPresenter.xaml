@@ -61,19 +61,40 @@
           <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
         </Viewbox>
         <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Weather.WindSpeed}" />
-        <CustomControls:OutlinedTextBlock x:Name="WS_Scale"  Text="м/с" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+          </Grid.RowDefinitions>
+          <CustomControls:OutlinedTextBlock Grid.Row="1" x:Name="WS_Scale"  Text="м/с" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        </Grid>
       </StackPanel>
     </Border>
     <Border x:Name="P_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding Weather.Pressure}" />
-        <CustomControls:OutlinedTextBlock x:Name="P_Scale"  Text="mm" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+          </Grid.RowDefinitions>
+          <CustomControls:OutlinedTextBlock Grid.Row="1" x:Name="P_Scale"  Text="mm" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        </Grid>
       </StackPanel>
     </Border>
     <Border x:Name="H_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding Weather.Humidity}" />
-        <CustomControls:OutlinedTextBlock x:Name="H_Scale"  Text="%" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+          </Grid.RowDefinitions>
+          <CustomControls:OutlinedTextBlock Grid.Row="1" x:Name="H_Scale"  Text="%" FontSize="{c:Binding FontSize * 0.6}" VerticalAlignment="Bottom" />
+        </Grid>
       </StackPanel>
     </Border>
   </StackPanel>

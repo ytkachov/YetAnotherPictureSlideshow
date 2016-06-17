@@ -427,6 +427,8 @@ namespace weather
           throw new Exception("incorrect current weather structure ");
 
         string outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
+        // File.WriteAllText(@"D:\outerhtml.xml", outerhtml);
+
         pg.LoadXml(outerhtml);
 
         XmlNode pgd_current = pg.DocumentElement;

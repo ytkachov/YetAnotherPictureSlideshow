@@ -51,22 +51,45 @@
           <ColumnDefinition Width="50*"/>
           <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
-        
-        <presenters:WeatherPresenter Margin="10,5" ChildrenWidths="20,10,40,50" Grid.Row="1" Grid.Column="1"  x:Name="W_TodayNight" WeatherPeriod="TodayNight" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="1"  x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="1"  x:Name="W_TodayDay" WeatherPeriod="TodayDay" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="1"  x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" />
 
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="1" Grid.Column="2"  x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="2"  x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="2"  x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="2"  x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" />
+        <StackPanel Grid.Row="1" Grid.Column="1"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayNight" WeatherPeriod="TodayNight" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="1"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="1"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayDay" WeatherPeriod="TodayDay" />
+        </StackPanel>
+        <StackPanel Grid.Row="4" Grid.Column="1"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" />
+        </StackPanel>
 
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="1" Grid.Column="3"  x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="2" Grid.Column="3"  x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="3" Grid.Column="3"  x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" />
-        <presenters:WeatherPresenter Margin="10,5" Grid.Row="4" Grid.Column="3"  x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" />
+        <StackPanel Grid.Row="1" Grid.Column="2"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="2"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="2"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" />
+        </StackPanel>
+        <StackPanel Grid.Row="4" Grid.Column="2"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" />
+        </StackPanel>
 
+        <StackPanel Grid.Row="1" Grid.Column="3"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="3"  >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="3" >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" />
+        </StackPanel>
+        <StackPanel Grid.Row="4" Grid.Column="3" >
+          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" />
+        </StackPanel>
       </Grid>
 
     </Grid>
