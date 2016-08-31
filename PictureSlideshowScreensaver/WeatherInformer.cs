@@ -132,8 +132,8 @@ namespace informers
   {
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
-    private IWeatherProvider _curr_temp_provider = WeatherProviderNSU.get();
-    private IWeatherProvider _forecast_provider = WeatherProviderNSU.get();
+    private IWeatherProvider _curr_temp_provider = WeatherProviderNGS.get();
+    private IWeatherProvider _forecast_provider = WeatherProviderNGS.get();
 
     private bool _weather_status = false;
     private double _temperature = 0.0, _temperature_low, _temperature_high;

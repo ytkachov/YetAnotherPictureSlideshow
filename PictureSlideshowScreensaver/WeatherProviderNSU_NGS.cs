@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Threading;
 using System.Xml;
@@ -38,7 +39,7 @@ namespace weather
     }
   }
 
-  class WeatherProviderNSU : WeatherProviderBase
+  class WeatherProviderNGS : WeatherProviderBase
   {
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
@@ -122,14 +123,14 @@ namespace weather
     };
     private IE browser_;
 
-    private WeatherProviderNSU()
+    private WeatherProviderNGS()
     {
     }
 
     public static IWeatherProvider get()
     {
       if (_self == null)
-        _self = new WeatherProviderNSU();
+        _self = new WeatherProviderNGS();
 
       _refcounter++;
       return _self;
@@ -415,6 +416,7 @@ namespace weather
       bool success = true;
       _succeeded = true;
 
+      string outerhtml = "";
       try
       {
         browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
@@ -424,10 +426,17 @@ namespace weather
 
         Div info = browser_.Div(Find.ByClass("today-panel__info"));
         if (!info.Exists)
+        {
+          outerhtml = browser_.Html;
           throw new Exception("incorrect current weather structure ");
+        }
 
-        string outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
+        outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
         // File.WriteAllText(@"D:\outerhtml.xml", outerhtml);
+
+        // remove usually incorrect <img > tags
+        string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
+        outerhtml = Regex.Replace(outerhtml, img, " ");
 
         pg.LoadXml(outerhtml);
 
@@ -458,11 +467,9 @@ namespace weather
         string st = temp.InnerText.Trim().Replace(',', '.').Replace('−', '-');
         if (string.IsNullOrEmpty(st))
           throw new Exception("incorrect current weather structure: incorrect current temperature string");
-        else
-        {
-          double t = double.Parse(st);
-          w.TemperatureHigh = w.TemperatureLow = t;
-        }
+
+        double t = double.Parse(st);
+        w.TemperatureHigh = w.TemperatureLow = t;
 
         //File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
 
@@ -471,60 +478,47 @@ namespace weather
         XmlNode ei = curr.SelectSingleNode(string.Format("./dl/dd/i[starts-with(@class, '{0}')]", cn));
         if (ei == null)
           throw new Exception("incorrect current weather structure: cant find wind direction");
-        else
-        {
-          string wd = ei.SelectSingleNode("@class").Value.Substring(cn.Length);
-          w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
 
-          XmlNode edt = ei.ParentNode.NextSibling;
-          if (edt == null || edt.Name.ToLower() != "dt")
-          {
-            _error_descr = "incorrect structure 2.1";
-            success = false;
-          }
-          else
-          {
-            string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
-            double ws;
-            if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
-              w.WindSpeed = ws;
-          }
-        }
+        string wd = ei.SelectSingleNode("@class").Value.Substring(cn.Length);
+        w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
+
+        XmlNode edt = ei.ParentNode.NextSibling;
+        if (edt == null || edt.Name.ToLower() != "dt")
+          throw new Exception("incorrect structure: 2.1");
+
+        string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
+        double ws;
+        if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
+          w.WindSpeed = ws;
 
         // pressure 
         ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-pressure']");
         if (ei == null ||  ei.Name.ToLower() != "i")
-        {
-          _error_descr = "incorrect structure 2.2";
-          success = false;
-        }
-        else
-        {
-          double p;
-          string pr = ei.SelectSingleNode("@title").Value;
-          if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
-            w.Pressure = p;
-        }
+          throw new Exception("incorrect structure: 2.2");
+
+        double p;
+        string pr = ei.SelectSingleNode("@title").Value;
+        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
+          w.Pressure = p;
 
         // humidity
         ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-humidity']");
         if (ei == null || ei.Name.ToLower() != "i")
-        {
-          _error_descr = "incorrect structure 2.3";
-          success = false;
-        }
-        else
-        {
-          double h;
-          string humidity = ei.SelectSingleNode("@title").Value;
-          if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
-            w.Humidity = h;
-        }
+          throw new Exception("incorrect structure: 2.3");
+
+        double h;
+        string humidity = ei.SelectSingleNode("@title").Value;
+        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+          w.Humidity = h;
       }
       catch (Exception e)
       {
         success = false;
         _error_descr = e.Message;
+
+        string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        File.WriteAllText(fname, outerhtml);
+
       }
 
       finally

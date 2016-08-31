@@ -116,7 +116,7 @@
     </Compile>
     <Compile Include="WeatherProvider.cs" />
     <Compile Include="WeatherProviderBase.cs" />
-    <Compile Include="WeatherProviderNSU.cs" />
+    <Compile Include="WeatherProviderNSU_NGS.cs" />
     <Compile Include="WeatherProviderOWM.cs" />
     <Compile Include="WeatherProviderWU.cs" />
     <Compile Include="WeatherProviderYandex.cs" />
