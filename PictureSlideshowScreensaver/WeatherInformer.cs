@@ -61,19 +61,26 @@ namespace informers
 
   }
 
-  public class WeatherToPicture : MarkupExtension, IValueConverter
+  public class WeatherToPicture : MarkupExtension, IMultiValueConverter
   {
-    public string UseColor { get; set; }
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object [] values, Type targetType, object parameter, CultureInfo culture)
     {
-      if (value == null)
+      if (values == null)
         return null;
 
-      WeatherType wt = (WeatherType)value;
-      return Application.Current.TryFindResource(weatherformatter.weather_types_to_picture[wt][0]) as Canvas;
+      WeatherType wt = (WeatherType)values[0];
+      WeatherPeriod wp = (WeatherPeriod)values[1];
+      int n = 0;
+      if (wp == WeatherPeriod.DayAfterTomorrowEvening || wp == WeatherPeriod.DayAfterTomorrowNight ||
+          wp == WeatherPeriod.TomorrowEvening || wp == WeatherPeriod.TomorrowNight ||
+          wp == WeatherPeriod.TodayEvening || wp == WeatherPeriod.TodayNight ||
+         (wp == WeatherPeriod.Now && (DateTime.Now.Hour >= 18 || DateTime.Now.Hour < 6)))
+        n = 1;
+
+        return Application.Current.TryFindResource(weatherformatter.weather_types_to_picture[wt][n]) as Canvas;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object[] ConvertBack(object value, Type [] targetType, object parameter, CultureInfo culture)
     {
       throw new NotImplementedException();
     }
@@ -145,8 +152,6 @@ namespace informers
 
     private WeatherPeriod _weather_period = WeatherPeriod.Undefined;
 
-    internal WeatherPeriod Weather_Period  { get { return _weather_period; } set { _weather_period = value; update_Weather(); } }
-
     public string Temperature
     {
       get { return (_temperature >= 0 ? "+" : "") + _temperature.ToString(); }
@@ -177,7 +182,13 @@ namespace informers
     public double WindSpeed { get { return _wind_speed; } set { _wind_speed = value; RaisePropertyChanged("WindSpeed"); } }
     public WindDirection WindDirection { get { return _wind_direction; } set { _wind_direction = value; RaisePropertyChanged("WindDirection"); } }
 
-    public WeatherType Weather { get { return _weather_type; } set { _weather_type = value; RaisePropertyChanged("Weather"); } }
+    public WeatherType Weather { get { return _weather_type; }
+      set {
+        _weather_type = value;
+        RaisePropertyChanged("Weather"); }
+    }
+
+    public WeatherPeriod Weather_Period { get { return _weather_period; } set { _weather_period = value; update_Weather(); RaisePropertyChanged("Weather_Period"); } }
     public bool Weather_Status { get { return _weather_status; } set { _weather_status = value; RaisePropertyChanged("Weather_Status"); } }
 
     private void RaisePropertyChanged(string propertyName)

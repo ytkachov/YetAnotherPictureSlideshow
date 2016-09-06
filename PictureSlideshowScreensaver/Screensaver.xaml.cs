@@ -474,6 +474,7 @@ namespace PictureSlideshowScreensaver
         double cx = img.ActualWidth / 2;
         double cy = img.ActualHeight / 2;
 
+        PhotoProperties.Set_Faces_Found = nextphoto._faces == null ? 0 : nextphoto._faces.Count;
         if (nextphoto._faces != null)
         {
           double dc = 1;

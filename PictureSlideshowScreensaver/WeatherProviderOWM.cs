@@ -161,15 +161,15 @@ namespace weather
           break;
 
         case "day":
-          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayDay : (day_from_today == 1 ? WeatherPeriod.TomorrowDay : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
+          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayDay : (day_from_today == 1 ? WeatherPeriod.TomorrowDay : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowDay : WeatherPeriod.Undefined)), node);
           break;
 
         case "evening":
-          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayEvening : (day_from_today == 1 ? WeatherPeriod.TomorrowEvening : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
+          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayEvening : (day_from_today == 1 ? WeatherPeriod.TomorrowEvening : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowEvening : WeatherPeriod.Undefined)), node);
           break;
 
         case "night":
-          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayNight : (day_from_today == 1 ? WeatherPeriod.TomorrowNight : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
+          extract_weather_forecast(day_from_today == 0 ? WeatherPeriod.TodayNight : (day_from_today == 1 ? WeatherPeriod.TomorrowNight : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowNight : WeatherPeriod.Undefined)), node);
           break;
       }
     }

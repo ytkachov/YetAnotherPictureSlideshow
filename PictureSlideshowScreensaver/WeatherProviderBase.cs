@@ -38,6 +38,7 @@ namespace weather
     protected Dictionary<WeatherPeriod, weather> _weather = new Dictionary<WeatherPeriod, weather>();
     protected XmlNamespaceManager _nsmgr;
     protected string _error_descr = "";
+    protected bool _succeeded = false;
 
     public WeatherProviderBase()
     {
@@ -56,6 +57,11 @@ namespace weather
     public virtual string get_error_description()
     {
       return _error_descr;
+    }
+
+    public virtual bool get_status()
+    {
+      return _succeeded;
     }
 
     public virtual bool get_temperature(WeatherPeriod period, out double temp_l, out double temp_h)

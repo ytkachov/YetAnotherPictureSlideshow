@@ -15,12 +15,25 @@ class dateformatter
 
 namespace informers
 {
-  
+
   class PhotoPropertiesInformer : INotifyPropertyChanged
   {
+    private string _faces_found = "";
     private string _date_taken = "21/12/1997";
 
-    public string Date_Photo_Taken { get { return _date_taken; } set { _date_taken= value; RaisePropertyChanged("Date_Photo_Taken"); } }
+    public string Date_Photo_Taken { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged("Date_Photo_Taken"); } }
+    public string Faces_Found { get { return _faces_found; } }
+    public int Set_Faces_Found
+    {
+      set
+      {
+        _faces_found = "";
+        for (int i = 0; i < value; i++)
+          _faces_found += "\u263B";
+
+        RaisePropertyChanged("Faces_Found");
+      }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
     private void RaisePropertyChanged(string propertyName)
@@ -29,6 +42,22 @@ namespace informers
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
   }
+
+  class DBGInformer : INotifyPropertyChanged
+  {
+    private string _weather_provider_msg = "msg";
+
+
+    public string Weather_Provider_Msg { get { return _weather_provider_msg; } set { _weather_provider_msg = value; RaisePropertyChanged("Weather_Provider_Msg"); } }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void RaisePropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+  }
+
   class DateTimeInformer : INotifyPropertyChanged
   {
     private int    _time_Tick = 0;
@@ -57,6 +86,7 @@ namespace informers
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
+
     void clock_Tick(object sender, EventArgs e)
     {
       Time_Tick = 1 - Time_Tick;

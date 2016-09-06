@@ -44,7 +44,6 @@ namespace weather
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
 
-    private bool _succeeded = false;
     private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
     {
       public StringStartsWith()
@@ -250,9 +249,16 @@ namespace weather
 
         XmlDocument pg = new XmlDocument();
 
-        Table tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements"));
-        string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
+        File.WriteAllText(@"D:\outerhtml.html", browser_.Html);
 
+        Table tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements"));
+        if (!tbl.Exists)
+          tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements pgd-hidden"));
+
+        if (!tbl.Exists)
+          throw new Exception("NGS forecast: can't find 3 day forecast table");
+
+        string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
         pg.LoadXml(outerhtml);
 
         XmlNode pgd_detailed = pg.DocumentElement;
@@ -516,8 +522,8 @@ namespace weather
         success = false;
         _error_descr = e.Message;
 
-        string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
-        File.WriteAllText(fname, outerhtml);
+        //string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        //File.WriteAllText(fname, outerhtml);
 
       }
 

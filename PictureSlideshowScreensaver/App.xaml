@@ -7,13 +7,21 @@
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="res/clear_d.xaml"/>
+        <ResourceDictionary Source="res/clear_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_partly_rainy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_partly_rainy_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_partly_snowy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_partly_snowy_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_rainy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_rainy_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_rainy_storm_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_rainy_storm_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_snowy_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_snowy_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_snowy_storm_d.xaml"/>
+        <ResourceDictionary Source="res/cloudy_snowy_storm_n.xaml"/>
         <ResourceDictionary Source="res/overcast.xaml"/>
         <ResourceDictionary Source="res/overcast.xaml"/>
         <ResourceDictionary Source="res/overcast_partly_rainy.xaml"/>
@@ -24,6 +32,7 @@
         <ResourceDictionary Source="res/overcast_snowy.xaml"/>
         <ResourceDictionary Source="res/overcast_snowy_storm.xaml"/>
         <ResourceDictionary Source="res/partly_cloudy_d.xaml"/>
+        <ResourceDictionary Source="res/partly_cloudy_n.xaml"/>
         <ResourceDictionary Source="res/wd_N.xaml"/>
         <ResourceDictionary Source="res/wd_E.xaml"/>
         <ResourceDictionary Source="res/wd_S.xaml"/>
