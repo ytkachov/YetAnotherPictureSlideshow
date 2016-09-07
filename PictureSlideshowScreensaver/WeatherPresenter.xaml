@@ -10,20 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300"
              >
-  <!-- 
-  <presenters:WeatherPresenter.Style>
-    <Style>
-      <Setter Property="ChildMargin" Value="2"  />
-      <Setter Property="ChildBorderThickness" Value="2"  />
-      <Setter Property="ChildPadding" Value="3"  />
-      <Setter Property="PictureSize" Value="50"  />
-      <Setter Property="FillColor" Value="White"  />
-      <Setter Property="StrokeColor" Value="Black"  />
-      <Setter Property="FontSize" Value="40"  />
-      <Setter Property="FontFamily" Value="Segoe UI Light" />
-    </Style>
-  </presenters:WeatherPresenter.Style>
-  -->
+
   <StackPanel Orientation="Horizontal" >
     <StackPanel.Resources>
       <Style TargetType="CustomControls:OutlinedTextBlock">
@@ -52,7 +39,7 @@
     </Border>
     <Border x:Name="W_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
       <Viewbox x:Name="W" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding PictureSize}" Stretch="Uniform">
-        <ContentControl x:Name="W_content">
+        <ContentControl x:Name="W_content" Opacity="1.0">
           <ContentControl.Content>
             <MultiBinding Converter="{informers:WeatherToPicture}">
               <Binding Path="Weather.Weather"/>

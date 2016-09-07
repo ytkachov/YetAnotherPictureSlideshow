@@ -43,19 +43,19 @@ namespace informers
       { WindDirection.Undefined,    "wd_udefined" },
       { WindDirection.N,            "wd_N"    },
       { WindDirection.NNE,          "wd_NNE"  },
-      { WindDirection.NE,           "wd_NE"   }, 
+      { WindDirection.NE,           "wd_NE"   },
       { WindDirection.ENE,          "wd_ENE"  },
-      { WindDirection.E,            "wd_E"    },  
+      { WindDirection.E,            "wd_E"    },
       { WindDirection.ESE,          "wd_ESE"  },
-      { WindDirection.SE,           "wd_SE"   }, 
+      { WindDirection.SE,           "wd_SE"   },
       { WindDirection.SSE,          "wd_SSE"  },
-      { WindDirection.S,            "wd_S"    },  
+      { WindDirection.S,            "wd_S"    },
       { WindDirection.SSW,          "wd_SSW"  },
-      { WindDirection.SW,           "wd_SW"   }, 
+      { WindDirection.SW,           "wd_SW"   },
       { WindDirection.WSW,          "wd_WSW"  },
-      { WindDirection.W,            "wd_W"    },   
+      { WindDirection.W,            "wd_W"    },
       { WindDirection.WNW,          "wd_WNW"  },
-      { WindDirection.NW,           "wd_NW"   }, 
+      { WindDirection.NW,           "wd_NW"   },
       { WindDirection.NNW,          "wd_NNW"  }
     };
 
@@ -63,7 +63,7 @@ namespace informers
 
   public class WeatherToPicture : MarkupExtension, IMultiValueConverter
   {
-    public object Convert(object [] values, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
       if (values == null)
         return null;
@@ -77,10 +77,10 @@ namespace informers
          (wp == WeatherPeriod.Now && (DateTime.Now.Hour >= 18 || DateTime.Now.Hour < 6)))
         n = 1;
 
-        return Application.Current.TryFindResource(weatherformatter.weather_types_to_picture[wt][n]) as Canvas;
+      return Application.Current.TryFindResource(weatherformatter.weather_types_to_picture[wt][n]) as Canvas;
     }
 
-    public object[] ConvertBack(object value, Type [] targetType, object parameter, CultureInfo culture)
+    public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
     {
       throw new NotImplementedException();
     }
@@ -142,6 +142,7 @@ namespace informers
     private IWeatherProvider _curr_temp_provider = WeatherProviderNGS.get();
     private IWeatherProvider _forecast_provider = WeatherProviderNGS.get();
 
+    private string _dbg_info = "";
     private bool _weather_status = false;
     private double _temperature = 0.0, _temperature_low, _temperature_high;
     private double _wind_speed = 0.0;
@@ -156,6 +157,12 @@ namespace informers
     {
       get { return (_temperature >= 0 ? "+" : "") + _temperature.ToString(); }
       set { _temperature = double.Parse(value); RaisePropertyChanged("Temperature"); }
+    }
+
+    public string DbgInfo
+    {
+      get { return _dbg_info; }
+      set { _dbg_info = value; RaisePropertyChanged("DbgInfo"); }
     }
 
     public string TemperatureRange
@@ -200,7 +207,7 @@ namespace informers
     public WeatherInformer()
     {
       _weatherTick.Tick += new EventHandler(weather_Tick);
-      _weatherTick.Interval = TimeSpan.FromSeconds(5.0);
+      _weatherTick.Interval = TimeSpan.FromSeconds(15.0);
       _weatherTick.Start();
     }
 
@@ -216,11 +223,17 @@ namespace informers
       update_Wind(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
       update_Humidity(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
       update_Weather(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
+      update_DbgInfo(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider);
     }
 
     private void update_Weather(IWeatherProvider provider, WeatherPeriod period)
     {
       WeatherType w;
+      if (period == WeatherPeriod.TomorrowNight || period == WeatherPeriod.TomorrowMorning)
+      {
+        int i = 0;
+      }
+
       if (provider.get_character(period, out w))
       {
         Weather = w;
@@ -230,6 +243,8 @@ namespace informers
       {
         Weather_Status = false;
       }
+
+
     }
 
     private void update_Temperature(IWeatherProvider provider, WeatherPeriod period)
@@ -260,6 +275,11 @@ namespace informers
       {
         Weather_Status = false;
       }
+    }
+
+    private void update_DbgInfo(IWeatherProvider provider)
+    {
+      DbgInfo = "this is dbg_info"; // provider.get_error_description();
     }
 
     private void update_Humidity(IWeatherProvider provider, WeatherPeriod period)

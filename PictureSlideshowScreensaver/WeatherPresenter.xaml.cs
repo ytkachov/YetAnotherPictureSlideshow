@@ -117,7 +117,7 @@ namespace presenters
 
     public ShowWhat Show
     {
-      get { return (ShowWhat)GetValue(WeatherPeriodProperty); }
+      get { return (ShowWhat)GetValue(ShowProperty); }
       set { SetValueDP(ShowProperty, value); }
     }
 
@@ -152,7 +152,7 @@ namespace presenters
     }
 
     public Brush FillColor
-    {
+    {                                                                                                            
       get { return (Brush)GetValue(FillColorProperty); }
       set { SetValueDP(FillColorProperty, value); }
     }

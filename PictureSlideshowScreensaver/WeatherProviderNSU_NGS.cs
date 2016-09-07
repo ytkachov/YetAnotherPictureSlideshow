@@ -84,6 +84,7 @@ namespace weather
       { "partly_cloudy_snow_day",             WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_day",       WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
+      { "light_cloudy_none_day",              WeatherType.PartlyCloudy},
       { "partly_cloudy_none_day",             WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
@@ -106,6 +107,7 @@ namespace weather
       { "partly_cloudy_snow_night",           WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_night",     WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
+      { "light_cloudy_none_night",            WeatherType.PartlyCloudy},
       { "partly_cloudy_none_night",           WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
@@ -160,10 +162,11 @@ namespace weather
 
       while (true)
       {
+        _error_descr = "";
         try
         {
-        if (browser_ == null)
-          browser_ = new IE();
+          if (browser_ == null)
+            browser_ = new IE();
         }
         catch (Exception e)
         {
@@ -179,16 +182,10 @@ namespace weather
         weather w = new weather();
         read_nsu_current_temp(w);
 
-        try
-        {
-          read_ngs_current_weather(w);
-          _weather[WeatherPeriod.Now] = w;
+        read_ngs_current_weather(w);
+        _weather[WeatherPeriod.Now] = w;
 
-          read_ngs_forecast();
-        }
-        catch (Exception e)
-        {
-        }
+        read_ngs_forecast();
 
         if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
           break;
@@ -385,7 +382,12 @@ namespace weather
 
         w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
-        // wind
+        if (w.WeatherType == WeatherType.Undefined)
+        {
+          int i = 0;
+        }
+
+                // wind
         cn = "icon-small icon-wind-";
         e = wind_divs[period].SelectSingleNode("./i");
         if (e == null)
