@@ -242,11 +242,9 @@ namespace weather
       try
       {
         browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
-        Thread.Sleep(5000);
+        Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
-
-        File.WriteAllText(@"D:\outerhtml.html", browser_.Html);
 
         Table tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements"));
         if (!tbl.Exists)
@@ -265,6 +263,9 @@ namespace weather
       {
         success = false;
         _error_descr = e.Message;
+
+        string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        File.WriteAllText(fname, browser_.Html);
       }
 
       finally
@@ -428,7 +429,7 @@ namespace weather
       try
       {
         browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
-        Thread.Sleep(5000);
+        Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
 
@@ -524,8 +525,8 @@ namespace weather
         success = false;
         _error_descr = e.Message;
 
-        //string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
-        //File.WriteAllText(fname, outerhtml);
+        string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        File.WriteAllText(fname, outerhtml);
 
       }
 

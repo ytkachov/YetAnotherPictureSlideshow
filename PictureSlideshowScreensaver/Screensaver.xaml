@@ -39,7 +39,7 @@
         </StackPanel>
       </StackPanel>
 
-      <Grid Visibility="Visible" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6">
+      <Grid Visibility="Collapsed" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6">
         <!-- Weather forecast -->
         <Grid.RowDefinitions>
           <RowDefinition Height="20*"/>
