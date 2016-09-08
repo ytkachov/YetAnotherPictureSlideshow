@@ -24,9 +24,9 @@
         <RowDefinition Height="20*"/>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="20*"/>
+        <ColumnDefinition Width="10*"/>
         <ColumnDefinition Width="80*"/>
-        <ColumnDefinition Width="20*"/>
+        <ColumnDefinition Width="10*"/>
       </Grid.ColumnDefinitions>
 
       <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Orientation="Vertical">
@@ -34,12 +34,15 @@
           <informers:PhotoPropertiesInformer x:Name="PhotoProperties"/>
         </StackPanel.DataContext>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-          <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
           <CustomControls:OutlinedTextBlock Text="{Binding Path=Faces_Found}" x:Name="FacesFound" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
+          <CustomControls:OutlinedTextBlock Text=" " Width="10"  VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
+          <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
         </StackPanel>
       </StackPanel>
 
-      <Grid Visibility="Visible" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6">
+      <Border Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Visible"
+              Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
+        <Grid>
         <!-- Weather forecast -->
         <Grid.RowDefinitions>
           <RowDefinition Height="20*"/>
@@ -49,10 +52,10 @@
           <RowDefinition Height="20*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="20*"/>
-          <ColumnDefinition Width="50*"/>
-          <ColumnDefinition Width="50*"/>
-          <ColumnDefinition Width="50*"/>
+          <ColumnDefinition Width="80*"/>
+          <ColumnDefinition Width="300*"/>
+          <ColumnDefinition Width="300*"/>
+          <ColumnDefinition Width="300*"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="1"  >
@@ -117,7 +120,7 @@
           <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" />
         </StackPanel>
       </Grid>
-
+      </Border>
     </Grid>
 
     <Grid Grid.Row="1">
