@@ -7,13 +7,13 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PictureSlideshowScreensaver By RepTail")]
+[assembly: AssemblyTitle("Yet another picture slideshow screensaver by Yuri Tkachov")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PictureSlideshowScreensaver")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright YT © 2016")]
+[assembly: AssemblyTrademark("YT")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

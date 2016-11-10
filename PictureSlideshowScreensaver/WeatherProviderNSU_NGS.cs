@@ -455,27 +455,27 @@ namespace weather
         string class_name = "icon-weather-big ";
         XmlNode icon_weather = pgd_current.SelectSingleNode(string.Format("./div/div[starts-with(@class, '{0}')]", class_name));
         if (icon_weather == null)
-          throw new Exception("incorrect current weather structure: cant find weather type icon");
+          throw new Exception("incorrect current weather structure-- cant find weather type icon");
 
         string wt = icon_weather.SelectSingleNode("@class").Value.Substring(class_name.Length);
         w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
         XmlNode today = pgd_current.SelectSingleNode("./div[@class = 'today-panel__info__main']");
         if (today == null)
-          throw new Exception("incorrect current weather structure: cant find today weather panel");
+          throw new Exception("incorrect current weather structure -- cant find today weather panel");
 
         XmlNode curr = today.SelectSingleNode("./div[starts-with(@class, 'today-panel__info__main__item')]");
         if (curr == null)
-          throw new Exception("incorrect current weather structure: cant find weather panel");
+          throw new Exception("incorrect current weather structure -- cant find weather panel");
 
         // temperature
         XmlNode temp = curr.SelectSingleNode("./div/span/span[@class = 'value__main']");
         if (temp == null)
-          throw new Exception("incorrect current weather structure: cant find current temperature");
+          throw new Exception("incorrect current weather structure -- cant find current temperature");
 
         string st = temp.InnerText.Trim().Replace(',', '.').Replace('−', '-');
         if (string.IsNullOrEmpty(st))
-          throw new Exception("incorrect current weather structure: incorrect current temperature string");
+          throw new Exception("incorrect current weather structure -- incorrect current temperature string");
 
         double t = double.Parse(st);
         w.TemperatureHigh = w.TemperatureLow = t;
@@ -486,14 +486,14 @@ namespace weather
         string cn = "icon-small icon-wind-";
         XmlNode ei = curr.SelectSingleNode(string.Format("./dl/dd/i[starts-with(@class, '{0}')]", cn));
         if (ei == null)
-          throw new Exception("incorrect current weather structure: cant find wind direction");
+          throw new Exception("incorrect current weather structure -- cant find wind direction");
 
         string wd = ei.SelectSingleNode("@class").Value.Substring(cn.Length);
         w.WindDirection = wind_direction_encoding.Keys.Contains(wd) ? wind_direction_encoding[wd] : WindDirection.Undefined;
 
         XmlNode edt = ei.ParentNode.NextSibling;
         if (edt == null || edt.Name.ToLower() != "dt")
-          throw new Exception("incorrect structure: 2.1");
+          throw new Exception("incorrect structure -- 2.1");
 
         string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
         double ws;
@@ -503,7 +503,7 @@ namespace weather
         // pressure 
         ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-pressure']");
         if (ei == null ||  ei.Name.ToLower() != "i")
-          throw new Exception("incorrect structure: 2.2");
+          throw new Exception("incorrect structure -- 2.2");
 
         double p;
         string pr = ei.SelectSingleNode("@title").Value;
@@ -513,7 +513,7 @@ namespace weather
         // humidity
         ei = curr.SelectSingleNode("./dl/dd/i[@class = 'icon-small icon-humidity']");
         if (ei == null || ei.Name.ToLower() != "i")
-          throw new Exception("incorrect structure: 2.3");
+          throw new Exception("incorrect structure -- 2.3");
 
         double h;
         string humidity = ei.SelectSingleNode("@title").Value;
