@@ -265,7 +265,7 @@ namespace weather
         _error_descr = e.Message;
 
         string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
-        File.WriteAllText(fname, browser_.Html);
+        //File.WriteAllText(fname, browser_.Html);
       }
 
       finally
@@ -525,8 +525,8 @@ namespace weather
         success = false;
         _error_descr = e.Message;
 
-        string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
-        File.WriteAllText(fname, outerhtml);
+        string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        //File.WriteAllText(fname, outerhtml);
 
       }
 
