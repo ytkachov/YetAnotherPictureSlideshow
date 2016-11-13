@@ -176,18 +176,40 @@ namespace PictureSlideshowScreensaver
     }
   }
 
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class Screensaver : Window
+
+  class Settings
+  {
+    public string _path = null;
+    public double _updateInterval = 5; // seconds
+    public int _fadeSpeed = 200;       // milliseconds
+    public int _startOffset = 0;
+    public bool _writeStat = false;
+    public string _writeStatPath;
+    public bool _dependOnBattery = false;
+
+    public Settings()
+    {
+      RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
+      if (key != null)
+      {
+        _path = (string)key.GetValue("ImageFolder");
+        _updateInterval = double.Parse((string)key.GetValue("Interval"));
+        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
+        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
+        _writeStat = int.Parse((string)key.GetValue("WriteStat")) == 1;
+        _writeStatPath = (string)key.GetValue("WriteStatFolder");
+        _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery")) == 1;
+      }
+    }
+
+}
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class Screensaver : Window
   {
     private Random _rand;
-    private string _path = null;
-    private double _updateInterval = 5; // seconds
-    private int _fadeSpeed = 200;       // milliseconds
-    private int _startOffset = 0;
-    private bool _writeStat = false;
-    private string _writeStatPath;
+    private Settings _settings;
 
     private ImagesInfo _images;
     private DispatcherTimer _switchImage;
@@ -199,16 +221,6 @@ namespace PictureSlideshowScreensaver
 
     public Screensaver(System.Drawing.Rectangle bounds, int offset)
     {
-      RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
-      if (key != null)
-      {
-        _path = (string)key.GetValue("ImageFolder");
-        _updateInterval = double.Parse((string)key.GetValue("Interval"));
-        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
-        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
-        _writeStat = int.Parse((string)key.GetValue("WriteStat")) == 1;
-        _writeStatPath = (string)key.GetValue("WriteStatFolder");
-      }
 
       InitializeComponent();
       _bounds = bounds;
@@ -216,7 +228,7 @@ namespace PictureSlideshowScreensaver
       _images = new ImagesInfo();
 
       _switchImage = new DispatcherTimer();
-      _switchImage.Interval = TimeSpan.FromSeconds(_updateInterval + offset);
+      _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval + offset);
       _switchImage.Tick += new EventHandler(fade_Tick);
 
       _changeWeatherForecast = new DispatcherTimer();
@@ -224,7 +236,7 @@ namespace PictureSlideshowScreensaver
       _changeWeatherForecast.Tick += new EventHandler(forecast_Tick);
       forecast_Tick(null, null);
 
-      _startOffset = offset;
+      _settings._startOffset = offset;
       _rand = new Random(DateTime.Now.Second);
       _power = new cPower();
       _power.BatteryUpdateEvery = 30;
@@ -238,7 +250,7 @@ namespace PictureSlideshowScreensaver
 
     void fade_Tick(object sender, EventArgs e)
     {
-      _switchImage.Interval = TimeSpan.FromSeconds(_updateInterval);
+      _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
       DateTime dt = DateTime.Now;
       if (dt.Hour < 7)
@@ -287,10 +299,10 @@ namespace PictureSlideshowScreensaver
 #endif
 
       // Load images
-      if (_path != null)
+      if (_settings._path != null)
       {
         // _path = @"E:\PHOTOS\Niagara falls\";
-        foreach (var path in _path.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+        foreach (var path in _settings._path.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
         {
           bool subdir = false;
           string p = path;
@@ -347,15 +359,15 @@ namespace PictureSlideshowScreensaver
           {
             SetImage(img1, nextphoto);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_fadeSpeed)));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_fadeSpeed)));
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
           }
           else if (img2.Opacity == 0)
           {
             SetImage(img2, nextphoto);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_fadeSpeed)));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_fadeSpeed)));
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
           }
           return;
         }
@@ -370,7 +382,7 @@ namespace PictureSlideshowScreensaver
     //private int nxtimg = 0;
     private void SetImage(Image img, PhotoInfo nextphoto)
     {
-      if (_power.HasBattery && _power.BatteryLifePercent < 10)
+      if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 10)
         return;
 
       BitmapImage bmp_img = new BitmapImage(new Uri(nextphoto._name));
@@ -423,7 +435,8 @@ namespace PictureSlideshowScreensaver
       if (!nextphoto._processed)
       {
 
-        if (!_power.HasBattery || 
+        if (!_settings._dependOnBattery || 
+            !_power.HasBattery || 
             (_power.HasBattery && _power.BatteryLifePercent > 30))
         {
           nextphoto._processed = true;
@@ -488,12 +501,13 @@ namespace PictureSlideshowScreensaver
           cy += fy / dc;
         }
 
-        if (!_power.HasBattery ||
+        if (!_settings._dependOnBattery ||
+            !_power.HasBattery ||
             (_power.HasBattery && _power.BatteryLifePercent > 20))
         {
           ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
           DoubleAnimation da = new DoubleAnimation((nextphoto._faces == null ? 1.0 : 1.05) +
-                                                   (nextphoto._faces == null ? 0.1 : 0.40) * _rand.NextDouble(), new Duration(TimeSpan.FromSeconds(_updateInterval)));
+                                                   (nextphoto._faces == null ? 0.1 : 0.40) * _rand.NextDouble(), new Duration(TimeSpan.FromSeconds(_settings._updateInterval)));
 
           st.BeginAnimation(ScaleTransform.ScaleXProperty, da);
           st.BeginAnimation(ScaleTransform.ScaleYProperty, da);
@@ -529,9 +543,9 @@ namespace PictureSlideshowScreensaver
 
     private void Shutdown()
     {
-      if (_writeStat)
+      if (_settings._writeStat)
       {
-        string fn = System.IO.Path.Combine(_writeStatPath, string.Format("pss_stat_{0}", DateTime.Now.ToString("MMddHHmm")));
+        string fn = System.IO.Path.Combine(_settings._writeStatPath, string.Format("pss_stat_{0}", DateTime.Now.ToString("MMddHHmm")));
         using (StreamWriter tw = new StreamWriter(fn))
         {
           tw.Write("total pictures: {0}\n", _images.Count);
