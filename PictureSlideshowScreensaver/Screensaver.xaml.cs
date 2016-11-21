@@ -26,6 +26,7 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using System.Windows.Interop;
 using BatteryMonitor;
+using WindowsInput;
 
 namespace PictureSlideshowScreensaver
 {
@@ -193,12 +194,11 @@ namespace PictureSlideshowScreensaver
       if (key != null)
       {
         _path = (string)key.GetValue("ImageFolder");
-        _updateInterval = double.Parse((string)key.GetValue("Interval"));
-        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
-        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime"));
-        _writeStat = int.Parse((string)key.GetValue("WriteStat")) == 1;
+        _updateInterval = double.Parse((string)key.GetValue("Interval") ?? "10.0");
+        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime") ?? "1000");
+        _writeStat = int.Parse((string)key.GetValue("WriteStat") ?? "0") == 1;
         _writeStatPath = (string)key.GetValue("WriteStatFolder");
-        _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery")) == 1;
+        _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
       }
     }
 
@@ -209,7 +209,8 @@ namespace PictureSlideshowScreensaver
 public partial class Screensaver : Window
   {
     private Random _rand;
-    private Settings _settings;
+    private Settings _settings = new Settings();
+    private InputSimulator _input = new InputSimulator();
 
     private ImagesInfo _images;
     private DispatcherTimer _switchImage;
@@ -349,6 +350,9 @@ public partial class Screensaver : Window
 
     private void NextImage()
     {
+      // move mouse to prevent sleeping
+      _input.Mouse.MoveMouseBy(_rand.Next(-1, 2), _rand.Next(-1, 2));
+
       PhotoInfo nextphoto = _images.MoveNext();
       if (nextphoto != null)
       {
