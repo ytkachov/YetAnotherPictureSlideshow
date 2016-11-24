@@ -96,6 +96,7 @@ namespace weather
       { "cloudy_light_rain_day",              WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_day",                    WeatherType.OvercastSnowy },
       { "cloudy_light_snow_day",              WeatherType.OvercastPartlySnowy },
+      { "cloudy_heavy_snow_day",              WeatherType.OvercastSnowyStorm },
       { "cloudy_thunderstorm_day",            WeatherType.OvercastLightningRainy },
       { "cloudy_none_day",                    WeatherType.Overcast },
       { "sunshine_light_rain_night",          WeatherType.ClearPartlyRainy },
@@ -119,6 +120,7 @@ namespace weather
       { "cloudy_light_rain_night",            WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_night",                  WeatherType.OvercastSnowy },
       { "cloudy_light_snow_night",            WeatherType.OvercastPartlySnowy },
+      { "cloudy_heavy_snow_night",            WeatherType.OvercastSnowyStorm },
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
     };

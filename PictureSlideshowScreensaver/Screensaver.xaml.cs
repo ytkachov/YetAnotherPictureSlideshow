@@ -562,7 +562,7 @@ public partial class Screensaver : Window
           });
 
           foreach (var img in imgs)
-            tw.Write("{0} : [{2}] {1}\n", img._shown, img._name, img._dateTaken.Value.ToString("yyyy-MM-dd"));
+            tw.Write("{0} : [{2}] {1}\n", img._shown, img._name, img._dateTaken != null ? img._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
         }
       }
 
