@@ -44,10 +44,10 @@ namespace PictureSlideshowScreensaver
 
   class ImagesInfo
   {
+    private object _locker = new object();
     private int _currentSecCount;
     private IEnumerator<int> _currentSecEnum;
     private DateTime[] _dates;
-    private PhotoInfo _currentImage;
 
     private PhotoInfo[] _images;
     private Dictionary<DateTime, List<int>> _imagesByDate;
@@ -59,27 +59,31 @@ namespace PictureSlideshowScreensaver
 
     public void Add(string name)
     {
-      PhotoInfo ii = new PhotoInfo(name);
-
-      try
+      lock (_locker)
       {
-        using (var reader = new ExifReader(name))
+
+        PhotoInfo ii = new PhotoInfo(name);
+
+        try
         {
-          DateTime datePictureTaken;
-          if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
-            ii._dateTaken = datePictureTaken;
+          using (var reader = new ExifReader(name))
+          {
+            DateTime datePictureTaken;
+            if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
+              ii._dateTaken = datePictureTaken;
 
-          UInt16 orientation;
-          if (reader.GetTagValue(ExifTags.Orientation, out orientation))
-            ii._orientation = orientation;
+            UInt16 orientation;
+            if (reader.GetTagValue(ExifTags.Orientation, out orientation))
+              ii._orientation = orientation;
+          }
         }
-      }
-      catch (Exception ex)
-      {
-        ex.ToString();
-      }
+        catch (Exception ex)
+        {
+          ex.ToString();
+        }
 
-      _imagesTmp.Add(ii);
+        _imagesTmp.Add(ii);
+      }
     }
 
     public int Count { get { return _images == null ? _imagesTmp.Count : _images.Length; } }
@@ -87,33 +91,65 @@ namespace PictureSlideshowScreensaver
 
     public PhotoInfo MoveNext()
     {
-      if (_images == null)
-        buildImageSec();
-
-      if (_currentSecCount <= 0)
+      PhotoInfo currentImage = null;
+      lock (_locker)
       {
-        DateTime currentSecDate = _dates[_rand.Next(0, _dates.Length)];
+        if (_images == null || _images.Length != _imagesTmp.Count)
+          buildImageSec();
 
-        _imagesByDate[currentSecDate] = RandomizeGenericList(_imagesByDate[currentSecDate]);
-        _currentSecEnum = _imagesByDate[currentSecDate].GetEnumerator();
-        _currentSecEnum.MoveNext();
+        if (_images.Length != 0)
+        {
+          if (_currentSecCount <= 0)
+          {
+            // build new sequence
+            DateTime currentSecDate = _dates[_rand.Next(0, _dates.Length)];
 
-        _currentSecCount = Math.Min(_maxSecNumber, _imagesByDate[currentSecDate].Count);
+            _imagesByDate[currentSecDate] = RandomizeGenericList(_imagesByDate[currentSecDate]);
+            _currentSecEnum = _imagesByDate[currentSecDate].GetEnumerator();
+            _currentSecEnum.MoveNext();
+
+            _currentSecCount = Math.Min(_maxSecNumber, _imagesByDate[currentSecDate].Count);
+          }
+
+          _currentSecCount--;
+          _images[_currentSecEnum.Current]._shown++;
+          currentImage = _images[_currentSecEnum.Current];
+
+          if (!_currentSecEnum.MoveNext())
+            _currentSecCount = 0;
+
+          _shownImages++;
+        }
       }
 
-      _currentSecCount--;
-      _images[_currentSecEnum.Current]._shown++;
-      _currentImage = _images[_currentSecEnum.Current];
-
-      if (!_currentSecEnum.MoveNext())
-        _currentSecCount = 0;
-
-      _shownImages++;
-      return _currentImage; 
+      return currentImage;
     }
 
-    public PhotoInfo GetCurrentImage() { return _currentImage; }
-    public PhotoInfo[] GetImages() { return _images; }
+    public void WriteStat(string write_stat_path)
+    {
+      lock (_locker)
+      {
+        string fn = System.IO.Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("MM-dd-HHmm")));
+        using (StreamWriter tw = new StreamWriter(fn))
+        {
+          tw.Write("total pictures: {0}\n", _images.Length);
+          tw.Write("shown pictures: {0}\n", _shownImages);
+
+          int[] imgidx = new int[_images.Length];
+          for (int i = 0; i < _images.Length; i++)
+            imgidx[i] = i;
+
+          Array.Sort(imgidx, delegate (int ii1, int ii2)
+          {
+            return _images[ii1]._shown != _images[ii2]._shown ? -(_images[ii1]._shown.CompareTo(_images[ii2]._shown)) :
+                    _images[ii1]._name.CompareTo(_images[ii2]._name);
+          });
+
+          foreach (var img in imgidx)
+            tw.Write("{0} : [{2}] {1}\n", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
+        }
+      }
+    }
 
     private void buildImageSec()
     {
@@ -187,6 +223,7 @@ namespace PictureSlideshowScreensaver
     public bool _writeStat = false;
     public string _writeStatPath;
     public bool _dependOnBattery = false;
+    public bool _workAtNight = true;
 
     public Settings()
     {
@@ -219,6 +256,7 @@ public partial class Screensaver : Window
 
     private System.Drawing.Rectangle _bounds;
     private cPower _power;
+    private int _prevTime = 0;
 
     public Screensaver(System.Drawing.Rectangle bounds, int offset)
     {
@@ -253,8 +291,7 @@ public partial class Screensaver : Window
     {
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
-      DateTime dt = DateTime.Now;
-      if (dt.Hour < 7)
+      if (!_settings._workAtNight && DateTime.Now.Hour < 7)
         return;        // фотографии не меняются ночью.
 
       NextImage();
@@ -302,31 +339,21 @@ public partial class Screensaver : Window
       // Load images
       if (_settings._path != null)
       {
-        // _path = @"E:\PHOTOS\Niagara falls\";
-        foreach (var path in _settings._path.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-        {
-          bool subdir = false;
-          string p = path;
-          if (path.EndsWith(@"\*"))
-          {
-            subdir = true;
-            p = path.Substring(0, path.Length - 2);
-          }
+        scanForImages(_settings._path);
+        Thread.Sleep(1000);
 
-          addImages(p, subdir);
-        }
-
-        if (_images.Count > 0)
-        {
-          NextImage();
-
-          _switchImage.Start();
-        }
+        NextImage();
+        _switchImage.Start();
       }
       else
       {
         lblUp.Content = "Image folder not set! Please run configuration.";
       }
+    }
+
+    private void scanForImages(string _path)
+    {
+      throw new NotImplementedException();
     }
 
     private void addImages(string p, bool subdir)
@@ -352,6 +379,12 @@ public partial class Screensaver : Window
     {
       // move mouse to prevent sleeping
       _input.Mouse.MoveMouseBy(_rand.Next(-1, 2), _rand.Next(-1, 2));
+
+      // write stat every day at 8PM
+      if (_settings._writeStat && _prevTime == 20 && DateTime.Now.Hour == _prevTime + 1)
+        _images.WriteStat(_settings._writeStatPath);
+
+      _prevTime = DateTime.Now.Hour;
 
       PhotoInfo nextphoto = _images.MoveNext();
       if (nextphoto != null)
@@ -548,23 +581,7 @@ public partial class Screensaver : Window
     private void Shutdown()
     {
       if (_settings._writeStat)
-      {
-        string fn = System.IO.Path.Combine(_settings._writeStatPath, string.Format("pss_stat_{0}", DateTime.Now.ToString("MMddHHmm")));
-        using (StreamWriter tw = new StreamWriter(fn))
-        {
-          tw.Write("total pictures: {0}\n", _images.Count);
-          tw.Write("shown pictures: {0}\n", _images.Shown);
-
-          PhotoInfo[] imgs = _images.GetImages();
-          Array.Sort(imgs, delegate (PhotoInfo ii1, PhotoInfo ii2) {
-            return ii1._shown != ii2._shown ? - (ii1._shown.CompareTo(ii2._shown)) : 
-                                                 ii1._name.CompareTo(ii2._name); 
-          });
-
-          foreach (var img in imgs)
-            tw.Write("{0} : [{2}] {1}\n", img._shown, img._name, img._dateTaken != null ? img._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
-        }
-      }
+      _images.WriteStat(_settings._writeStatPath);
 
       Application.Current.Shutdown();
     }

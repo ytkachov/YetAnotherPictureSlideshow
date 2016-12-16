@@ -41,7 +41,7 @@
         </StackPanel>
       </StackPanel>
 
-      <Border Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Visible"
+      <Border Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Hidden"
               Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
         <Grid>
         <!-- Weather forecast -->
