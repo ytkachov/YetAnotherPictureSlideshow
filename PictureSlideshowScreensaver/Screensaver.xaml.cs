@@ -1,217 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using System.IO;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.Threading;
-using ExifLib;
-using CustomControls;
-using weather;
-using presenters;
-using System.Drawing.Imaging;
-using Emgu.CV;
-using Emgu.CV.CvEnum;
 using System.Windows.Interop;
+
+using Emgu.CV;
 using BatteryMonitor;
 using WindowsInput;
 
+using weather;
+using presenters;
+
 namespace PictureSlideshowScreensaver
 {
-  class PhotoInfo
-  {
-    public PhotoInfo(string nm) { _name = nm; }
-    public string _name;
-    public DateTime ? _dateTaken;
-    public int _shown = 0;
-    public UInt16 _orientation = 0;
-    public List<System.Drawing.Rectangle> _faces = null;
-    public bool _processed = false;
-    internal double _dmult;
-  }
-
-  class ImagesInfo
-  {
-    private object _locker = new object();
-    private int _currentSecCount;
-    private IEnumerator<int> _currentSecEnum;
-    private DateTime[] _dates;
-
-    private PhotoInfo[] _images;
-    private Dictionary<DateTime, List<int>> _imagesByDate;
-    private List<PhotoInfo> _imagesTmp = new List<PhotoInfo>();
-    private Random _rand;
-    private int _maxSecNumber = 10;
-    private int _maxSecLength = 30;
-    private int _shownImages = 0;
-
-    public void Add(string name)
-    {
-      lock (_locker)
-      {
-
-        PhotoInfo ii = new PhotoInfo(name);
-
-        try
-        {
-          using (var reader = new ExifReader(name))
-          {
-            DateTime datePictureTaken;
-            if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
-              ii._dateTaken = datePictureTaken;
-
-            UInt16 orientation;
-            if (reader.GetTagValue(ExifTags.Orientation, out orientation))
-              ii._orientation = orientation;
-          }
-        }
-        catch (Exception ex)
-        {
-          ex.ToString();
-        }
-
-        _imagesTmp.Add(ii);
-      }
-    }
-
-    public int Count { get { return _images == null ? _imagesTmp.Count : _images.Length; } }
-    public int Shown { get { return _shownImages; } }
-
-    public PhotoInfo MoveNext()
-    {
-      PhotoInfo currentImage = null;
-      lock (_locker)
-      {
-        if (_images == null || _images.Length != _imagesTmp.Count)
-          buildImageSec();
-
-        if (_images.Length != 0)
-        {
-          if (_currentSecCount <= 0)
-          {
-            // build new sequence
-            DateTime currentSecDate = _dates[_rand.Next(0, _dates.Length)];
-
-            _imagesByDate[currentSecDate] = RandomizeGenericList(_imagesByDate[currentSecDate]);
-            _currentSecEnum = _imagesByDate[currentSecDate].GetEnumerator();
-            _currentSecEnum.MoveNext();
-
-            _currentSecCount = Math.Min(_maxSecNumber, _imagesByDate[currentSecDate].Count);
-          }
-
-          _currentSecCount--;
-          _images[_currentSecEnum.Current]._shown++;
-          currentImage = _images[_currentSecEnum.Current];
-
-          if (!_currentSecEnum.MoveNext())
-            _currentSecCount = 0;
-
-          _shownImages++;
-        }
-      }
-
-      return currentImage;
-    }
-
-    public void WriteStat(string write_stat_path)
-    {
-      lock (_locker)
-      {
-        string fn = System.IO.Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("MM-dd-HHmm")));
-        using (StreamWriter tw = new StreamWriter(fn))
-        {
-          tw.Write("total pictures: {0}\n", _images.Length);
-          tw.Write("shown pictures: {0}\n", _shownImages);
-
-          int[] imgidx = new int[_images.Length];
-          for (int i = 0; i < _images.Length; i++)
-            imgidx[i] = i;
-
-          Array.Sort(imgidx, delegate (int ii1, int ii2)
-          {
-            return _images[ii1]._shown != _images[ii2]._shown ? -(_images[ii1]._shown.CompareTo(_images[ii2]._shown)) :
-                    _images[ii1]._name.CompareTo(_images[ii2]._name);
-          });
-
-          foreach (var img in imgidx)
-            tw.Write("{0} : [{2}] {1}\n", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
-        }
-      }
-    }
-
-    private void buildImageSec()
-    {
-      _images = _imagesTmp.ToArray();
-      _imagesByDate = new Dictionary<DateTime, List<int>>();
-
-      _rand = new Random(DateTime.Now.Millisecond);
-
-      for (int i = 0; i < _images.Length; i++)
-      {
-        DateTime dt = _images[i]._dateTaken == null ? DateTime.MinValue : _images[i]._dateTaken.Value.Date;
-
-        if (!_imagesByDate.ContainsKey(dt))
-          _imagesByDate.Add(dt, new List<int>());
-
-        _imagesByDate[dt].Add(i);
-      }
-
-      // split long lists to smaller parts
-      var dts = _imagesByDate.Keys.ToArray();
-      foreach (DateTime dt in dts)
-        if (_imagesByDate[dt].Count > _maxSecLength)
-        {
-          DateTime dtn = dt;
-          for (int r = 0; r < _imagesByDate[dt].Count; r += _maxSecLength)
-          {
-            dtn = dtn.AddSeconds(1.0);
-
-            int cnt = Math.Min(_maxSecLength, _imagesByDate[dt].Count - r);
-            _imagesByDate[dtn] = _imagesByDate[dt].GetRange(r, cnt);
-          }
-
-          _imagesByDate.Remove(dt);
-        }
-
-      _dates = _imagesByDate.Keys.ToArray();
-    }
-
-    private static List<T> RandomizeGenericList<T>(IList<T> originalList)
-    {
-      List<T> randomList = new List<T>();
-      Random random = new Random();
-      T value = default(T);
-
-      //now loop through all the values in the list
-      while (originalList.Count() > 0)
-      {
-        //pick a random item from th original list
-        var nextIndex = random.Next(0, originalList.Count());
-        //get the value for that random index
-        value = originalList[nextIndex];
-        //add item to the new randomized list
-        randomList.Add(value);
-        //remove value from original list (prevents
-        //getting duplicates
-        originalList.RemoveAt(nextIndex);
-      }
-
-      //return the randomized list
-      return randomList;
-    }
-  }
 
 
   class Settings
@@ -249,7 +58,7 @@ public partial class Screensaver : Window
     private Settings _settings = new Settings();
     private InputSimulator _input = new InputSimulator();
 
-    private ImagesInfo _images;
+    private ImagesProvider _images = new LocalImages();
     private DispatcherTimer _switchImage;
     private DispatcherTimer _changeWeatherForecast;
     private Point _mouseLocation = new Point(0, 0);
@@ -264,7 +73,7 @@ public partial class Screensaver : Window
       InitializeComponent();
       _bounds = bounds;
 
-      _images = new ImagesInfo();
+      _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
 
       _switchImage = new DispatcherTimer();
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval + offset);
@@ -336,43 +145,7 @@ public partial class Screensaver : Window
       this.ResizeMode = ResizeMode.CanResizeWithGrip;
 #endif
 
-      // Load images
-      if (_settings._path != null)
-      {
-        scanForImages(_settings._path);
-        Thread.Sleep(1000);
-
-        NextImage();
-        _switchImage.Start();
-      }
-      else
-      {
-        lblUp.Content = "Image folder not set! Please run configuration.";
-      }
-    }
-
-    private void scanForImages(string _path)
-    {
-      throw new NotImplementedException();
-    }
-
-    private void addImages(string p, bool subdir)
-    {
-      if (Directory.Exists(p))
-      {
-        foreach (string s in Directory.GetFiles(p))
-        {
-          string ss = s.ToLower();
-          if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
-          {
-            _images.Add(ss);
-          }
-        }
-      }
-
-      if (subdir)
-        foreach (string d in Directory.GetDirectories(p))
-          addImages(d, subdir);
+      _switchImage.Start();
     }
 
     private void NextImage()
@@ -386,7 +159,7 @@ public partial class Screensaver : Window
 
       _prevTime = DateTime.Now.Hour;
 
-      PhotoInfo nextphoto = _images.MoveNext();
+      ImageInfo nextphoto = _images.GetNext();
       if (nextphoto != null)
       {
         try
@@ -417,7 +190,7 @@ public partial class Screensaver : Window
     }
 
     //private int nxtimg = 0;
-    private void SetImage(Image img, PhotoInfo nextphoto)
+    private void SetImage(Image img, ImageInfo nextphoto)
     {
       if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 10)
         return;
@@ -591,39 +364,10 @@ public partial class Screensaver : Window
       Shutdown();
     }
 
-    private void lblScreen_MouseMove(object sender, MouseEventArgs e)
-    {
-      Point newPos = e.GetPosition(this);
-      System.Drawing.Point p = new System.Drawing.Point((int)newPos.X, (int)newPos.Y);
-      if ((_mouseLocation.X != 0 & _mouseLocation.Y != 0) & ((p.X >= 0 & p.X <= _bounds.Width) & (p.Y >= 0 & p.Y <= _bounds.Height)))
-      {
-        if (Math.Abs(_mouseLocation.X - newPos.X) > 10 || Math.Abs(_mouseLocation.Y - newPos.Y) > 10)
-        {
-          // Shutdown();
-        }
-      }
-
-      _mouseLocation = newPos;
-    }
-
-    private void lblScreen_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      // Shutdown();
-    }
-
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Key == Key.Escape)
         Shutdown();            
-    }
-
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-    {
-    }
-
-    private void WeatherPresenter_Loaded(object sender, RoutedEventArgs e)
-    {
-
     }
   }
 
