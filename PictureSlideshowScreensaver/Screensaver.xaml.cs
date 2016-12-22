@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,12 +6,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using System.IO;
 using Microsoft.Win32;
-using System.Threading;
-using System.Windows.Interop;
 
-using Emgu.CV;
 using BatteryMonitor;
 using WindowsInput;
 
@@ -164,7 +159,7 @@ public partial class Screensaver : Window
       {
         try
         {
-          PhotoProperties.Date_Photo_Taken = nextphoto._dateTaken == null ? "" : nextphoto._dateTaken.Value.ToString("dd/MM/yyyy");
+          PhotoProperties.Photo_Description = nextphoto.description;
           if (img1.Opacity == 0)
           {
             SetImage(img1, nextphoto);
@@ -195,97 +190,7 @@ public partial class Screensaver : Window
       if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 10)
         return;
 
-      BitmapImage bmp_img = new BitmapImage(new Uri(nextphoto._name));
-
-      System.Drawing.Bitmap bitmap;
-      using (MemoryStream outStream = new MemoryStream())
-      {
-        BitmapEncoder enc = new BmpBitmapEncoder();
-        enc.Frames.Add(BitmapFrame.Create(bmp_img));
-        enc.Save(outStream);
-        bitmap = new System.Drawing.Bitmap(outStream);
-
-        System.Drawing.RotateFlipType rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
-        switch (nextphoto._orientation)
-        {
-          case 1:
-            break;
-
-          case 2:
-            rf = System.Drawing.RotateFlipType.RotateNoneFlipX;
-            break;
-
-          case 3:
-            rf = System.Drawing.RotateFlipType.Rotate180FlipNone;
-            break;
-          case 4:
-            rf = System.Drawing.RotateFlipType.RotateNoneFlipY;
-            break;
-          case 5:
-            rf = System.Drawing.RotateFlipType.Rotate90FlipX;
-            break;
-          case 6:
-            rf = System.Drawing.RotateFlipType.Rotate90FlipNone;
-            break;
-          case 7:
-            rf = System.Drawing.RotateFlipType.Rotate270FlipX;
-            break;
-          case 8:
-            rf = System.Drawing.RotateFlipType.Rotate270FlipNone;
-            break;
-        }
-
-        if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone)
-        {
-          bitmap.RotateFlip(rf);
-          bmp_img = Bitmap2BitmapImage(bitmap);
-        }
-      }
-
-      if (!nextphoto._processed)
-      {
-
-        if (!_settings._dependOnBattery || 
-            !_power.HasBattery || 
-            (_power.HasBattery && _power.BatteryLifePercent > 30))
-        {
-          nextphoto._processed = true;
-          nextphoto._dmult = 3.0;
-          List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
-
-          System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(bitmap.Width / nextphoto._dmult), (int)(bitmap.Height / nextphoto._dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-          using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
-          {
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(bitmap, 0, 0, b.Width, b.Height);
-
-            try
-            {
-              Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
-              Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
-
-              long detectionTime;
-              FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
-
-              if (faces.Count != 0)
-                nextphoto._faces = faces;
-
-            }
-            catch (Exception e)
-            {
-              string err = e.Message;
-            }
-            //if (faces.Count != 0)
-            //{
-            //  System.Drawing.Pen rpen = new System.Drawing.Pen(System.Drawing.Brushes.Red, (float)3.0);
-            //  foreach (var face in faces)
-            //    g.DrawRectangle(rpen, face);
-
-            //  b.Save(String.Format(@"C:\Temp\{0}.{1}.{2}.png", nxtimg++, faces.Count, detectionTime), ImageFormat.Png);
-            //}
-          }
-        }
-      }
+      BitmapImage bmp_img = nextphoto.bitmap;
 
       img.Stretch = Stretch.Uniform;
       if (bmp_img.Width > bmp_img.Height * 1.2)
@@ -294,30 +199,29 @@ public partial class Screensaver : Window
       img.Source = bmp_img;
       if (img.ActualHeight > 0 && img.ActualWidth > 0)
       {
-        double cx = img.ActualWidth / 2;
-        double cy = img.ActualHeight / 2;
-
-        PhotoProperties.Set_Faces_Found = nextphoto._faces == null ? 0 : nextphoto._faces.Count;
-        if (nextphoto._faces != null)
-        {
-          double dc = 1;
-          dc = bmp_img.PixelHeight / img.ActualHeight;
-
-          int fn = _rand.Next(nextphoto._faces.Count);
-          double fx = ((nextphoto._faces[fn].Right + nextphoto._faces[fn].Left)   * nextphoto._dmult / 2.0 - bmp_img.PixelWidth / 2.0);
-          double fy = ((nextphoto._faces[fn].Top +   nextphoto._faces[fn].Bottom) * nextphoto._dmult / 2.0 - bmp_img.PixelHeight / 2.0);
-
-          cx += fx / dc;
-          cy += fy / dc;
-        }
-
+        // if image is valid
         if (!_settings._dependOnBattery ||
             !_power.HasBattery ||
             (_power.HasBattery && _power.BatteryLifePercent > 20))
         {
+          double cx = img.ActualWidth / 2;
+          double cy = img.ActualHeight / 2;
+          double cs = 1.0 + 0.1 * _rand.NextDouble();
+
+          PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
+          if (nextphoto.accent_count != 0)
+          {
+            double dc = 1;
+            dc = bmp_img.PixelHeight / img.ActualHeight;
+            var accent = nextphoto.accent;
+
+            cx += accent.X / dc;
+            cy += accent.Y / dc;
+            cs = 1.05 + 0.4 * _rand.NextDouble(); 
+          }
+
           ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
-          DoubleAnimation da = new DoubleAnimation((nextphoto._faces == null ? 1.0 : 1.05) +
-                                                   (nextphoto._faces == null ? 0.1 : 0.40) * _rand.NextDouble(), new Duration(TimeSpan.FromSeconds(_settings._updateInterval)));
+          DoubleAnimation da = new DoubleAnimation(cs, new Duration(TimeSpan.FromSeconds(_settings._updateInterval)));
 
           st.BeginAnimation(ScaleTransform.ScaleXProperty, da);
           st.BeginAnimation(ScaleTransform.ScaleYProperty, da);
@@ -325,30 +229,6 @@ public partial class Screensaver : Window
           img.RenderTransform = st;
         }
       }
-    }
-
-    [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-    public static extern bool DeleteObject(IntPtr hObject);
-
-    private BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
-    {
-      IntPtr hBitmap = bitmap.GetHbitmap();
-      BitmapSource retval;
-
-      try
-      {
-        retval = Imaging.CreateBitmapSourceFromHBitmap(
-                     hBitmap,
-                     IntPtr.Zero,
-                     Int32Rect.Empty,
-                     BitmapSizeOptions.FromEmptyOptions());
-      }
-      finally
-      {
-        DeleteObject(hBitmap);
-      }
-
-      return (BitmapImage)retval;
     }
 
     private void Shutdown()

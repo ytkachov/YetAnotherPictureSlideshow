@@ -21,7 +21,7 @@ namespace informers
     private string _faces_found = "";
     private string _date_taken = "21/12/1997";
 
-    public string Date_Photo_Taken { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged("Date_Photo_Taken"); } }
+    public string Photo_Description { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged("Photo_Description"); } }
     public string Faces_Found { get { return _faces_found; } }
     public int Set_Faces_Found
     {

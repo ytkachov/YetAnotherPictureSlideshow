@@ -6,7 +6,7 @@
         xmlns:presenters="clr-namespace:presenters"
         Title="Yet another picture slideshow by Yuri Tkachov" Height="1024" Width="1280" Background="Black" Loaded="Window_Loaded" ResizeMode="NoResize" 
         ShowInTaskbar="False" WindowStyle="None" WindowState="Normal" WindowStartupLocation="Manual" 
-        Topmost="True" Cursor="Cross" KeyDown="Window_KeyDown" Closing="Window_Closing">
+        Topmost="True" Cursor="Cross" KeyDown="Window_KeyDown">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="709*"/>
@@ -37,7 +37,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
           <CustomControls:OutlinedTextBlock Text="{Binding Path=Faces_Found}" x:Name="FacesFound" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
           <CustomControls:OutlinedTextBlock Text=" " Width="10"  VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
-          <CustomControls:OutlinedTextBlock Text="{Binding Path=Date_Photo_Taken}" x:Name="PhotoDate" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
+          <CustomControls:OutlinedTextBlock Text="{Binding Path=Photo_Description}" x:Name="PhotoDescription" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
         </StackPanel>
       </StackPanel>
 
@@ -134,7 +134,7 @@
         <ColumnDefinition Width="767*"/>
       </Grid.ColumnDefinitions>
 
-      <Label Grid.Row="0" HorizontalAlignment="Stretch" Name="lblUp" VerticalAlignment="Stretch" Opacity="1" MouseMove="lblScreen_MouseMove" MouseDown="lblScreen_MouseDown" KeyDown="Window_KeyDown" FontSize="16" Foreground="#FFD70000" Grid.RowSpan="1" />
+      <Label Grid.Row="0" HorizontalAlignment="Stretch" Name="lblUp" VerticalAlignment="Stretch" Opacity="1" KeyDown="Window_KeyDown" FontSize="16" Foreground="#FFD70000" Grid.RowSpan="1" />
       <DockPanel Margin="8,0,8,32" VerticalAlignment="Bottom" Grid.Column="0" Height="213" Grid.Row="1">
         <StackPanel DockPanel.Dock="Bottom">
           <StackPanel Orientation="Vertical">
