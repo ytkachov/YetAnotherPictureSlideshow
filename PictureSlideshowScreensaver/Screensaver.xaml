@@ -41,7 +41,7 @@
         </StackPanel>
       </StackPanel>
 
-      <Border Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Hidden"
+      <Border x:Name="WeatherForecast" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Hidden"
               Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
         <Grid>
         <!-- Weather forecast -->
@@ -63,7 +63,7 @@
           <CustomControls:OutlinedTextBlock Margin="10,5" Text="Сегодня" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="2"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Затра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Завтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="3"  >
           <CustomControls:OutlinedTextBlock Margin="10,5" Text="Послезавтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />

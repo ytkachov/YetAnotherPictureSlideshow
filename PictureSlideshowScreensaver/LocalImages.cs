@@ -28,7 +28,8 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
-      return _name + " :: " + (_dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy"));
+      // return _name + " :: " + (_dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy"));
+      return _dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy");
     }
   }
 

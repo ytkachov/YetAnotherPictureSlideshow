@@ -248,6 +248,11 @@ public partial class Screensaver : Window
     {
       if (e.Key == Key.Escape)
         Shutdown();            
+      else if (e.Key == Key.F)
+      {
+        // show weather forecast
+        WeatherForecast.Visibility = (WeatherForecast.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible);
+      }
     }
   }
 
