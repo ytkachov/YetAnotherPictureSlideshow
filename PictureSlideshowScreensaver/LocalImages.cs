@@ -264,6 +264,18 @@ class LocalImages : ImagesProvider
                  _images[ii1]._name.CompareTo(_images[ii2]._name);
         });
 
+        Dictionary<int, int> freq = new Dictionary<int, int>();
+        foreach (var img in _images)
+        {
+          if (!freq.ContainsKey(img._shown))
+            freq.Add(img._shown, 0);
+
+          freq[img._shown]++;
+        }
+
+        foreach (var f in freq)
+          tw.Write("shown {0} times : [{1}] images\n", f.Key, f.Value);
+
         foreach (var img in imgidx)
           tw.Write("{0} : [{2}] {1}\n", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
       }
