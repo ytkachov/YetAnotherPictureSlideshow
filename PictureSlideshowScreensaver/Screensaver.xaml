@@ -14,8 +14,9 @@
     </Grid.RowDefinitions>
 
     <Image Name="img1" Opacity="1" Stretch="Uniform" Grid.RowSpan="2" />
+    <MediaElement Name="Video1" Opacity="0" Stretch="Uniform" Grid.RowSpan="2" />
     <Image Name="img2" Opacity="0" Stretch="Uniform" Grid.RowSpan="2" />
-    <MediaElement Name="video" Opacity="0" />
+    <MediaElement Name="Video2" Opacity="0" Stretch="Uniform" Grid.RowSpan="2" />
 
     <Grid Grid.Row="0">
       <Grid.RowDefinitions>
