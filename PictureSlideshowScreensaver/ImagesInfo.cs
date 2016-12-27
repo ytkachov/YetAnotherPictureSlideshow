@@ -4,6 +4,7 @@ using System.Drawing;
 interface ImageInfo
 {
   BitmapImage bitmap { get; }
+  string video_name { get; }
   string description { get; }
 
   int accent_count { get; }
