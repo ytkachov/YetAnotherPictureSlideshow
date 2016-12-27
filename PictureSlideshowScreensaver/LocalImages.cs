@@ -18,6 +18,8 @@ class LocalImageInfo : ImageInfo
   internal int _shown = 0;
   internal UInt16 _orientation = 0;
 
+  internal List<string> _messages = new List<string>();
+
   private List<System.Drawing.Rectangle> _faces = null;
   private bool _processed = false;
   private double _dmult;
@@ -79,6 +81,8 @@ class LocalImageInfo : ImageInfo
 
         if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone)
         {
+          _messages.Add(string.Format("image rotated by [{0}]", rf.ToString()));
+
           bitmap.RotateFlip(rf);
           bmp_img = Bitmap2BitmapImage(bitmap);
         }
@@ -113,6 +117,8 @@ class LocalImageInfo : ImageInfo
             catch (Exception e)
             {
               string err = e.Message;
+              _messages.Add(string.Format("exception [{0}]", err));
+
             }
           }
         }
@@ -277,7 +283,14 @@ class LocalImages : ImagesProvider
           tw.Write("shown {0} times : [{1}] images\n", f.Key, f.Value);
 
         foreach (var img in imgidx)
-          tw.Write("{0} : [{2}] {1}\n", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
+        {
+          tw.Write("{0} : [{2}] {1}", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
+          if (_images[img]._messages != null && _images[img]._messages.Count != 0)
+            foreach (var m in _images[img]._messages)
+              tw.Write(" || [{0}] ", m);
+
+          tw.WriteLine();
+        }
       }
     }
   }
