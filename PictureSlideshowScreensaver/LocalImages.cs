@@ -165,7 +165,7 @@ class LocalImageInfo : ImageInfo
       bitmapImage.EndInit();
     }
 
-    return (BitmapImage)bitmapImage;
+    return bitmapImage;
   }
 
 }

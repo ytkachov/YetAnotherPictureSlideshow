@@ -44,10 +44,52 @@ namespace PictureSlideshowScreensaver
     }
 
 }
+
+
+
+public interface ILeapEventDelegate
+{
+  void LeapEventNotification(string EventName);
+}
+
+public class LeapEventListener : Leap.Listener
+  {
+  ILeapEventDelegate eventDelegate;
+
+  public LeapEventListener(ILeapEventDelegate delegateObject)
+  {
+    this.eventDelegate = delegateObject;
+  }
+
+  public override void OnInit(Leap.Controller controller)
+  {
+    this.eventDelegate.LeapEventNotification("onInit");
+  }
+  public override void OnConnect(Leap.Controller controller)
+  {
+    controller.SetPolicy(Leap.Controller.PolicyFlag.POLICY_IMAGES);
+    controller.EnableGesture(Leap.Gesture.GestureType.TYPE_SWIPE);
+    this.eventDelegate.LeapEventNotification("onConnect");
+  }
+
+  public override void OnFrame(Leap.Controller controller)
+  {
+    this.eventDelegate.LeapEventNotification("onFrame");
+  }
+  public override void OnExit(Leap.Controller controller)
+  {
+    this.eventDelegate.LeapEventNotification("onExit");
+  }
+  public override void OnDisconnect(Leap.Controller controller)
+  {
+    this.eventDelegate.LeapEventNotification("onDisconnect");
+  }
+}
+
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class Screensaver : Window
+public partial class Screensaver : Window, ILeapEventDelegate
   {
     private Random _rand;
     private Settings _settings = new Settings();
@@ -62,16 +104,24 @@ public partial class Screensaver : Window
     private cPower _power;
     private int _prevTime = 0;
 
+    bool _isClosing = false;
+    private Leap.Controller _controller = new Leap.Controller();
+    private LeapEventListener _listener;
+
     public Screensaver(System.Drawing.Rectangle bounds, int offset)
     {
 
       InitializeComponent();
+
+      _listener = new LeapEventListener(this);
+      _controller.AddListener(_listener);
+
       _bounds = bounds;
 
       _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
 
       _switchImage = new DispatcherTimer();
-      _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval + offset);
+      _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
       _switchImage.Tick += new EventHandler(fade_Tick);
 
       _changeWeatherForecast = new DispatcherTimer();
@@ -85,6 +135,51 @@ public partial class Screensaver : Window
       _power.BatteryUpdateEvery = 30;
     }
 
+    delegate void LeapEventDelegate(string EventName);
+    public void LeapEventNotification(string EventName)
+    {
+      if (this.CheckAccess())
+      {
+        switch (EventName)
+        {
+          case "onInit":
+            break;
+
+          case "onConnect":
+            connectHandler();
+            break;
+
+          case "onFrame":
+            if (!_isClosing)
+              newFrameHandler(_controller.Frame());
+
+            break;
+        }
+      }
+      else
+      {
+        Dispatcher.Invoke(new LeapEventDelegate(LeapEventNotification), new object[] { EventName });
+      }
+    }
+
+    void connectHandler()
+    {
+      _controller.SetPolicy(Leap.Controller.PolicyFlag.POLICY_DEFAULT);
+      _controller.EnableGesture(Leap.Gesture.GestureType.TYPE_SWIPE);
+      _controller.Config.SetFloat("Gesture.Swipe.MinLength", 100.0f);
+    }
+
+    void newFrameHandler(Leap.Frame frame)
+    {
+      string stat = frame.Id.ToString() + " TM:" +
+                    frame.Timestamp.ToString() + " FPS:" +
+                    frame.CurrentFramesPerSecond.ToString() + " VLD:" +
+                    frame.IsValid.ToString() + " GC:" +
+                    frame.Gestures().Count.ToString();
+
+      PhotoProperties.Photo_Description = stat;
+    }
+
     public Screensaver(System.Drawing.Rectangle bounds)
       : this(bounds, 0)
     {
@@ -93,8 +188,6 @@ public partial class Screensaver : Window
 
     void fade_Tick(object sender, EventArgs e)
     {
-      _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
-
       if (!_settings._workAtNight && DateTime.Now.Hour < 7)
         return;        // фотографии не меняются ночью.
 
@@ -233,8 +326,12 @@ public partial class Screensaver : Window
 
     private void Shutdown()
     {
+      _isClosing = true;
+      _controller.RemoveListener(_listener);
+      _controller.Dispose();
+
       if (_settings._writeStat)
-      _images.WriteStat(_settings._writeStatPath);
+        _images.WriteStat(_settings._writeStatPath);
 
       Application.Current.Shutdown();
     }
