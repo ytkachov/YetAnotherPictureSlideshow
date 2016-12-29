@@ -13,6 +13,7 @@ using WindowsInput;
 
 using weather;
 using presenters;
+using LeapMotion;
 
 namespace PictureSlideshowScreensaver
 {
@@ -42,54 +43,13 @@ namespace PictureSlideshowScreensaver
         _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
       }
     }
-
-}
-
-
-
-public interface ILeapEventDelegate
-{
-  void LeapEventNotification(string EventName);
-}
-
-public class LeapEventListener : Leap.Listener
-  {
-  ILeapEventDelegate eventDelegate;
-
-  public LeapEventListener(ILeapEventDelegate delegateObject)
-  {
-    this.eventDelegate = delegateObject;
   }
 
-  public override void OnInit(Leap.Controller controller)
-  {
-    this.eventDelegate.LeapEventNotification("onInit");
-  }
-  public override void OnConnect(Leap.Controller controller)
-  {
-    controller.SetPolicy(Leap.Controller.PolicyFlag.POLICY_IMAGES);
-    controller.EnableGesture(Leap.Gesture.GestureType.TYPE_SWIPE);
-    this.eventDelegate.LeapEventNotification("onConnect");
-  }
-
-  public override void OnFrame(Leap.Controller controller)
-  {
-    this.eventDelegate.LeapEventNotification("onFrame");
-  }
-  public override void OnExit(Leap.Controller controller)
-  {
-    this.eventDelegate.LeapEventNotification("onExit");
-  }
-  public override void OnDisconnect(Leap.Controller controller)
-  {
-    this.eventDelegate.LeapEventNotification("onDisconnect");
-  }
-}
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class Screensaver : Window, ILeapEventDelegate
+public partial class Screensaver : Window
   {
     private Random _rand;
     private Settings _settings = new Settings();
@@ -104,17 +64,10 @@ public partial class Screensaver : Window, ILeapEventDelegate
     private cPower _power;
     private int _prevTime = 0;
 
-    bool _isClosing = false;
-    private Leap.Controller _controller = new Leap.Controller();
-    private LeapEventListener _listener;
-
     public Screensaver(System.Drawing.Rectangle bounds, int offset)
     {
 
       InitializeComponent();
-
-      _listener = new LeapEventListener(this);
-      _controller.AddListener(_listener);
 
       _bounds = bounds;
 
@@ -133,51 +86,6 @@ public partial class Screensaver : Window, ILeapEventDelegate
       _rand = new Random(DateTime.Now.Second);
       _power = new cPower();
       _power.BatteryUpdateEvery = 30;
-    }
-
-    delegate void LeapEventDelegate(string EventName);
-    public void LeapEventNotification(string EventName)
-    {
-      if (this.CheckAccess())
-      {
-        switch (EventName)
-        {
-          case "onInit":
-            break;
-
-          case "onConnect":
-            connectHandler();
-            break;
-
-          case "onFrame":
-            if (!_isClosing)
-              newFrameHandler(_controller.Frame());
-
-            break;
-        }
-      }
-      else
-      {
-        Dispatcher.Invoke(new LeapEventDelegate(LeapEventNotification), new object[] { EventName });
-      }
-    }
-
-    void connectHandler()
-    {
-      _controller.SetPolicy(Leap.Controller.PolicyFlag.POLICY_DEFAULT);
-      _controller.EnableGesture(Leap.Gesture.GestureType.TYPE_SWIPE);
-      _controller.Config.SetFloat("Gesture.Swipe.MinLength", 100.0f);
-    }
-
-    void newFrameHandler(Leap.Frame frame)
-    {
-      string stat = frame.Id.ToString() + " TM:" +
-                    frame.Timestamp.ToString() + " FPS:" +
-                    frame.CurrentFramesPerSecond.ToString() + " VLD:" +
-                    frame.IsValid.ToString() + " GC:" +
-                    frame.Gestures().Count.ToString();
-
-      PhotoProperties.Photo_Description = stat;
     }
 
     public Screensaver(System.Drawing.Rectangle bounds)
