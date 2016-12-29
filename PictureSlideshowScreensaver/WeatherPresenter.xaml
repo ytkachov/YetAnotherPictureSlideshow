@@ -8,7 +8,7 @@
              xmlns:presenters="clr-namespace:presenters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="300"
+             d:DesignHeight="1124" d:DesignWidth="8620"
              >
 
   <StackPanel Orientation="Horizontal" >
@@ -46,7 +46,7 @@
               <Binding Path="Weather.Weather_Period"/>
             </MultiBinding>
           </ContentControl.Content>
-        </ContentControl> 
+        </ContentControl>
       </Viewbox>
     </Border>
     <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >

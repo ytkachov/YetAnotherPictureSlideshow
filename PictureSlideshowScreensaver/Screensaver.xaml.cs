@@ -234,10 +234,6 @@ public partial class Screensaver : Window
 
     private void Shutdown()
     {
-      _isClosing = true;
-      _controller.RemoveListener(_listener);
-      _controller.Dispose();
-
       if (_settings._writeStat)
         _images.WriteStat(_settings._writeStatPath);
 
