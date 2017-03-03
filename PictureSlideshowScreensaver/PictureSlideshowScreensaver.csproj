@@ -126,10 +126,11 @@
     <Compile Include="ImagesInfo.cs" />
     <Compile Include="Informers.cs" />
     <Compile Include="FaceDetection.cs" />
-    <Compile Include="LeapPresenter.xaml.cs">
-      <DependentUpon>LeapPresenter.xaml</DependentUpon>
+    <Compile Include="LeapMotionInformer.cs" />
+    <Compile Include="LeapMotionPresenter.xaml.cs">
+      <DependentUpon>LeapMotionPresenter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LeapListener.cs" />
+    <Compile Include="LeapMotionListener.cs" />
     <Compile Include="LocalImages.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
     <Compile Include="WeatherInformer.cs" />
@@ -146,7 +147,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LeapPresenter.xaml">
+    <Page Include="LeapMotionPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -211,6 +212,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="res\cloudy_snowy_storm_n.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="res\gestures\hand_right_5.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -418,6 +423,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)post-build.bat" "$(TargetDir)" $(TargetName)</PostBuildEvent>

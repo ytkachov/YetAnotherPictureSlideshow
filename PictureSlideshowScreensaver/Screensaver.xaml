@@ -16,6 +16,7 @@
     <Image Name="img1" Opacity="1" Stretch="Uniform" Grid.RowSpan="2" />
     <Image Name="img2" Opacity="0" Stretch="Uniform" Grid.RowSpan="2" />
     <MediaElement Name="video" Opacity="0" />
+    <presenters:LeapMotionPresenter x:Name="LeapMotion" Padding="10"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
     <Grid Grid.Row="0">
       <Grid.RowDefinitions>
@@ -43,6 +44,7 @@
 
       <Border x:Name="WeatherForecast" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Hidden"
               Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
+        
         <Grid>
         <!-- Weather forecast -->
         <Grid.RowDefinitions>

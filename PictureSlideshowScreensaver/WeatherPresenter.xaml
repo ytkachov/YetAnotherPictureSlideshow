@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:CustomControls="clr-namespace:CustomControls"
-             xmlns:informers="clr-namespace:informers"
              xmlns:presenters="clr-namespace:presenters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
@@ -30,18 +29,18 @@
         <Setter Property="CornerRadius" Value="8" />
       </Style>
     </StackPanel.Resources>
-    <Border x:Name="T_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+    <Border x:Name="T_Border" Opacity="{Binding Weather.Weather_Status, Converter={presenters:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
         <CustomControls:OutlinedTextBlock x:Name="TR" Visibility="{Binding Show, Converter={presenters:ShowRange}}" Text="{Binding Weather.TemperatureRange}" />
         <CustomControls:OutlinedTextBlock x:Name="TV" Visibility="{Binding Show, Converter={presenters:ShowValue}}" Text="{Binding Weather.Temperature}" />
         <CustomControls:OutlinedTextBlock x:Name="T_Scale"  Text="°" />
       </StackPanel>
     </Border>
-    <Border x:Name="W_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+    <Border x:Name="W_Border" Opacity="{Binding Weather.Weather_Status, Converter={presenters:WeatherStatusToOpacity}}" >
       <Viewbox x:Name="W" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding PictureSize}" Stretch="Uniform">
         <ContentControl x:Name="W_content" Opacity="1.0">
           <ContentControl.Content>
-            <MultiBinding Converter="{informers:WeatherToPicture}">
+            <MultiBinding Converter="{presenters:WeatherToPicture}">
               <Binding Path="Weather.Weather"/>
               <Binding Path="Weather.Weather_Period"/>
             </MultiBinding>
@@ -49,10 +48,10 @@
         </ContentControl>
       </Viewbox>
     </Border>
-    <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+    <Border x:Name="WIND_Border" Opacity="{Binding Weather.Weather_Status, Converter={presenters:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <Viewbox x:Name="WD" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{c:Binding PictureSize * 0.75}" Stretch="Uniform">
-          <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
+          <ContentControl x:Name="WD_content" Content="{Binding Weather.WindDirection, Converter={presenters:WindDirectionToPicture UseColor=yes}}"/>
         </Viewbox>
         <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Weather.WindSpeed}" />
         <Grid>
@@ -65,7 +64,7 @@
         </Grid>
       </StackPanel>
     </Border>
-    <Border x:Name="P_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+    <Border x:Name="P_Border" Opacity="{Binding Weather.Weather_Status, Converter={presenters:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding Weather.Pressure}" />
         <Grid>
@@ -78,7 +77,7 @@
         </Grid>
       </StackPanel>
     </Border>
-    <Border x:Name="H_Border" Opacity="{Binding Weather.Weather_Status, Converter={informers:WeatherStatusToOpacity}}" >
+    <Border x:Name="H_Border" Opacity="{Binding Weather.Weather_Status, Converter={presenters:WeatherStatusToOpacity}}" >
       <StackPanel Orientation="Horizontal">
         <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding Weather.Humidity}" />
         <Grid>

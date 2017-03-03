@@ -6,6 +6,8 @@
     <Application.Resources>
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="res/gestures/hand_right_5.xaml"/>
+            
         <ResourceDictionary Source="res/clear_d.xaml"/>
         <ResourceDictionary Source="res/clear_n.xaml"/>
         <ResourceDictionary Source="res/cloudy_d.xaml"/>

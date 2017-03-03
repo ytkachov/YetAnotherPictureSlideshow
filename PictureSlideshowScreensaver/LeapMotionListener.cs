@@ -13,7 +13,7 @@ using Leap;
 namespace LeapMotion
 {
 
-  public class LeapListener : Listener
+  public class LeapMotionListener : Listener
   {
     private Controller _controller = new Controller();
     private bool _connected;
@@ -36,7 +36,7 @@ namespace LeapMotion
     }
 
 
-    public LeapListener()
+    public LeapMotionListener()
     {
       _controller.AddListener(this);
     }
