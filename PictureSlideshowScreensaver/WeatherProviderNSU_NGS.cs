@@ -235,6 +235,8 @@ namespace weather
             _succeeded = false;
           }
         }
+
+        browser_.GoTo("http://google.com/");
       }
     }
 
@@ -281,6 +283,8 @@ namespace weather
             _succeeded = false;
           }
         }
+
+        browser_.GoTo("http://google.com/");
       }
     }
 
