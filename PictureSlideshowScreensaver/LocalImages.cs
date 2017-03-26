@@ -11,10 +11,10 @@ using Emgu.CV;
 
 class LocalImageInfo : ImageInfo
 {
-  public LocalImageInfo(string nm, string movname = null) { _name = nm; _movname = movname; }
+  public LocalImageInfo(string nm, string videoname = null) { _name = nm; _video_name = videoname; }
 
   internal string _name;
-  internal string _movname;  // for iPhone accompaning video file
+  internal string _video_name;  // for iPhone accompanying video file
   internal DateTime? _dateTaken;
   internal int _shown = 0;
   internal UInt16 _orientation = 0;
@@ -27,11 +27,18 @@ class LocalImageInfo : ImageInfo
   private int _pixel_width, _pixel_height;
   private static Random _rand = new Random(DateTime.Now.Millisecond);
 
+  public bool has_accompanying_video
+  {
+    get
+    {
+      return _video_name != null && _name != null;
+    }
+  }
   public string video_name
   {
     get
     {
-      return _movname;
+      return _video_name;
     }
   }
 
