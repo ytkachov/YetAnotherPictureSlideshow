@@ -40,6 +40,7 @@ namespace PictureSlideshowScreensaver
         _writeStat = int.Parse((string)key.GetValue("WriteStat") ?? "0") == 1;
         _writeStatPath = (string)key.GetValue("WriteStatFolder");
         _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
+        _workAtNight = int.Parse((string)key.GetValue("WorkAtNight") ?? "1") == 1;
       }
     }
 
@@ -95,7 +96,7 @@ public partial class Screensaver : Window
     {
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
-      if (!_settings._workAtNight && DateTime.Now.Hour < 7)
+      if (!_settings._workAtNight && (DateTime.Now.Hour < 7 || DateTime.Now.Hour >= 23))
         return;        // фотографии не меняются ночью.
 
       NextImage();
