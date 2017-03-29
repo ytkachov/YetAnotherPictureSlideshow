@@ -22,6 +22,7 @@ class LocalImageInfo : ImageInfo
   private bool _processed = false;
   private double _dmult;
   private int _pixel_width, _pixel_height;
+  private System.Drawing.Bitmap _bitmap;
   private static Random _rand = new Random(DateTime.Now.Millisecond);
 
   public string description
@@ -39,13 +40,12 @@ class LocalImageInfo : ImageInfo
     {
       BitmapImage bmp_img = new BitmapImage(new Uri(_name));
 
-      System.Drawing.Bitmap bitmap;
       using (MemoryStream outStream = new MemoryStream())
       {
         BitmapEncoder enc = new BmpBitmapEncoder();
         enc.Frames.Add(BitmapFrame.Create(bmp_img));
         enc.Save(outStream);
-        bitmap = new System.Drawing.Bitmap(outStream);
+        _bitmap = new System.Drawing.Bitmap(outStream);
 
         System.Drawing.RotateFlipType rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
         switch (_orientation)
@@ -79,45 +79,13 @@ class LocalImageInfo : ImageInfo
 
         if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone)
         {
-          bitmap.RotateFlip(rf);
-          bmp_img = Bitmap2BitmapImage(bitmap);
+          _bitmap.RotateFlip(rf);
+          bmp_img = Bitmap2BitmapImage(_bitmap);
         }
-
-        _pixel_width = bmp_img.PixelWidth;
-        _pixel_height = bmp_img.PixelHeight;
-
-        if (!_processed)
-        {
-          _processed = true;
-          _dmult = 3.0;
-          List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
-
-          System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(bitmap.Width / _dmult), (int)(bitmap.Height / _dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-          using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
-          {
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(bitmap, 0, 0, b.Width, b.Height);
-
-            try
-            {
-              Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
-              Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
-
-              long detectionTime;
-              FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
-
-              if (faces.Count != 0)
-                _faces = faces;
-
-            }
-            catch (Exception e)
-            {
-              string err = e.Message;
-            }
-          }
-        }
-
       }
+
+      _pixel_width = bmp_img.PixelWidth;
+      _pixel_height = bmp_img.PixelHeight;
 
       return bmp_img;
     }
@@ -127,6 +95,7 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
+      FindFaces();
       return _faces != null ? _faces.Count : 0;
     }
   }
@@ -135,6 +104,7 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
+      FindFaces();
       return get_accent(_rand.Next(_faces.Count));
     }
   }
@@ -151,6 +121,49 @@ class LocalImageInfo : ImageInfo
     return new PointF(fx, fy);
   }
 
+  public void ReleaseResources()
+  {
+    if (_bitmap != null)
+    {
+      _bitmap.Dispose();
+      _bitmap = null;
+    }
+  }
+
+  private void FindFaces()
+  {
+
+    if (!_processed)
+    {
+      _processed = true;
+      _dmult = 3.0;
+      List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
+
+      System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(bitmap.Width / _dmult), (int)(bitmap.Height / _dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+      using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
+      {
+        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        g.DrawImage(_bitmap, 0, 0, b.Width, b.Height);
+
+        try
+        {
+          Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
+          Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
+
+          long detectionTime;
+          FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
+
+          if (faces.Count != 0)
+            _faces = faces;
+
+        }
+        catch (Exception e)
+        {
+          string err = e.Message;
+        }
+      }
+    }
+  }
 
   private BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
   {

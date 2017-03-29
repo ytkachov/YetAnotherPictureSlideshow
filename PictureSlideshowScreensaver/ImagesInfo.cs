@@ -3,6 +3,8 @@ using System.Drawing;
 
 interface ImageInfo
 {
+  void ReleaseResources();
+
   BitmapImage bitmap { get; }
   string description { get; }
 

@@ -28,6 +28,8 @@ namespace PictureSlideshowScreensaver
     public string _writeStatPath;
     public bool _dependOnBattery = false;
     public bool _workAtNight = true;
+    internal bool _noImageScaling;
+    internal bool _noImageAccents;
 
     public Settings()
     {
@@ -201,24 +203,30 @@ public partial class Screensaver : Window
       if (img.ActualHeight > 0 && img.ActualWidth > 0)
       {
         // if image is valid
-        if (!_settings._dependOnBattery ||
-            !_power.HasBattery ||
-            (_power.HasBattery && _power.BatteryLifePercent > 20))
+        if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 20)
+          return;
+
+        if (_settings._noImageScaling)
+          return;
+
         {
           double cx = img.ActualWidth / 2;
           double cy = img.ActualHeight / 2;
           double cs = 1.0 + 0.1 * _rand.NextDouble();
 
-          PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
-          if (nextphoto.accent_count != 0)
+          if (!_settings._noImageAccents)
           {
-            double dc = 1;
-            dc = bmp_img.PixelHeight / img.ActualHeight;
-            var accent = nextphoto.accent;
+            PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
+            if (nextphoto.accent_count != 0)
+            {
+              double dc = 1;
+              dc = bmp_img.PixelHeight / img.ActualHeight;
+              var accent = nextphoto.accent;
 
-            cx += accent.X / dc;
-            cy += accent.Y / dc;
-            cs = 1.05 + 0.4 * _rand.NextDouble(); 
+              cx += accent.X / dc;
+              cy += accent.Y / dc;
+              cs = 1.05 + 0.4 * _rand.NextDouble();
+            }
           }
 
           ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
