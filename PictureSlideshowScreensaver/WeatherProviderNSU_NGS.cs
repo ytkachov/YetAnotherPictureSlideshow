@@ -81,6 +81,7 @@ namespace weather
       { "sunshine_none_day",                  WeatherType.Clear },
       { "partly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_rain_with_snow_day",   WeatherType.CloudyPartlyRainy },
       { "partly_cloudy_snow_day",             WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_day",       WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
@@ -95,6 +96,7 @@ namespace weather
       { "cloudy_rain_day",                    WeatherType.OvercastRainy },
       { "cloudy_rainless_day",                WeatherType.Overcast },
       { "cloudy_light_rain_day",              WeatherType.OvercastPartlyRainy },
+      { "cloudy_sleet_day",                   WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_day",                    WeatherType.OvercastSnowy },
       { "cloudy_light_snow_day",              WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_day",              WeatherType.OvercastSnowyStorm },
@@ -106,6 +108,7 @@ namespace weather
       { "sunshine_none_night",                WeatherType.Clear },
       { "partly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_rain_with_snow_night", WeatherType.CloudyPartlyRainy },
       { "partly_cloudy_snow_night",           WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_night",     WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
@@ -120,6 +123,7 @@ namespace weather
       { "cloudy_rain_night",                  WeatherType.OvercastRainy },
       { "cloudy_rainless_night",              WeatherType.Overcast },
       { "cloudy_light_rain_night",            WeatherType.OvercastPartlyRainy },
+      { "cloudy_sleet_night",                 WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_night",                  WeatherType.OvercastSnowy },
       { "cloudy_light_snow_night",            WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_night",            WeatherType.OvercastSnowyStorm },
@@ -396,7 +400,7 @@ namespace weather
           int i = 0;
         }
 
-                // wind
+        // wind
         cn = "icon-small icon-wind-";
         e = wind_divs[period].SelectSingleNode("./i");
         if (e == null)
