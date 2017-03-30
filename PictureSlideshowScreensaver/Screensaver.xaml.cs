@@ -67,14 +67,14 @@ namespace PictureSlideshowScreensaver
         _noNightImageFading = (po & (int)perfoptions.no_night_image_fading) != 0;
         _noNightImageScaling = (po & (int)perfoptions.no_night_image_scaling) != 0;
         _noNightImageAccents = (po & (int)perfoptions.no_night_image_accents) != 0;
-  }
-}
+      }
+    }
 
-}
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class Screensaver : Window
+  }
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class Screensaver : Window
   {
     private Random _rand;
     private Settings _settings = new Settings();
