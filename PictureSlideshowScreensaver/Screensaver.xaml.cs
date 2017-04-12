@@ -124,7 +124,8 @@ namespace PictureSlideshowScreensaver
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
       _isNightTime = DateTime.Now.Hour < 7 || DateTime.Now.Hour >= 23;
-      if (!_settings._workAtNight && _isNightTime)
+//      _isNightTime = true;
+      if ((!_settings._workAtNight) && _isNightTime)
         return;        // фотографии не меняются ночью.
 
       NextImage();
