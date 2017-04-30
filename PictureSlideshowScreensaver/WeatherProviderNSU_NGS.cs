@@ -73,6 +73,7 @@ namespace weather
       { "west", WindDirection.W }, { "north_west",   WindDirection.NW }
     };
 
+    
     static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "sunshine_light_rain_day",            WeatherType.ClearPartlyRainy },
@@ -87,6 +88,7 @@ namespace weather
       { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
       { "light_cloudy_none_day",              WeatherType.PartlyCloudy},
       { "partly_cloudy_none_day",             WeatherType.PartlyCloudy},
+      { "partly_cloudy_rainless_day" ,        WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
       { "mostly_cloudy_snow_day",             WeatherType.CloudySnowy },
@@ -97,6 +99,7 @@ namespace weather
       { "cloudy_rainless_day",                WeatherType.Overcast },
       { "cloudy_light_rain_day",              WeatherType.OvercastPartlyRainy },
       { "cloudy_sleet_day",                   WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_with_rain_day",          WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_day",                    WeatherType.OvercastSnowy },
       { "cloudy_light_snow_day",              WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_day",              WeatherType.OvercastSnowyStorm },
@@ -114,6 +117,7 @@ namespace weather
       { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
       { "light_cloudy_none_night",            WeatherType.PartlyCloudy},
       { "partly_cloudy_none_night",           WeatherType.PartlyCloudy},
+      { "partly_cloudy_rainless_night" ,      WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
       { "mostly_cloudy_snow_night",           WeatherType.CloudySnowy },
@@ -124,6 +128,7 @@ namespace weather
       { "cloudy_rainless_night",              WeatherType.Overcast },
       { "cloudy_light_rain_night",            WeatherType.OvercastPartlyRainy },
       { "cloudy_sleet_night",                 WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_with_rain_night",        WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_night",                  WeatherType.OvercastSnowy },
       { "cloudy_light_snow_night",            WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_night",            WeatherType.OvercastSnowyStorm },
