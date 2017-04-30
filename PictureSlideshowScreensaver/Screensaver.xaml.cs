@@ -124,7 +124,8 @@ namespace PictureSlideshowScreensaver
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
       _isNightTime = DateTime.Now.Hour < 7 || DateTime.Now.Hour >= 23;
-      if (!_settings._workAtNight && _isNightTime)
+      //_isNightTime = true;
+      if ((!_settings._workAtNight) && _isNightTime)
         return;        // фотографии не меняются ночью.
 
       NextImage();
@@ -189,35 +190,23 @@ namespace PictureSlideshowScreensaver
         try
         {
           PhotoProperties.Photo_Description = nextphoto.description;
-          if (img1.Opacity == 0)
+          var dt = TimeSpan.FromMilliseconds(_settings._noImageFading || 
+                                             (_isNightTime && _settings._noNightImageFading) 
+                                            ? 0 : _settings._fadeSpeed);
+
+            if (img1.Opacity == 0)
           {
             SetImage(img1, nextphoto);
 
-            if (_settings._noImageFading || (_isNightTime && _settings._noNightImageFading))
-            {
-              img1.Opacity = 1;
-              img2.Opacity = 0;
-            }
-            else
-            {
-              img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-              img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-            }
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
           }
           else if (img2.Opacity == 0)
           {
             SetImage(img2, nextphoto);
 
-            if (_settings._noImageFading || (_isNightTime && _settings._noNightImageFading))
-            {
-              img2.Opacity = 1;
-              img1.Opacity = 0;
-            }
-            else
-            {
-              img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-              img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-            }
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
           }
           return;
         }

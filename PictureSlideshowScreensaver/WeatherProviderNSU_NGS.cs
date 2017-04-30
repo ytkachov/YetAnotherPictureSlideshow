@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -221,7 +222,8 @@ namespace weather
           if (st != null || !st.Contains("°"))
           {
             success = true;
-            double t = double.Parse(st.Substring(0, st.IndexOf("°")));
+            CultureInfo culture = new CultureInfo("en");
+            double t = double.Parse(st.Substring(0, st.IndexOf("°")), culture);
             lock (_locker)
             {
               w.TemperatureLow = w.TemperatureHigh = t;
@@ -244,8 +246,15 @@ namespace weather
             _succeeded = false;
           }
         }
+      }
 
+      try
+      {
         browser_.GoTo("http://google.com/");
+      }
+      catch (Exception e)
+      {
+
       }
     }
 
@@ -292,8 +301,15 @@ namespace weather
             _succeeded = false;
           }
         }
+      }
 
+      try
+      {
         browser_.GoTo("http://google.com/");
+      }
+      catch (Exception e)
+      {
+
       }
     }
 
@@ -494,7 +510,7 @@ namespace weather
         if (string.IsNullOrEmpty(st))
           throw new Exception("incorrect current weather structure -- incorrect current temperature string");
 
-        double t = double.Parse(st);
+        double t = double.Parse(st, new CultureInfo("en"));
         w.TemperatureHigh = w.TemperatureLow = t;
 
         //File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
@@ -514,7 +530,7 @@ namespace weather
 
         string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
         double ws;
-        if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
+        if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"),  out ws))
           w.WindSpeed = ws;
 
         // pressure 
@@ -524,7 +540,7 @@ namespace weather
 
         double p;
         string pr = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
+        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"), out p))
           w.Pressure = p;
 
         // humidity
@@ -534,7 +550,7 @@ namespace weather
 
         double h;
         string humidity = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), NumberStyles.Number, new CultureInfo("en"), out h))
           w.Humidity = h;
       }
       catch (Exception e)
