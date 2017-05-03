@@ -85,7 +85,7 @@ namespace presenters
       rt.CenterY = 100.0;
 
       TranslateTransform tt = new TranslateTransform();
-      DoubleAnimation da = new DoubleAnimation(-10, 10.0, new Duration(TimeSpan.FromMilliseconds(50)));
+      DoubleAnimation da = new DoubleAnimation(-10, 10.0, new Duration(TimeSpan.FromMilliseconds(100)));
       da.RepeatBehavior = new RepeatBehavior(5);
       da.AutoReverse = true;
 
