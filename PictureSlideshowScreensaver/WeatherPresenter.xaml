@@ -11,7 +11,7 @@
              d:DesignHeight="100" d:DesignWidth="300"
              >
 
-  <StackPanel Orientation="Horizontal" >
+  <StackPanel Grid.Row="5" Orientation="Horizontal" >
     <StackPanel.Resources>
       <Style TargetType="CustomControls:OutlinedTextBlock">
         <Setter Property="FontFamily" Value="{Binding FontFamily}" />
