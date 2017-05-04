@@ -152,7 +152,7 @@ namespace PictureSlideshowScreensaver
 
       for (int i = 0; i < 3; i++)
       {
-        WeatherPresenter w = FindName("W_N" + i) as WeatherPresenter;
+        Weather w = FindName("W_N" + i) as Weather;
 
         if (w != null && w.WeatherPeriod != wp[wpidx + i])
           w.WeatherPeriod = wp[wpidx + i];

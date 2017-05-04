@@ -128,9 +128,12 @@
     <Compile Include="FaceDetection.cs" />
     <Compile Include="LocalImages.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
+    <Compile Include="WeatherForecast.xaml.cs">
+      <DependentUpon>WeatherForecast.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WeatherInformer.cs" />
-    <Compile Include="WeatherPresenter.xaml.cs">
-      <DependentUpon>WeatherPresenter.xaml</DependentUpon>
+    <Compile Include="Weather.xaml.cs">
+      <DependentUpon>Weather.xaml</DependentUpon>
     </Compile>
     <Compile Include="WeatherProvider.cs" />
     <Compile Include="WeatherProviderBase.cs" />
@@ -327,7 +330,11 @@
       <DependentUpon>Screensaver.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WeatherPresenter.xaml">
+    <Page Include="WeatherForecast.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Weather.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

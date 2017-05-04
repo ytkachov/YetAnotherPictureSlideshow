@@ -43,84 +43,7 @@
 
       <Border x:Name="WeatherForecast" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6" Visibility="Hidden"
               Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
-        <Grid>
-        <!-- Weather forecast -->
-        <Grid.RowDefinitions>
-          <RowDefinition Height="20*"/>
-          <RowDefinition Height="20*"/>
-          <RowDefinition Height="20*"/>
-          <RowDefinition Height="20*"/>
-          <RowDefinition Height="20*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="80*"/>
-          <ColumnDefinition Width="300*"/>
-          <ColumnDefinition Width="300*"/>
-          <ColumnDefinition Width="300*"/>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Row="0" Grid.Column="1"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Сегодня" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="2"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Завтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="3"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Послезавтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Grid.Column="0"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Ночь" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Утро" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="0"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="День" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="0"  >
-          <CustomControls:OutlinedTextBlock Margin="10,5" Text="Вечер" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Grid.Column="1"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayNight" WeatherPeriod="TodayNight" />
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="1"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" />
-        </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="1"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayDay" WeatherPeriod="TodayDay" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="1"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" />
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Grid.Column="2"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" />
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="2"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" />
-        </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="2"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="2"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" />
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Grid.Column="3"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" />
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="3"  >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" />
-        </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="3" >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="3" >
-          <presenters:WeatherPresenter Margin="10,5" x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" />
-        </StackPanel>
-      </Grid>
+        <presenters:WeatherForecast/>
       </Border>
     </Grid>
 
@@ -161,7 +84,7 @@
               <RowDefinition />
               <RowDefinition />
             </Grid.RowDefinitions>
-            <presenters:WeatherPresenter Grid.Row="0" x:Name="W_now" WeatherPeriod="Now" Show="TemperatureValue" PictureSize="50" FontSize="40" />
+            <presenters:Weather Grid.Row="0" x:Name="W_now" WeatherPeriod="Now" Show="TemperatureValue" PictureSize="50" FontSize="40" />
             <CustomControls:OutlinedTextBlock Grid.Row="1" Visibility="Visible" Text="{Binding Path=Parent.W_now.Temperature}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="30" />
           </Grid>
         </StackPanel>

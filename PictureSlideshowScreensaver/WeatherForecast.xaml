@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="presenters.WeatherForecast"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:CustomControls="clr-namespace:CustomControls"
+             xmlns:informers="clr-namespace:informers"
+             xmlns:presenters="clr-namespace:presenters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <Grid>
+    <!-- Weather forecast -->
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20*"/>
+      <RowDefinition Height="20*"/>
+      <RowDefinition Height="20*"/>
+      <RowDefinition Height="20*"/>
+      <RowDefinition Height="20*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="80*"/>
+      <ColumnDefinition Width="300*"/>
+      <ColumnDefinition Width="300*"/>
+      <ColumnDefinition Width="300*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
+      <StackPanel.DataContext>
+        <informers:DateTimeInformer/>
+      </StackPanel.DataContext>
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Сегодня" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="{Binding Path=Date_DayMon}" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal"  >
+      <StackPanel.DataContext>
+        <informers:DateTimeInformer/>
+      </StackPanel.DataContext>
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Завтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="{Binding Path=Date_DayMonTomorrow}" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal"  >
+      <StackPanel.DataContext>
+        <informers:DateTimeInformer/>
+      </StackPanel.DataContext>
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Послезавтра" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="{Binding Path=Date_DayMonAfterTomorrow}" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="0"  >
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Ночь" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+    <StackPanel Grid.Row="2" Grid.Column="0"  >
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Утро" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+    <StackPanel Grid.Row="3" Grid.Column="0"  >
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="День" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+    <StackPanel Grid.Row="4" Grid.Column="0"  >
+      <CustomControls:OutlinedTextBlock Margin="10,5" Text="Вечер" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="1"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TodayNight" WeatherPeriod="TodayNight" />
+    </StackPanel>
+    <StackPanel Grid.Row="2" Grid.Column="1"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" />
+    </StackPanel>
+    <StackPanel Grid.Row="3" Grid.Column="1"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TodayDay" WeatherPeriod="TodayDay" />
+    </StackPanel>
+    <StackPanel Grid.Row="4" Grid.Column="1"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TodayEvening" WeatherPeriod="TodayEvening" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="2"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TomorrowNight" WeatherPeriod="TomorrowNight" />
+    </StackPanel>
+    <StackPanel Grid.Row="2" Grid.Column="2"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TomorrowMorning" WeatherPeriod="TomorrowMorning" />
+    </StackPanel>
+    <StackPanel Grid.Row="3" Grid.Column="2"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TomorrowDay" WeatherPeriod="TomorrowDay" />
+    </StackPanel>
+    <StackPanel Grid.Row="4" Grid.Column="2"  >
+      <presenters:Weather Margin="10,5" x:Name="W_TomorrowEvening" WeatherPeriod="TomorrowEvening" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="3"  >
+      <presenters:Weather Margin="10,5" x:Name="W_AfterTomorrowNight" WeatherPeriod="DayAfterTomorrowNight" />
+    </StackPanel>
+    <StackPanel Grid.Row="2" Grid.Column="3"  >
+      <presenters:Weather Margin="10,5" x:Name="W_AfterTomorrowMorning" WeatherPeriod="DayAfterTomorrowMorning" />
+    </StackPanel>
+    <StackPanel Grid.Row="3" Grid.Column="3" >
+      <presenters:Weather Margin="10,5" x:Name="W_AfterTomorrowDay" WeatherPeriod="DayAfterTomorrowDay" />
+    </StackPanel>
+    <StackPanel Grid.Row="4" Grid.Column="3" >
+      <presenters:Weather Margin="10,5" x:Name="W_AfterTomorrowEvening" WeatherPeriod="DayAfterTomorrowEvening" />
+    </StackPanel>
+  </Grid>
+
+</UserControl>
