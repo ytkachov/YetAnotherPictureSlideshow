@@ -131,6 +131,7 @@ namespace PictureSlideshowScreensaver
       NextImage();
     }
 
+    // это сейчас не актуально - это было для краткого прогноза (который был под текущей погодой)
     void forecast_Tick(object sender, EventArgs e)
     {
       WeatherPeriod[] wp = new WeatherPeriod[] 

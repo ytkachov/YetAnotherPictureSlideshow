@@ -72,6 +72,7 @@ namespace presenters
   public partial class Weather : UserControl, INotifyPropertyChanged
   {
     private WeatherInformer _weatherInformer;
+    private string _componentWidths;
 
     public Weather()
     {
@@ -87,7 +88,7 @@ namespace presenters
       FontSize = 30;
       FontFamily = new FontFamily("Segoe UI Light");
 
-      H_Border.ClearValue(Border.WidthProperty);
+ //     H_Border.ClearValue(Border.WidthProperty);
     }
 
     private void OnShutdownStarted(object sender, EventArgs e)
@@ -179,6 +180,14 @@ namespace presenters
       }
     }
 
+    public string  ComponentWidths
+    {
+      get
+      {
+        return _componentWidths;
+      }
+    }
+
     // INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
     private void SetValueDP(DependencyProperty dp, object value, [System.Runtime.CompilerServices.CallerMemberName] string caller_name = null)
@@ -199,15 +208,29 @@ namespace presenters
       var wp = (Weather)dependencyObject;
       string cw = wp.ChildrenWidths;
 
+      FrameworkElement[] children = { wp.T_Border, wp.W_Border, wp.WIND_Border, wp.P_Border, wp.H_Border };
       var widths = cw.Split(',');
       for (int i = 0; i < widths.Length; i++)
       {
-        double w = 0;
-        if (double.TryParse(widths[i], out w))
-        {
+        if (i >= children.Length)
+          break;
 
-        }
+        double w = 0;
+        if (widths[i].Length != 0 && double.TryParse(widths[i], out w))
+          children[i].Width = w;
+        else
+          children[i].ClearValue(WidthProperty);
       }
+    }
+
+    private void OnLayoutUpdated(object sender, EventArgs e)
+    {
+      string cw = "";
+      FrameworkElement[] children = { T_Border, W_Border, WIND_Border, P_Border, H_Border };
+      for (int i = 0; i < children.Length; i++)
+        cw += (cw.Length == 0 ? "" : ",") + children[i].ActualWidth.ToString();
+
+      _componentWidths = cw;
     }
   }
 }

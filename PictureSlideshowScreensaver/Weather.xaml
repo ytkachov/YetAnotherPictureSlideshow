@@ -9,6 +9,7 @@
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300"
+             LayoutUpdated="OnLayoutUpdated"
              >
 
   <StackPanel Orientation="Horizontal" >

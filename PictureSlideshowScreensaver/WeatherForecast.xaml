@@ -7,7 +7,8 @@
              xmlns:informers="clr-namespace:informers"
              xmlns:presenters="clr-namespace:presenters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             >
   <Grid>
     <!-- Weather forecast -->
     <Grid.RowDefinitions>
@@ -16,6 +17,7 @@
       <RowDefinition Height="20*"/>
       <RowDefinition Height="20*"/>
       <RowDefinition Height="20*"/>
+<!--      <RowDefinition Height="10*"/> -->
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="80*"/>
@@ -24,6 +26,9 @@
       <ColumnDefinition Width="300*"/>
     </Grid.ColumnDefinitions>
 
+    <!--<StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4">
+      <CustomControls:OutlinedTextBlock x:Name="dbg" Margin="10,5" Text="DEBUG" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="20" StrokeThickness="2" Stroke="White" Fill="DarkGreen" />  
+    </StackPanel>-->
     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
       <StackPanel.DataContext>
         <informers:DateTimeInformer/>
@@ -59,8 +64,9 @@
       <CustomControls:OutlinedTextBlock Margin="10,5" Text="Вечер" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="30" StrokeThickness="2" Stroke="White" Fill="DarkRed" />
     </StackPanel>
 
-    <StackPanel Grid.Row="1" Grid.Column="1"  >
+    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" >
       <presenters:Weather Margin="10,5" x:Name="W_TodayNight" WeatherPeriod="TodayNight" />
+      <presenters:Weather Margin="10,5" x:Name="W_Invisible" WeatherPeriod="TodayNight" Visibility="Hidden"/>
     </StackPanel>
     <StackPanel Grid.Row="2" Grid.Column="1"  >
       <presenters:Weather Margin="10,5" x:Name="W_TodayMorning" WeatherPeriod="TodayMorning" />
