@@ -43,7 +43,6 @@ namespace weather
     public WeatherProviderBase()
     {
       _reader = new Thread(new ThreadStart(readdata)) { IsBackground = true };
-      _reader.SetApartmentState(ApartmentState.STA);
       _reader.Start();
     }
 
