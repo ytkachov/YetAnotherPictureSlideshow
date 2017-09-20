@@ -43,6 +43,24 @@ namespace weather
 
       return el;
     }
+
+    public static string outerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].outerHTML;", el);
+      return contents;
+    }
+
+    public static string innerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].innerHTML;", el);
+      return contents;
+    }
   }
 
   class WeatherProviderNGS : WeatherProviderBase
@@ -270,7 +288,7 @@ namespace weather
         if (tbl == null)
           throw new Exception("NGS forecast: can't find 3 day forecast table");
 
-        string outerhtml = tbl.GetAttribute("outerHTML").Replace("&nbsp;", " ");
+        string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
         pg.LoadXml(outerhtml);
 
         XmlNode pgd_detailed = pg.DocumentElement;
@@ -466,7 +484,7 @@ namespace weather
           throw new Exception("incorrect current weather structure ");
         }
 
-        outerhtml = info.GetAttribute("innerHtml").Replace("&nbsp;", " ");
+        outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
         // File.WriteAllText(@"D:\outerhtml.xml", outerhtml);
 
         // remove usually incorrect <img > tags
