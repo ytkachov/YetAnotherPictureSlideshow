@@ -281,9 +281,9 @@ namespace weather
 
         XmlDocument pg = new XmlDocument();
 
-        var tbl = _driver.findElement(By.ClassName("pgd-detailed-cards elements"));
+        var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
         if (tbl == null)
-          tbl = _driver.findElement(By.ClassName("pgd-detailed-cards elements pgd-hidden"));
+          tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
 
         if (tbl == null)
           throw new Exception("NGS forecast: can't find 3 day forecast table");
