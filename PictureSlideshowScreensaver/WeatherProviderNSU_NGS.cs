@@ -257,8 +257,6 @@ namespace weather
             _succeeded = false;
           }
         }
-
-        browser_.GoTo("http://google.com/");
       }
 
       try
@@ -314,8 +312,6 @@ namespace weather
             _succeeded = false;
           }
         }
-
-        browser_.GoTo("http://google.com/");
       }
 
       try
