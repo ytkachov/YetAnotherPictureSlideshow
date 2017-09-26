@@ -6,6 +6,8 @@ interface ImageInfo
   void ReleaseResources();
 
   BitmapImage bitmap { get; }
+  bool has_accompanying_video { get; }
+  string video_name { get; }
   string description { get; }
 
   int accent_count { get; }

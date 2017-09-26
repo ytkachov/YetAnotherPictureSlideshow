@@ -11,12 +11,15 @@ using Emgu.CV;
 
 class LocalImageInfo : ImageInfo
 {
-  public LocalImageInfo(string nm) { _name = nm; }
+  public LocalImageInfo(string nm, string videoname = null) { _name = nm; _video_name = videoname; }
 
   internal string _name;
+  internal string _video_name;  // for iPhone accompanying video file
   internal DateTime? _dateTaken;
   internal int _shown = 0;
   internal UInt16 _orientation = 0;
+
+  internal List<string> _messages = new List<string>();
 
   private List<System.Drawing.Rectangle> _faces = null;
   private bool _processed = false;
@@ -24,6 +27,21 @@ class LocalImageInfo : ImageInfo
   private int _pixel_width, _pixel_height;
   private System.Drawing.Bitmap _bitmap;
   private static Random _rand = new Random(DateTime.Now.Millisecond);
+
+  public bool has_accompanying_video
+  {
+    get
+    {
+      return _video_name != null && _name != null;
+    }
+  }
+  public string video_name
+  {
+    get
+    {
+      return _video_name;
+    }
+  }
 
   public string description
   {
@@ -332,7 +350,9 @@ class LocalImages : ImagesProvider
   {
     lock (_locker)
     {
-      LocalImageInfo ii = new LocalImageInfo(name);
+      // special treatment for iPhone photo-video pair
+      string movfile = Path.ChangeExtension(name, "mov");
+      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null);
 
       try
       {
@@ -349,7 +369,7 @@ class LocalImages : ImagesProvider
       }
       catch (Exception ex)
       {
-        ex.ToString();
+        ii._messages.Add("Exeption " + ex.ToString());
       }
 
       _imagesTmp.Add(ii);
