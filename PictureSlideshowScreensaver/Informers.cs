@@ -65,6 +65,9 @@ namespace informers
     private string _time_Minutes = "00";
     private string _time_Seconds = "00";
     private string _date_Full = "Пт 01 Янв 2016";
+    private string _date_DayMon = "01/05";
+    private string _date_DayMonTomorrow = "02/05";
+    private string _date_DayMonAfterTomorrow = "03/05";
     private DispatcherTimer _clockTick = new DispatcherTimer();
 
     public DateTimeInformer()
@@ -78,6 +81,9 @@ namespace informers
     public string Time_Minutes { get { return _time_Minutes; } set { _time_Minutes = value; RaisePropertyChanged("Time_Minutes"); } }
     public string Time_Seconds { get { return _time_Seconds; } set { _time_Seconds = value; RaisePropertyChanged("Time_Seconds"); } }
     public string Date_Full { get { return _date_Full; } set { _date_Full = value; RaisePropertyChanged("Date_Full"); } }
+    public string Date_DayMon { get { return _date_DayMon; } set { _date_DayMon = value; RaisePropertyChanged("Date_DayMon"); } }
+    public string Date_DayMonTomorrow { get { return _date_DayMonTomorrow; } set { _date_DayMonTomorrow = value; RaisePropertyChanged("Date_DayMonTomorrow"); } }
+    public string Date_DayMonAfterTomorrow { get { return _date_DayMonAfterTomorrow; } set { _date_DayMonAfterTomorrow = value; RaisePropertyChanged("Date_DayMonAfterTomorrow"); } }
     public int Time_Tick { get { return _time_Tick; } set { _time_Tick = value; RaisePropertyChanged("Time_Tick"); } }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -95,6 +101,9 @@ namespace informers
       Time_Seconds = DateTime.Now.Second.ToString("D2");
 
       Date_Full = dateformatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.Month - 1];
+      Date_DayMon = dateformatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.Month - 1];
+      Date_DayMonTomorrow = dateformatter.weekdays_short[(int)DateTime.Now.AddDays(1).DayOfWeek] + ", " + (DateTime.Now.AddDays(1).Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.AddDays(1).Month - 1];
+      Date_DayMonAfterTomorrow = dateformatter.weekdays_short[(int)DateTime.Now.AddDays(2).DayOfWeek] + ", " + (DateTime.Now.AddDays(2).Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.AddDays(2).Month - 1];
     }
   }
 }

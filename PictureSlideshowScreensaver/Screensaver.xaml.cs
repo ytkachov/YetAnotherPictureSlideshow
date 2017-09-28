@@ -28,6 +28,23 @@ namespace PictureSlideshowScreensaver
     public string _writeStatPath;
     public bool _dependOnBattery = false;
     public bool _workAtNight = true;
+    public bool _noImageFading = false;
+    public bool _noImageScaling = false;
+    public bool _noImageAccents = false;
+    public bool _noNightImageFading = true;
+    public bool _noNightImageScaling = true;
+    public bool _noNightImageAccents = true;
+
+    enum perfoptions
+    {
+      work_at_night = 0x0001,
+      no_image_fading = 0x0002,
+      no_image_scaling = 0x0004,
+      no_image_accents = 0x0008,
+      no_night_image_fading = 0x0020,
+      no_night_image_scaling = 0x0040,
+      no_night_image_accents = 0x0080
+    }
 
     public Settings()
     {
@@ -40,14 +57,24 @@ namespace PictureSlideshowScreensaver
         _writeStat = int.Parse((string)key.GetValue("WriteStat") ?? "0") == 1;
         _writeStatPath = (string)key.GetValue("WriteStatFolder");
         _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
+
+        int dflt = (int)(perfoptions.work_at_night | perfoptions.no_night_image_accents | perfoptions.no_night_image_fading | perfoptions.no_night_image_scaling);
+        int po = (int?)key.GetValue("PerformanceOptions") ?? dflt;
+        _workAtNight =  (po & (int)perfoptions.work_at_night) != 0;
+        _noImageFading = (po & (int)perfoptions.no_image_fading) != 0;
+        _noImageScaling = (po & (int)perfoptions.no_image_scaling) != 0;
+        _noImageAccents = (po & (int)perfoptions.no_image_accents) != 0;
+        _noNightImageFading = (po & (int)perfoptions.no_night_image_fading) != 0;
+        _noNightImageScaling = (po & (int)perfoptions.no_night_image_scaling) != 0;
+        _noNightImageAccents = (po & (int)perfoptions.no_night_image_accents) != 0;
       }
     }
 
-}
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class Screensaver : Window
+  }
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class Screensaver : Window
   {
     private Random _rand;
     private Settings _settings = new Settings();
@@ -61,6 +88,7 @@ public partial class Screensaver : Window
     private System.Drawing.Rectangle _bounds;
     private cPower _power;
     private int _prevTime = 0;
+    private bool _isNightTime = false;
 
     public Screensaver(System.Drawing.Rectangle bounds, int offset)
     {
@@ -95,12 +123,15 @@ public partial class Screensaver : Window
     {
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
-      if (!_settings._workAtNight && DateTime.Now.Hour < 7)
+      _isNightTime = DateTime.Now.Hour < 7 || DateTime.Now.Hour >= 23;
+      //_isNightTime = true;
+      if ((!_settings._workAtNight) && _isNightTime)
         return;        // фотографии не меняются ночью.
 
       NextImage();
     }
 
+    // это сейчас не актуально - это было для краткого прогноза (который был под текущей погодой)
     void forecast_Tick(object sender, EventArgs e)
     {
       WeatherPeriod[] wp = new WeatherPeriod[] 
@@ -122,7 +153,7 @@ public partial class Screensaver : Window
 
       for (int i = 0; i < 3; i++)
       {
-        WeatherPresenter w = FindName("W_N" + i) as WeatherPresenter;
+        Weather w = FindName("W_N" + i) as Weather;
 
         if (w != null && w.WeatherPeriod != wp[wpidx + i])
           w.WeatherPeriod = wp[wpidx + i];
@@ -160,19 +191,23 @@ public partial class Screensaver : Window
         try
         {
           PhotoProperties.Photo_Description = nextphoto.description;
-          if (img1.Opacity == 0)
+          var dt = TimeSpan.FromMilliseconds(_settings._noImageFading || 
+                                             (_isNightTime && _settings._noNightImageFading) 
+                                            ? 0 : _settings._fadeSpeed);
+
+            if (img1.Opacity == 0)
           {
             SetImage(img1, nextphoto);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
           }
           else if (img2.Opacity == 0)
           {
             SetImage(img2, nextphoto);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(_settings._fadeSpeed)));
+            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
+            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
           }
           return;
         }
@@ -200,24 +235,26 @@ public partial class Screensaver : Window
       if (img.ActualHeight > 0 && img.ActualWidth > 0)
       {
         // if image is valid
-        if (!_settings._dependOnBattery ||
-            !_power.HasBattery ||
-            (_power.HasBattery && _power.BatteryLifePercent > 20))
+        if (!(_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 20) &&
+            !(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
         {
           double cx = img.ActualWidth / 2;
           double cy = img.ActualHeight / 2;
           double cs = 1.0 + 0.1 * _rand.NextDouble();
 
-          PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
-          if (nextphoto.accent_count != 0)
+          if (!_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents))
           {
-            double dc = 1;
-            dc = bmp_img.PixelHeight / img.ActualHeight;
-            var accent = nextphoto.accent;
+            PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
+            if (nextphoto.accent_count != 0)
+            {
+              double dc = 1;
+              dc = bmp_img.PixelHeight / img.ActualHeight;
+              var accent = nextphoto.accent;
 
-            cx += accent.X / dc;
-            cy += accent.Y / dc;
-            cs = 1.05 + 0.4 * _rand.NextDouble(); 
+              cx += accent.X / dc;
+              cy += accent.Y / dc;
+              cs = 1.05 + 0.4 * _rand.NextDouble();
+            }
           }
 
           ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
@@ -229,6 +266,8 @@ public partial class Screensaver : Window
           img.RenderTransform = st;
         }
       }
+
+      nextphoto.ReleaseResources();
     }
 
     private void Shutdown()

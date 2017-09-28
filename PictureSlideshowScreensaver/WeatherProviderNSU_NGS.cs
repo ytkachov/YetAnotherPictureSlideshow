@@ -1,5 +1,8 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,26 +10,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Threading;
 using System.Xml;
-using WatiN.Core;
 
 namespace weather
 {
-  public static class WatinExtensions
-  {
-    //public static ElementCollection Children(this Element self)
-    //{
-    //  return self.DomContainer.Elements.Filter(e => self.Equals(e.Parent));
-    //}
-    public static DivCollection ChildDivs(this Element self)
-    {
-      return self.DomContainer.Divs.Filter(e => self.Equals(e.Parent));
-    }
-    public static ElementCollection EChildDivs(this Element self)
-    {
-      return self.DomContainer.Elements.Filter(e => (self.Equals(e.Parent) && e.TagName.ToLower() == "div"));
-    }
-  }
-
   public static class XmlExtensions
   {
     public static XmlNodeList SelectCellDivs(this XmlNode tr, string selector)
@@ -39,24 +25,48 @@ namespace weather
     }
   }
 
+  public static class SeleniumExtensions
+  {
+    public static IWebElement findElement(this ISearchContext self, By by)
+    {
+      if (self == null)
+        return null;
+
+      IWebElement el = null;
+      try
+      {
+        el = self.FindElement(by);
+      }
+      catch
+      {
+      }
+
+      return el;
+    }
+
+    public static string outerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].outerHTML;", el);
+      return contents;
+    }
+
+    public static string innerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].innerHTML;", el);
+      return contents;
+    }
+  }
+
   class WeatherProviderNGS : WeatherProviderBase
   {
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
-
-    private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
-    {
-      public StringStartsWith()
-      {
-      }
-
-      public string startswith { get; set; }
-
-      public override bool Compare(string V)
-      {
-        return V != null && V.StartsWith(startswith);
-      }
-    }
 
     static Dictionary<string, WeatherPeriod>[] _day_periods = new Dictionary<string, WeatherPeriod>[3]
     {
@@ -73,6 +83,7 @@ namespace weather
       { "west", WindDirection.W }, { "north_west",   WindDirection.NW }
     };
 
+    
     static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "sunshine_light_rain_day",            WeatherType.ClearPartlyRainy },
@@ -81,11 +92,13 @@ namespace weather
       { "sunshine_none_day",                  WeatherType.Clear },
       { "partly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_rain_with_snow_day",   WeatherType.CloudyPartlyRainy },
       { "partly_cloudy_snow_day",             WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_day",       WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_day",     WeatherType.CloudyLightningRainy },
       { "light_cloudy_none_day",              WeatherType.PartlyCloudy},
       { "partly_cloudy_none_day",             WeatherType.PartlyCloudy},
+      { "partly_cloudy_rainless_day" ,        WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_day",             WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_day",       WeatherType.CloudyPartlyRainy },
       { "mostly_cloudy_snow_day",             WeatherType.CloudySnowy },
@@ -95,6 +108,8 @@ namespace weather
       { "cloudy_rain_day",                    WeatherType.OvercastRainy },
       { "cloudy_rainless_day",                WeatherType.Overcast },
       { "cloudy_light_rain_day",              WeatherType.OvercastPartlyRainy },
+      { "cloudy_sleet_day",                   WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_with_rain_day",          WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_day",                    WeatherType.OvercastSnowy },
       { "cloudy_light_snow_day",              WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_day",              WeatherType.OvercastSnowyStorm },
@@ -106,11 +121,13 @@ namespace weather
       { "sunshine_none_night",                WeatherType.Clear },
       { "partly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "partly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
+      { "partly_cloudy_rain_with_snow_night", WeatherType.CloudyPartlyRainy },
       { "partly_cloudy_snow_night",           WeatherType.CloudySnowy },
       { "partly_cloudy_light_snow_night",     WeatherType.CloudyPartlySnowy },
       { "partly_cloudy_thunderstorm_night",   WeatherType.CloudyLightningRainy },
       { "light_cloudy_none_night",            WeatherType.PartlyCloudy},
       { "partly_cloudy_none_night",           WeatherType.PartlyCloudy},
+      { "partly_cloudy_rainless_night" ,      WeatherType.PartlyCloudy},
       { "mostly_cloudy_rain_night",           WeatherType.CloudyRainy },
       { "mostly_cloudy_light_rain_night",     WeatherType.CloudyPartlyRainy },
       { "mostly_cloudy_snow_night",           WeatherType.CloudySnowy },
@@ -120,13 +137,15 @@ namespace weather
       { "cloudy_rain_night",                  WeatherType.OvercastRainy },
       { "cloudy_rainless_night",              WeatherType.Overcast },
       { "cloudy_light_rain_night",            WeatherType.OvercastPartlyRainy },
+      { "cloudy_sleet_night",                 WeatherType.OvercastPartlyRainy },
+      { "cloudy_snow_with_rain_night",        WeatherType.OvercastPartlyRainy },
       { "cloudy_snow_night",                  WeatherType.OvercastSnowy },
       { "cloudy_light_snow_night",            WeatherType.OvercastPartlySnowy },
       { "cloudy_heavy_snow_night",            WeatherType.OvercastSnowyStorm },
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
     };
-    private IE browser_;
+    private IWebDriver _driver;
 
     private WeatherProviderNGS()
     {
@@ -153,24 +172,26 @@ namespace weather
     {
       base.close();
 
-      if (browser_ != null)
-        browser_.Close();
-
-      browser_ = null;
+      if (_driver != null)
+      {
+        _driver.Close();
+        _driver.Quit();
+        _driver = null;
+      }
     }
 
     protected override void readdata()
     {
-      Settings.AutoMoveMousePointerToTopLeft = false;
-      Settings.MakeNewIeInstanceVisible = false;
-
       while (true)
       {
         _error_descr = "";
         try
         {
-          if (browser_ == null)
-            browser_ = new IE();
+          if (_driver == null)
+          {
+            _driver = new ChromeDriver();
+            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+          }
         }
         catch (Exception e)
         {
@@ -201,10 +222,10 @@ namespace weather
       bool success = false;
       try
       {
-        browser_.GoTo("http://weather.nsu.ru/");
-        Span temp = browser_.Span(Find.ById("temp"));
+        _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
+        var temp = _driver.findElement(By.Id("temp"));
 
-        if (temp.Exists)
+        if (temp != null)
         {
           Thread.Sleep(500);
 
@@ -212,7 +233,8 @@ namespace weather
           if (st != null || !st.Contains("°"))
           {
             success = true;
-            double t = double.Parse(st.Substring(0, st.IndexOf("°")));
+            CultureInfo culture = new CultureInfo("en");
+            double t = double.Parse(st.Substring(0, st.IndexOf("°")), culture);
             lock (_locker)
             {
               w.TemperatureLow = w.TemperatureHigh = t;
@@ -235,8 +257,15 @@ namespace weather
             _succeeded = false;
           }
         }
+      }
 
-        browser_.GoTo("http://google.com/");
+      try
+      {
+        _driver.Navigate().GoToUrl("http://google.com/");
+      }
+      catch (Exception e)
+      {
+
       }
     }
 
@@ -247,19 +276,19 @@ namespace weather
 
       try
       {
-        browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
 
-        Table tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements"));
-        if (!tbl.Exists)
-          tbl = browser_.Table(Find.ByClass("pgd-detailed-cards elements pgd-hidden"));
+        var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
+        if (tbl == null)
+          tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
 
-        if (!tbl.Exists)
+        if (tbl == null)
           throw new Exception("NGS forecast: can't find 3 day forecast table");
 
-        string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
+        string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
         pg.LoadXml(outerhtml);
 
         XmlNode pgd_detailed = pg.DocumentElement;
@@ -283,8 +312,15 @@ namespace weather
             _succeeded = false;
           }
         }
+      }
 
-        browser_.GoTo("http://google.com/");
+      try
+      {
+        _driver.Navigate().GoToUrl("http://google.com/");
+      }
+      catch (Exception e)
+      {
+
       }
     }
 
@@ -396,7 +432,7 @@ namespace weather
           int i = 0;
         }
 
-                // wind
+        // wind
         cn = "icon-small icon-wind-";
         e = wind_divs[period].SelectSingleNode("./i");
         if (e == null)
@@ -436,19 +472,19 @@ namespace weather
       string outerhtml = "";
       try
       {
-        browser_.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
 
-        Div info = browser_.Div(Find.ByClass("today-panel__info"));
-        if (!info.Exists)
+        var info = _driver.findElement(By.ClassName("today-panel__info"));
+        if (info == null)
         {
-          outerhtml = browser_.Html;
+          outerhtml = _driver.PageSource;
           throw new Exception("incorrect current weather structure ");
         }
 
-        outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
+        outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
         // File.WriteAllText(@"D:\outerhtml.xml", outerhtml);
 
         // remove usually incorrect <img > tags
@@ -485,7 +521,7 @@ namespace weather
         if (string.IsNullOrEmpty(st))
           throw new Exception("incorrect current weather structure -- incorrect current temperature string");
 
-        double t = double.Parse(st);
+        double t = double.Parse(st, new CultureInfo("en"));
         w.TemperatureHigh = w.TemperatureLow = t;
 
         //File.WriteAllText(@"D:\Projects\YetAnotherPictureSlideshow\PictureSlideshowScreensaver\samples\XMLFile2.xml", curr.OuterXml);
@@ -505,7 +541,7 @@ namespace weather
 
         string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
         double ws;
-        if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), out ws))
+        if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"),  out ws))
           w.WindSpeed = ws;
 
         // pressure 
@@ -515,7 +551,7 @@ namespace weather
 
         double p;
         string pr = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), out p))
+        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"), out p))
           w.Pressure = p;
 
         // humidity
@@ -525,7 +561,7 @@ namespace weather
 
         double h;
         string humidity = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), out h))
+        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), NumberStyles.Number, new CultureInfo("en"), out h))
           w.Humidity = h;
       }
       catch (Exception e)
