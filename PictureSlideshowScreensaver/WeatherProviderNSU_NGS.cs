@@ -539,7 +539,7 @@ namespace weather
         if (edt == null || edt.Name.ToLower() != "dt")
           throw new Exception("incorrect structure -- 2.1");
 
-        string wind = edt.InnerText.Replace("\n", " ").TrimStart(' ');
+        string wind = edt.InnerText.TrimStart('\n', '\r', '\t', ' ');
         double ws;
         if (double.TryParse(wind.Substring(0, wind.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"),  out ws))
           w.WindSpeed = ws;
