@@ -551,7 +551,7 @@ namespace weather
 
         double p;
         string pr = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), NumberStyles.Number, new CultureInfo("en"), out p))
+        if (double.TryParse(pr.Substring(0, pr.IndexOf(' ')), NumberStyles.Number, new CultureInfo("ru"), out p))
           w.Pressure = p;
 
         // humidity
@@ -561,7 +561,7 @@ namespace weather
 
         double h;
         string humidity = ei.SelectSingleNode("@title").Value;
-        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), NumberStyles.Number, new CultureInfo("en"), out h))
+        if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), NumberStyles.Number, new CultureInfo("ru"), out h))
           w.Humidity = h;
       }
       catch (Exception e)
