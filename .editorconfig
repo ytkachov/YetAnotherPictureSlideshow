@@ -1,0 +1,10 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{cs,h,cpp}]
+indent_style = space
+indent_size = 2

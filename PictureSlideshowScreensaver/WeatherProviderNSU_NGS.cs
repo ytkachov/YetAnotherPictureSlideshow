@@ -182,9 +182,19 @@ namespace weather
 
     protected override void readdata()
     {
+
+      int counter = 0;
       while (true)
       {
         _error_descr = "";
+        if (counter++ == 20 && _driver != null)
+        {
+          // shutdown IE every tenth call
+          _driver.Close();
+          _driver = null;
+          counter = 0;
+        }
+
         try
         {
           if (_driver == null)
