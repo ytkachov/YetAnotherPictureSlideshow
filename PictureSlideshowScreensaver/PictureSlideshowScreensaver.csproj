@@ -127,6 +127,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="cPower.cs" />
+    <Compile Include="FrameView.xaml.cs">
+      <DependentUpon>FrameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImagesInfo.cs" />
     <Compile Include="Informers.cs" />
     <Compile Include="FaceDetection.cs" />
@@ -146,6 +149,10 @@
     <Compile Include="WeatherProviderWU.cs" />
     <Compile Include="WeatherProviderYandex.cs" />
     <Page Include="Configuration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FrameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
