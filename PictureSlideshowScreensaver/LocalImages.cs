@@ -56,8 +56,10 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
-      BitmapImage bmp_img = new BitmapImage(new Uri(_name));
+      if (_bitmap != null)
+        return Bitmap2BitmapImage(_bitmap);
 
+      BitmapImage bmp_img = new BitmapImage(new Uri(_name));
       using (MemoryStream outStream = new MemoryStream())
       {
         BitmapEncoder enc = new BmpBitmapEncoder();
@@ -104,6 +106,7 @@ class LocalImageInfo : ImageInfo
 
       _pixel_width = bmp_img.PixelWidth;
       _pixel_height = bmp_img.PixelHeight;
+
 
       return bmp_img;
     }
@@ -153,11 +156,10 @@ class LocalImageInfo : ImageInfo
 
     if (!_processed)
     {
-      _processed = true;
       _dmult = 3.0;
       List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
 
-      System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(bitmap.Width / _dmult), (int)(bitmap.Height / _dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+      System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(_pixel_width / _dmult), (int)(_pixel_height / _dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
       using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
       {
         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
@@ -174,6 +176,7 @@ class LocalImageInfo : ImageInfo
           if (faces.Count != 0)
             _faces = faces;
 
+          _processed = true;
         }
         catch (Exception e)
         {

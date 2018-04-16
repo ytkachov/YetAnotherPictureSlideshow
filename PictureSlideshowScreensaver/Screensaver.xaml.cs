@@ -228,7 +228,7 @@ namespace PictureSlideshowScreensaver
       BitmapImage bmp_img = nextphoto.bitmap;
 
       img.Stretch = Stretch.Uniform;
-      if (bmp_img.Width > bmp_img.Height * 1.2)
+      if (bmp_img.PixelWidth > bmp_img.PixelHeight * 1.2)
         img.Stretch = Stretch.UniformToFill;
 
       img.Source = bmp_img;
