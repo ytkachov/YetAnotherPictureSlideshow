@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+//using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.IE;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -201,8 +202,24 @@ namespace weather
         {
           if (_driver == null)
           {
-            _driver = new ChromeDriver();
+            _driver = new InternetExplorerDriver();
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+          }
+
+          if (_driver != null)
+          {
+            lock (_locker)
+            {
+              _weather.Clear();
+            }
+
+            weather w = new weather();
+            read_nsu_current_temp(w);
+
+            read_ngs_current_weather(w);
+            _weather[WeatherPeriod.Now] = w;
+
+            read_ngs_forecast();
           }
         }
         catch (Exception e)
@@ -211,18 +228,6 @@ namespace weather
           continue;
         }
 
-        lock (_locker)
-        {
-          _weather.Clear();
-        }
-
-        weather w = new weather();
-        read_nsu_current_temp(w);
-
-        read_ngs_current_weather(w);
-        _weather[WeatherPeriod.Now] = w;
-
-        read_ngs_forecast();
 
         if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
           break;
@@ -288,7 +293,7 @@ namespace weather
 
       try
       {
-        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
+        _driver.Navigate().GoToUrl("https://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
@@ -484,7 +489,7 @@ namespace weather
       string outerhtml = "";
       try
       {
-        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
+        _driver.Navigate().GoToUrl("https://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
         XmlDocument pg = new XmlDocument();
