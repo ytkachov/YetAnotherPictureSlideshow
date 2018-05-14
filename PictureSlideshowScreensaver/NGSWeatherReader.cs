@@ -1,0 +1,277 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+
+using WatiN.Core;
+
+namespace weather
+{
+  interface INGSWeatherReader
+  {
+    void close();
+    void restart();
+    void navigate(string url = null);
+    string temperature();
+    string forecast();
+    string current();
+    void getrest();
+  }
+
+  public static class WatinExtensions
+  {
+    //public static ElementCollection Children(this Element self)
+    //{
+    //  return self.DomContainer.Elements.Filter(e => self.Equals(e.Parent));
+    //}
+    public static DivCollection ChildDivs(this Element self)
+    {
+      return self.DomContainer.Divs.Filter(e => self.Equals(e.Parent));
+    }
+    public static ElementCollection EChildDivs(this Element self)
+    {
+      return self.DomContainer.Elements.Filter(e => (self.Equals(e.Parent) && e.TagName.ToLower() == "div"));
+    }
+  }
+
+
+  public static class XmlExtensions
+  {
+    public static XmlNodeList SelectCellDivs(this XmlNode tr, string selector)
+    {
+      XmlNode tc = tr.SelectSingleNode(string.Format("./td[@class='{0}']", selector));
+      if (tc == null)
+        throw new Exception("cant find requested table cell");
+
+      return tc.SelectNodes("./div");
+    }
+  }
+
+  public static class SeleniumExtensions
+  {
+    public static IWebElement findElement(this ISearchContext self, By by)
+    {
+      if (self == null)
+        return null;
+
+      IWebElement el = null;
+      try
+      {
+        el = self.FindElement(by);
+      }
+      catch
+      {
+      }
+
+      return el;
+    }
+
+    public static string outerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].outerHTML;", el);
+      return contents;
+    }
+
+    public static string innerHTML(this IWebDriver self, IWebElement el)
+    {
+      if (self == null)
+        return null;
+
+      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].innerHTML;", el);
+      return contents;
+    }
+  }
+
+  public class NGSWatinReader : INGSWeatherReader
+  {
+    private IE _browser;
+
+    private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
+    {
+      public StringStartsWith()
+      {
+      }
+
+      public string startswith { get; set; }
+
+      public override bool Compare(string V)
+      {
+        return V != null && V.StartsWith(startswith);
+      }
+    }
+
+    public NGSWatinReader()
+    {
+      Settings.AutoMoveMousePointerToTopLeft = false;
+      //Settings.MakeNewIeInstanceVisible = false;
+
+      if (_browser == null)
+        _browser = new IE();
+    }
+
+    public void close()
+    {
+      if (_browser != null)
+        _browser.Close();
+
+      _browser = null;
+    }
+
+    public string current()
+    {
+      string outerhtml;
+      Div info = _browser.Div(Find.ByClass("today-panel__info"));
+      if (!info.Exists)
+      {
+        outerhtml = _browser.Html;
+        throw new Exception("incorrect current weather structure ");
+      }
+
+      outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
+
+      // remove usually incorrect <img > tags
+      string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
+
+      return Regex.Replace(outerhtml, img, " ");
+    }
+
+    public string forecast()
+    {
+      Table tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements"));
+      if (!tbl.Exists)
+        tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements pgd-hidden"));
+
+      if (!tbl.Exists)
+        throw new Exception("NGS forecast: can't find 3 day forecast table");
+
+      return tbl.OuterHtml.Replace("&nbsp;", " ");
+    }
+
+    public void getrest()
+    {
+      _browser.GoTo("http://google.com/");
+    }
+
+    public void navigate(string url = null)
+    {
+      if (_browser == null)
+        _browser = new IE();
+
+      if (url == null)
+        _browser.GoTo("http://weather.nsu.ru/");
+      else
+        _browser.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+    }
+
+    public void restart()
+    {
+      close();
+    }
+
+    public string temperature()
+    {
+      Span temp = _browser.Span(Find.ById("temp"));
+      if (temp.Exists)
+      {
+        Thread.Sleep(500);
+        return temp.Text;
+      }
+
+      return null;
+    }
+  }
+
+  public class NGSSeleniumReader : INGSWeatherReader
+  {
+    private IWebDriver _driver = null;
+
+    public NGSSeleniumReader()
+    {
+      _driver = new ChromeDriver();
+      _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+    }
+
+    public void close()
+    {
+      _driver.Close();
+      _driver.Quit();
+
+      _driver = null;
+    }
+
+    public string current()
+    {
+      var info = _driver.findElement(By.ClassName("today-panel__info"));
+      if (info == null)
+        return null;
+
+      string outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
+
+      // remove usually incorrect <img > tags
+      string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
+      return Regex.Replace(outerhtml, img, " ");
+    }
+
+    public string forecast()
+    {
+      var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
+      if (tbl == null)
+        tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
+
+      if (tbl == null)
+        return null;
+
+      return _driver.outerHTML(tbl).Replace("&nbsp;", " ");
+    }
+
+    public void navigate(string url = null)
+    {
+      if (_driver == null)
+      {
+        _driver = new ChromeDriver();
+        _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+      }
+
+      if (url == null)
+        _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
+      else
+        _driver.Navigate().GoToUrl(url);
+    }
+
+    public void restart()
+    {
+      _driver.Close();
+      _driver.Quit();
+
+      _driver = null;
+    }
+
+    public string temperature()
+    {
+      var temp = _driver.findElement(By.Id("temp"));
+      if (temp != null)
+      {
+        Thread.Sleep(500);
+        return temp.Text;
+      }
+
+      return null;
+    }
+
+    public void getrest()
+    {
+      _driver.Navigate().GoToUrl("http://google.com/");
+    }
+  }
+}

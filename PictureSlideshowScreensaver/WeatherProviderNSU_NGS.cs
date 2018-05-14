@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -13,55 +11,6 @@ using System.Xml;
 
 namespace weather
 {
-  public static class XmlExtensions
-  {
-    public static XmlNodeList SelectCellDivs(this XmlNode tr, string selector)
-    {
-      XmlNode tc = tr.SelectSingleNode(string.Format("./td[@class='{0}']", selector));
-      if (tc == null)
-        throw new Exception("cant find requested table cell");
-
-      return tc.SelectNodes("./div");
-    }
-  }
-
-  public static class SeleniumExtensions
-  {
-    public static IWebElement findElement(this ISearchContext self, By by)
-    {
-      if (self == null)
-        return null;
-
-      IWebElement el = null;
-      try
-      {
-        el = self.FindElement(by);
-      }
-      catch
-      {
-      }
-
-      return el;
-    }
-
-    public static string outerHTML(this IWebDriver self, IWebElement el)
-    {
-      if (self == null)
-        return null;
-
-      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].outerHTML;", el);
-      return contents;
-    }
-
-    public static string innerHTML(this IWebDriver self, IWebElement el)
-    {
-      if (self == null)
-        return null;
-
-      String contents = (String)((IJavaScriptExecutor)self).ExecuteScript("return arguments[0].innerHTML;", el);
-      return contents;
-    }
-  }
 
   class WeatherProviderNGS : WeatherProviderBase
   {
@@ -147,7 +96,7 @@ namespace weather
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
     };
-    private IWebDriver _driver;
+    private INGSWeatherReader _sitereader = null;
 
     private WeatherProviderNGS()
     {
@@ -172,14 +121,9 @@ namespace weather
 
     protected override void close()
     {
-      base.close();
+      _sitereader.close();
 
-      if (_driver != null)
-      {
-        _driver.Close();
-        _driver.Quit();
-        _driver = null;
-      }
+      base.close();
     }
 
     protected override void readdata()
@@ -188,27 +132,17 @@ namespace weather
       int counter = 0;
       while (true)
       {
-        _error_descr = "";
-        if (counter++ == 20 && _driver != null)
+        if (_sitereader == null)
         {
-          // shutdown IE every tenth call
-          _driver.Close();
-          _driver = null;
-          counter = 0;
+          // _sitereader = new NGSSeleniumReader();
+          _sitereader = new NGSWatinReader();
         }
 
-        try
+        _error_descr = "";
+        if (counter++ == 20)
         {
-          if (_driver == null)
-          {
-            _driver = new ChromeDriver();
-            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
-          }
-        }
-        catch (Exception e)
-        {
-          _error_descr = e.Message;
-          continue;
+          _sitereader.restart();
+          counter = 0;
         }
 
         lock (_locker)
@@ -218,13 +152,13 @@ namespace weather
 
         weather w = new weather();
         read_nsu_current_temp(w);
-
         read_ngs_current_weather(w);
+
         _weather[WeatherPeriod.Now] = w;
 
         read_ngs_forecast();
 
-        if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
+        if (_exit.WaitOne(TimeSpan.FromSeconds(30)))
           break;
       }
     }
@@ -234,24 +168,17 @@ namespace weather
       bool success = false;
       try
       {
-        _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
-        var temp = _driver.findElement(By.Id("temp"));
-
-        if (temp != null)
+        _sitereader.navigate();
+        string st = _sitereader.temperature();
+        if (st != null || !st.Contains("°"))
         {
-          Thread.Sleep(500);
-
-          string st = temp.Text;
-          if (st != null || !st.Contains("°"))
+          success = true;
+          CultureInfo culture = new CultureInfo("en");
+          double t = double.Parse(st.Substring(0, st.IndexOf("°")), culture);
+          lock (_locker)
           {
-            success = true;
-            CultureInfo culture = new CultureInfo("en");
-            double t = double.Parse(st.Substring(0, st.IndexOf("°")), culture);
-            lock (_locker)
-            {
-              w.TemperatureLow = w.TemperatureHigh = t;
-              _succeeded = true;
-            }
+            w.TemperatureLow = w.TemperatureHigh = t;
+            _succeeded = true;
           }
         }
       }
@@ -273,7 +200,7 @@ namespace weather
 
       try
       {
-        _driver.Navigate().GoToUrl("http://google.com/");
+        _sitereader.getrest();
       }
       catch (Exception e)
       {
@@ -288,20 +215,15 @@ namespace weather
 
       try
       {
-        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
+        _sitereader.navigate("http://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
-        XmlDocument pg = new XmlDocument();
-
-        var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
-        if (tbl == null)
-          tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
-
-        if (tbl == null)
+        string forecast = _sitereader.forecast();
+        if (forecast == null)
           throw new Exception("NGS forecast: can't find 3 day forecast table");
 
-        string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
-        pg.LoadXml(outerhtml);
+        XmlDocument pg = new XmlDocument();
+        pg.LoadXml(forecast);
 
         XmlNode pgd_detailed = pg.DocumentElement;
         extract_3days_forecast(pgd_detailed);
@@ -328,7 +250,7 @@ namespace weather
 
       try
       {
-        _driver.Navigate().GoToUrl("http://google.com/");
+        _sitereader.getrest();
       }
       catch (Exception e)
       {
@@ -481,29 +403,17 @@ namespace weather
       bool success = true;
       _succeeded = true;
 
-      string outerhtml = "";
       try
       {
-        _driver.Navigate().GoToUrl("http://pogoda.ngs.ru/academgorodok/");
+        _sitereader.navigate("http://pogoda.ngs.ru/academgorodok/");
         Thread.Sleep(10000);
 
-        XmlDocument pg = new XmlDocument();
-
-        var info = _driver.findElement(By.ClassName("today-panel__info"));
-        if (info == null)
-        {
-          outerhtml = _driver.PageSource;
+        string current = _sitereader.current();
+        if (current == null)
           throw new Exception("incorrect current weather structure ");
-        }
 
-        outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
-        // File.WriteAllText(@"D:\outerhtml.xml", outerhtml);
-
-        // remove usually incorrect <img > tags
-        string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
-        outerhtml = Regex.Replace(outerhtml, img, " ");
-
-        pg.LoadXml(outerhtml);
+        XmlDocument pg = new XmlDocument();
+        pg.LoadXml(current);
 
         XmlNode pgd_current = pg.DocumentElement;
 
@@ -582,8 +492,6 @@ namespace weather
         _error_descr = e.Message;
 
         string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
-        //File.WriteAllText(fname, outerhtml);
-
       }
 
       finally
