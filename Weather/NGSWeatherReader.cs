@@ -15,7 +15,7 @@ using WatiN.Core;
 
 namespace weather
 {
-  interface INGSWeatherReader
+  public interface INGSWeatherReader
   {
     void close();
     void restart();
@@ -26,7 +26,7 @@ namespace weather
     void getrest();
   }
 
-  public static class WatinExtensions
+  static class WatinExtensions
   {
     //public static ElementCollection Children(this Element self)
     //{
@@ -171,7 +171,7 @@ namespace weather
       if (url == null)
         _browser.GoTo("http://weather.nsu.ru/");
       else
-        _browser.GoToNoWait("http://pogoda.ngs.ru/academgorodok/");
+        _browser.GoToNoWait(url);
     }
 
     public void restart()

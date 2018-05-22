@@ -4,15 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Threading;
 using System.Xml;
 
 namespace weather
 {
 
-  class WeatherProviderNGS : WeatherProviderBase
+  public class WeatherProviderNGS : WeatherProviderBase
   {
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
@@ -135,7 +133,8 @@ namespace weather
         if (_sitereader == null)
         {
           // _sitereader = new NGSSeleniumReader();
-          _sitereader = new NGSWatinReader();
+          // _sitereader = new NGSWatinReader();
+          _sitereader = new NGSFileReader();
         }
 
         _error_descr = "";

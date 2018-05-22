@@ -72,7 +72,7 @@ namespace weather
     Fog                     // — туман
   }
 
-  interface IWeatherProvider
+  public interface IWeatherProvider
   {
     bool get_temperature(WeatherPeriod time, out double temp_low, out double temp_high);
     bool get_pressure(WeatherPeriod time, out double pressure);

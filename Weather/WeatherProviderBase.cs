@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace weather
 {
-  class weather
+  public class weather
   {
     object _lock = new object();
 
@@ -29,16 +29,17 @@ namespace weather
   }
 
 
-  abstract class WeatherProviderBase : IWeatherProvider
+  public abstract class WeatherProviderBase : IWeatherProvider
   {
     protected Thread _reader;
     protected AutoResetEvent _exit = new AutoResetEvent(false);
 
     protected Object _locker = new Object();
-    protected Dictionary<WeatherPeriod, weather> _weather = new Dictionary<WeatherPeriod, weather>();
     protected XmlNamespaceManager _nsmgr;
+    protected Dictionary<WeatherPeriod, weather> _weather = new Dictionary<WeatherPeriod, weather>();
     protected string _error_descr = "";
     protected bool _succeeded = false;
+
 
     public WeatherProviderBase()
     {
