@@ -19,7 +19,6 @@ namespace weather
   {
     void close();
     void restart();
-    void navigate(string url = null);
     string temperature();
     string forecast();
     string current();
@@ -130,6 +129,9 @@ namespace weather
 
     public string current()
     {
+      navigate("https://pogoda.ngs.ru/academgorodok/");
+      Thread.Sleep(10000);
+
       string outerhtml;
       Div info = _browser.Div(Find.ByClass("today-panel__info"));
       if (!info.Exists)
@@ -148,6 +150,9 @@ namespace weather
 
     public string forecast()
     {
+      navigate("https://pogoda.ngs.ru/academgorodok/");
+      Thread.Sleep(10000);
+
       Table tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements"));
       if (!tbl.Exists)
         tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements pgd-hidden"));
@@ -163,7 +168,7 @@ namespace weather
       _browser.GoTo("http://google.com/");
     }
 
-    public void navigate(string url = null)
+    private void navigate(string url = null)
     {
       if (_browser == null)
         _browser = new IE();
@@ -181,6 +186,9 @@ namespace weather
 
     public string temperature()
     {
+      navigate();
+      Thread.Sleep(1000);
+
       Span temp = _browser.Span(Find.ById("temp"));
       if (temp.Exists)
       {
@@ -212,6 +220,9 @@ namespace weather
 
     public string current()
     {
+      navigate("https://pogoda.ngs.ru/academgorodok/");
+      Thread.Sleep(10000);
+
       var info = _driver.findElement(By.ClassName("today-panel__info"));
       if (info == null)
         return null;
@@ -225,6 +236,9 @@ namespace weather
 
     public string forecast()
     {
+      navigate("https://pogoda.ngs.ru/academgorodok/");
+      Thread.Sleep(10000);
+
       var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
       if (tbl == null)
         tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
@@ -235,7 +249,7 @@ namespace weather
       return _driver.outerHTML(tbl).Replace("&nbsp;", " ");
     }
 
-    public void navigate(string url = null)
+    private void navigate(string url = null)
     {
       if (_driver == null)
       {
@@ -259,6 +273,9 @@ namespace weather
 
     public string temperature()
     {
+      navigate();
+      Thread.Sleep(1000);
+
       var temp = _driver.findElement(By.Id("temp"));
       if (temp != null)
       {

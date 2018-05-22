@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace weather
@@ -70,13 +71,52 @@ namespace weather
     {
       string info = temperature + delimiter + current + delimiter + forecast;
       string fname = Path.Combine(_foldername, _filename);
-      File.WriteAllText(fname, info);
+
+      for (int count = 0; count < 5; count++)
+      {
+        try
+        {
+          FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.None);
+          StreamWriter sr = new StreamWriter(fs);
+
+          sr.Write(info);
+          fs.Close();
+
+          break;
+        }
+        catch
+        {
+
+        }
+        Thread.Sleep(500);
+      }
     }
 
     private string readfile()
     {
       string fname = Path.Combine(_foldername, _filename);
-      return File.ReadAllText(fname);
+      string info = "";
+
+      for (int count = 0; count < 5; count++)
+      {
+        try
+        {
+          FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.None);
+          StreamReader sr = new StreamReader(fs);
+
+          info = sr.ReadToEnd();
+          fs.Close();
+
+          break;
+        }
+        catch
+        {
+
+        }
+        Thread.Sleep(500);
+      }
+
+      return info;
     }
 
     private string [] splitinfo()

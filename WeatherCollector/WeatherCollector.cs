@@ -30,12 +30,30 @@ namespace WeatherCollector
       else
         reader = new NGSSeleniumReader();
 
-      reader.navigate();
-      string temp = reader.temperature();
+      string temp = "", current = "", forecast = "";
+      try
+      {
+        temp = reader.temperature();
+      }
+      catch (Exception e)
+      {
+      }
 
-      reader.navigate("http://pogoda.ngs.ru/academgorodok/");
-      string current = reader.current();
-      string forecast = reader.forecast();
+      try
+      {
+        current = reader.current();
+      }
+      catch (Exception e)
+      {
+      }
+
+      try
+      {
+        forecast = reader.forecast();
+      }
+      catch (Exception e)
+      {
+      }
 
       writer.writeinfo(temp, current, forecast);
 

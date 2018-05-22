@@ -167,7 +167,6 @@ namespace weather
       bool success = false;
       try
       {
-        _sitereader.navigate();
         string st = _sitereader.temperature();
         if (st != null || !st.Contains("°"))
         {
@@ -214,9 +213,6 @@ namespace weather
 
       try
       {
-        _sitereader.navigate("http://pogoda.ngs.ru/academgorodok/");
-        Thread.Sleep(10000);
-
         string forecast = _sitereader.forecast();
         if (forecast == null)
           throw new Exception("NGS forecast: can't find 3 day forecast table");
@@ -404,9 +400,6 @@ namespace weather
 
       try
       {
-        _sitereader.navigate("http://pogoda.ngs.ru/academgorodok/");
-        Thread.Sleep(10000);
-
         string current = _sitereader.current();
         if (current == null)
           throw new Exception("incorrect current weather structure ");
