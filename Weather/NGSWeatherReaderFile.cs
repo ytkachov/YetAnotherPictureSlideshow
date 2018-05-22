@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32.TaskScheduler;
+using TS = Microsoft.Win32.TaskScheduler;
 
 namespace weather
 {
@@ -133,7 +135,41 @@ namespace weather
     {
       _checkcollector = false;
 
+      using (TaskService ts = new TaskService())
+      {
+        string execname, execparams, execfolder;
+        string schedulerfolder = "YetAnotherPictureSlideshow";
+        string schedulertaskname = "WeatherCollector";
+        string taskname = schedulerfolder + @"\" + schedulertaskname;
 
+
+        TS.Task t = ts.GetTask(taskname);
+        if (t == null)
+        {
+          // Create a new task definition and assign properties
+          TaskDefinition td = ts.NewTask();
+          td.RegistrationInfo.Description = "Read weather info from pogoda.ngs.ru and store it into file";
+          td.Principal.LogonType = TaskLogonType.InteractiveToken;
+          td.Settings.Enabled = true;
+          td.Settings.ExecutionTimeLimit = TimeSpan.FromHours(2);
+          td.Settings.Hidden = false;
+
+          td.Actions.Add(new ExecAction(execname, execparams, execfolder));
+
+          // Add a trigger that will fire the task at this time every other day
+          TimeTrigger tt = (TimeTrigger)td.Triggers.Add(new TimeTrigger());
+          tt.StartBoundary = DateTime.Now + TimeSpan.FromSeconds(10);
+          tt.EndBoundary = DateTime.Today + TimeSpan.MaxValue;
+          tt.ExecutionTimeLimit = TimeSpan.FromSeconds(90);
+          // tt.Repetition.Duration = TimeSpan.FromMinutes(20);
+          tt.Repetition.Interval = TimeSpan.FromMinutes(15);
+
+          // Register the task in the root folder
+          TaskFolder tf = ts.RootFolder.CreateFolder(schedulerfolder, ts.RootFolder.GetAccessControl());
+          tf.RegisterTaskDefinition(schedulertaskname, td);
+        }
+
+      }
     }
   }
 
