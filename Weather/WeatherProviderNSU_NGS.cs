@@ -138,7 +138,7 @@ namespace weather
         }
 
         _error_descr = "";
-        if (counter++ == 20)
+        if (counter++ == 5)
         {
           _sitereader.restart();
           counter = 0;
@@ -157,7 +157,7 @@ namespace weather
 
         read_ngs_forecast();
 
-        if (_exit.WaitOne(TimeSpan.FromSeconds(30)))
+        if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
           break;
       }
     }

@@ -12,7 +12,9 @@ namespace weather
   public class NGSFileReader : INGSWeatherReader
   {
     private string _foldername = ".";
-    private static string _filename = "ngs_weather_info.txt";
+    private string _filename = "ngs_weather_info.txt";
+    private bool _checkcollector = true;
+
     static private string delimiter = "\n###$$$%%%@@@***&&&\n";
 
     public NGSFileReader(string folder = null)
@@ -59,12 +61,9 @@ namespace weather
     {
     }
 
-    public void navigate(string url = null)
-    {
-    }
-
     public void restart()
     {
+      _checkcollector = true;
     }
 
     public void writeinfo(string temperature, string current, string forecast)
@@ -121,10 +120,20 @@ namespace weather
 
     private string [] splitinfo()
     {
+      if (_checkcollector)
+        checkcollectorparams();
+
       string info = readfile();
       string[] separators = { delimiter };
 
       return info.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    private void checkcollectorparams()
+    {
+      _checkcollector = false;
+
+
     }
   }
 
