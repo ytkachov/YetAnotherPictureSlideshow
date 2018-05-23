@@ -25,7 +25,7 @@ namespace WeatherCollector
       NGSFileReader writer = new NGSFileReader(_folder);
 
       INGSWeatherReader reader;
-      if (_type == 0)
+      if (_type == 1)
         reader = new NGSWatinReader();
       else
         reader = new NGSSeleniumReader();

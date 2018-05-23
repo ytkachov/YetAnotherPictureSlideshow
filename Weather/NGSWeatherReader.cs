@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -95,6 +96,7 @@ namespace weather
   public class NGSWatinReader : INGSWeatherReader
   {
     private IE _browser;
+    private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
 
     private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
     {
@@ -129,7 +131,7 @@ namespace weather
 
     public string current()
     {
-      navigate("https://pogoda.ngs.ru/academgorodok/");
+      navigate(_weather_url);
       Thread.Sleep(10000);
 
       string outerhtml;
@@ -137,6 +139,9 @@ namespace weather
       if (!info.Exists)
       {
         outerhtml = _browser.Html;
+
+        File.WriteAllText(@"D:\outerhtml.htm", outerhtml);
+
         throw new Exception("incorrect current weather structure ");
       }
 
@@ -150,8 +155,8 @@ namespace weather
 
     public string forecast()
     {
-      navigate("https://pogoda.ngs.ru/academgorodok/");
-      Thread.Sleep(10000);
+      // navigate(_weather_url);
+      //Thread.Sleep(10000);
 
       Table tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements"));
       if (!tbl.Exists)
@@ -203,6 +208,7 @@ namespace weather
   public class NGSSeleniumReader : INGSWeatherReader
   {
     private IWebDriver _driver = null;
+    private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
 
     public NGSSeleniumReader()
     {
@@ -220,7 +226,7 @@ namespace weather
 
     public string current()
     {
-      navigate("https://pogoda.ngs.ru/academgorodok/");
+      navigate(_weather_url);
       Thread.Sleep(10000);
 
       var info = _driver.findElement(By.ClassName("today-panel__info"));
@@ -236,8 +242,11 @@ namespace weather
 
     public string forecast()
     {
-      navigate("https://pogoda.ngs.ru/academgorodok/");
-      Thread.Sleep(10000);
+      if (_driver.Url != _weather_url)
+      {
+        navigate(_weather_url);
+        Thread.Sleep(10000);
+      }
 
       var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
       if (tbl == null)

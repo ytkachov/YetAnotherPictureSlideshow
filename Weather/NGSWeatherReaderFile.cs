@@ -11,6 +11,24 @@ using TS = Microsoft.Win32.TaskScheduler;
 namespace weather
 {
 
+  static class TSExtensions
+  {
+    //public static ElementCollection Children(this Element self)
+    //{
+    //  return self.DomContainer.Elements.Filter(e => self.Equals(e.Parent));
+    //}
+    public static TaskFolder FindFolder(this TaskFolder self, string foldername)
+    {
+      foreach (var tf in self.SubFolders)
+      {
+        if (tf.Name.Equals(foldername, StringComparison.OrdinalIgnoreCase))
+          return tf;
+      }
+
+      return null;
+    }
+  }
+
   public class NGSFileReader : INGSWeatherReader
   {
     private string _foldername = ".";
@@ -133,15 +151,15 @@ namespace weather
 
     private void checkcollectorparams()
     {
-      _checkcollector = false;
-
       using (TaskService ts = new TaskService())
       {
-        string execname, execparams, execfolder;
+        string execparams = "";
+        string execfolder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+        string execname = Path.Combine(execfolder, "WeatherCollector.exe");
+
         string schedulerfolder = "YetAnotherPictureSlideshow";
         string schedulertaskname = "WeatherCollector";
         string taskname = schedulerfolder + @"\" + schedulertaskname;
-
 
         TS.Task t = ts.GetTask(taskname);
         if (t == null)
@@ -159,16 +177,20 @@ namespace weather
           // Add a trigger that will fire the task at this time every other day
           TimeTrigger tt = (TimeTrigger)td.Triggers.Add(new TimeTrigger());
           tt.StartBoundary = DateTime.Now + TimeSpan.FromSeconds(10);
-          tt.EndBoundary = DateTime.Today + TimeSpan.MaxValue;
+          tt.EndBoundary = DateTime.MaxValue;
           tt.ExecutionTimeLimit = TimeSpan.FromSeconds(90);
           // tt.Repetition.Duration = TimeSpan.FromMinutes(20);
           tt.Repetition.Interval = TimeSpan.FromMinutes(15);
 
           // Register the task in the root folder
-          TaskFolder tf = ts.RootFolder.CreateFolder(schedulerfolder, ts.RootFolder.GetAccessControl());
+          TaskFolder tf = ts.RootFolder.FindFolder(schedulerfolder);
+          if (tf == null)
+            tf = ts.RootFolder.CreateFolder(schedulerfolder, null, false);
+
           tf.RegisterTaskDefinition(schedulertaskname, td);
         }
 
+        _checkcollector = false;
       }
     }
   }
