@@ -28,10 +28,6 @@ namespace weather
 
   static class WatinExtensions
   {
-    //public static ElementCollection Children(this Element self)
-    //{
-    //  return self.DomContainer.Elements.Filter(e => self.Equals(e.Parent));
-    //}
     public static DivCollection ChildDivs(this Element self)
     {
       return self.DomContainer.Divs.Filter(e => self.Equals(e.Parent));

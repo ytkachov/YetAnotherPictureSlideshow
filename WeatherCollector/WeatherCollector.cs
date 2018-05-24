@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,21 @@ namespace WeatherCollector
 
       if (args.Length > 1)
         _type = int.Parse(args[1]);
+
+      // check if mother app is running
+      Process[] pl = Process.GetProcesses();
+      bool running = false;
+      foreach (var p in pl)
+      {
+        if (p.ProcessName.Equals("PictureSlideshowScreensaver", StringComparison.OrdinalIgnoreCase))
+        {
+          running = true;
+          break;
+        }
+      }
+
+      if (!running)
+        return;
 
       NGSFileReader writer = new NGSFileReader(_folder);
 

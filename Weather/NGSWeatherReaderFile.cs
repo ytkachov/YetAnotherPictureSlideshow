@@ -116,36 +116,49 @@ namespace weather
       string fname = Path.Combine(_foldername, _filename);
       string info = "";
 
-      for (int count = 0; count < 5; count++)
+
+      if (File.Exists(fname))
       {
-        try
+        DateTime wt = File.GetLastWriteTime(fname);
+        TimeSpan fileage = DateTime.Now - wt;
+
+        if (fileage.TotalMinutes < 30.0)
         {
-          FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.None);
-          StreamReader sr = new StreamReader(fs);
+          for (int count = 0; count < 5; count++)
+          {
+            try
+            {
+              FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.None);
+              StreamReader sr = new StreamReader(fs);
 
-          info = sr.ReadToEnd();
-          fs.Close();
+              info = sr.ReadToEnd();
+              fs.Close();
 
-          break;
+              break;
+            }
+            catch
+            {
+
+            }
+            Thread.Sleep(500);
+          }
         }
-        catch
-        {
-
-        }
-        Thread.Sleep(500);
       }
+
+      if (info.Length == 0)
+        _checkcollector = true;
 
       return info;
     }
 
     private string [] splitinfo()
     {
+      string info = readfile();
+
       if (_checkcollector)
         checkcollectorparams();
 
-      string info = readfile();
       string[] separators = { delimiter };
-
       return info.Split(separators, StringSplitOptions.RemoveEmptyEntries);
     }
 
@@ -175,14 +188,15 @@ namespace weather
           td.Actions.Add(new ExecAction(execname, execparams, execfolder));
 
           // Add a trigger that will fire the task at this time every other day
-          TimeTrigger tt = (TimeTrigger)td.Triggers.Add(new TimeTrigger());
-          tt.StartBoundary = DateTime.Now + TimeSpan.FromSeconds(10);
-          tt.EndBoundary = DateTime.MaxValue;
-          tt.ExecutionTimeLimit = TimeSpan.FromSeconds(90);
-          // tt.Repetition.Duration = TimeSpan.FromMinutes(20);
-          tt.Repetition.Interval = TimeSpan.FromMinutes(15);
+          DailyTrigger dt = (DailyTrigger)td.Triggers.Add(new DailyTrigger());
+          dt.StartBoundary = DateTime.Now + TimeSpan.FromSeconds(10);
+          dt.RandomDelay = TimeSpan.FromSeconds(60);
+          dt.EndBoundary = DateTime.MaxValue;
+          dt.ExecutionTimeLimit = TimeSpan.FromSeconds(90);
+          dt.Repetition.Duration = TimeSpan.FromHours(24);
+          dt.Repetition.Interval = TimeSpan.FromMinutes(15);
 
-          // Register the task in the root folder
+          // Register the task in the folder
           TaskFolder tf = ts.RootFolder.FindFolder(schedulerfolder);
           if (tf == null)
             tf = ts.RootFolder.CreateFolder(schedulerfolder, null, false);
