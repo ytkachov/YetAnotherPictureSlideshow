@@ -135,6 +135,25 @@ namespace informers
     }
   }
 
+  public class WeatherStatusToVisibility : MarkupExtension, IValueConverter
+  {
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      bool ws = (bool)value;
+      return ws ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+      return this;
+    }
+  }
+
   public class WeatherInformer : INotifyPropertyChanged
   {
     private DispatcherTimer _weatherTick = new DispatcherTimer();
@@ -143,7 +162,12 @@ namespace informers
     private IWeatherProvider _forecast_provider = WeatherProviderNGS.get();
 
     private string _dbg_info = "";
-    private bool _weather_status = false;
+    private bool _weather_status_temperature = false;
+    private bool _weather_status_weather = false;
+    private bool _weather_status_wind = false;
+    private bool _weather_status_pressure = false;
+    private bool _weather_status_humidity = false;
+
     private double _temperature = 0.0, _temperature_low, _temperature_high;
     private double _wind_speed = 0.0;
     private WindDirection _wind_direction = WindDirection.Undefined;
@@ -196,7 +220,11 @@ namespace informers
     }
 
     public WeatherPeriod Weather_Period { get { return _weather_period; } set { _weather_period = value; update_Weather(); RaisePropertyChanged("Weather_Period"); } }
-    public bool Weather_Status { get { return _weather_status; } set { _weather_status = value; RaisePropertyChanged("Weather_Status"); } }
+    public bool Weather_Status_Temperature { get { return _weather_status_temperature; } set { _weather_status_temperature = value; RaisePropertyChanged("Weather_Status_Temperature"); } }
+    public bool Weather_Status_Weather { get { return _weather_status_weather; } set { _weather_status_weather = value; RaisePropertyChanged("Weather_Status_Weather"); } }
+    public bool Weather_Status_Wind { get { return _weather_status_wind; } set { _weather_status_wind = value; RaisePropertyChanged("Weather_Status_Wind"); } }
+    public bool Weather_Status_Pressure { get { return _weather_status_pressure; } set { _weather_status_pressure = value; RaisePropertyChanged("Weather_Status_Pressure"); } }
+    public bool Weather_Status_Humidity { get { return _weather_status_humidity; } set { _weather_status_humidity = value; RaisePropertyChanged("Weather_Status_Humidity"); } }
 
     private void RaisePropertyChanged(string propertyName)
     {
@@ -237,11 +265,11 @@ namespace informers
       if (provider.get_character(period, out w))
       {
         Weather = w;
-        Weather_Status = true;
+        Weather_Status_Weather = true;
       }
       else
       {
-        Weather_Status = false;
+        Weather_Status_Weather = false;
       }
 
 
@@ -255,11 +283,11 @@ namespace informers
         Temperature = ((temp_l + temp_h) / 2.0).ToString();
         TemperatureRange = temp_l + "|" + temp_h;
 
-        Weather_Status = true;
+        Weather_Status_Temperature = true;
       }
       else
       {
-        Weather_Status = false;
+        Weather_Status_Temperature = false;
       }
     }
 
@@ -269,11 +297,11 @@ namespace informers
       if (provider.get_pressure(period, out press))
       {
         Pressure = press;
-        Weather_Status = true;
+        Weather_Status_Pressure = true;
       }
       else
       {
-        Weather_Status = false;
+        Weather_Status_Pressure = false;
       }
     }
 
@@ -288,11 +316,11 @@ namespace informers
       if (provider.get_humidity(period, out hum))
       {
         Humidity = hum;
-        Weather_Status = true;
+        Weather_Status_Humidity = true;
       }
       else
       {
-        Weather_Status = false;
+        Weather_Status_Humidity = false;
       }
     }
 
@@ -304,11 +332,11 @@ namespace informers
       {
         WindDirection = wd;
         WindSpeed = ws;
-        Weather_Status = true;
+        Weather_Status_Wind = true;
       }
       else
       {
-        Weather_Status = false;
+        Weather_Status_Wind = false;
       }
     }
 

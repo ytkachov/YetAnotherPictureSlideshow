@@ -13,11 +13,11 @@ namespace weather
 
     private double? _temperature_low = null;
     private double? _temperature_high = null;
-    public double? _pressure = null;
-    public double? _humidity = null;
-    public double? _wind_speed = null;
-    public WindDirection _wind_direction = WindDirection.Undefined;
-    public WeatherType _character = WeatherType.Undefined;
+    private double? _pressure = null;
+    private double? _humidity = null;
+    private double? _wind_speed = null;
+    private WindDirection _wind_direction = WindDirection.Undefined;
+    private WeatherType _character = WeatherType.Undefined;
 
     public double? TemperatureLow { get { lock (_lock) { return _temperature_low; } } set { lock (_lock) { _temperature_low = value; } } }
     public double? TemperatureHigh { get { lock (_lock) { return _temperature_high; } } set { lock (_lock) { _temperature_high = value; } } }
@@ -132,7 +132,7 @@ namespace weather
     {
       lock (_locker)
       {
-        if (_weather.ContainsKey(period))
+        if (_weather.ContainsKey(period) && _weather[period].WeatherType != WeatherType.Undefined)
         {
           type = _weather[period].WeatherType;
           return true;
