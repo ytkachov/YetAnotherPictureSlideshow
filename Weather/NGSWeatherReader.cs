@@ -161,7 +161,9 @@ namespace weather
       if (!tbl.Exists)
         throw new Exception("NGS forecast: can't find 3 day forecast table");
 
-      return tbl.OuterHtml.Replace("&nbsp;", " ");
+      string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
+
+      return outerhtml;
     }
 
     public void getrest()
@@ -251,7 +253,8 @@ namespace weather
       if (tbl == null)
         return null;
 
-      return _driver.outerHTML(tbl).Replace("&nbsp;", " ");
+      string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
+      return outerhtml;
     }
 
     private void navigate(string url = null)

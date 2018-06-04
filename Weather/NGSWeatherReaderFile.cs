@@ -98,7 +98,14 @@ namespace weather
           FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.None);
           StreamWriter sr = new StreamWriter(fs);
 
-          sr.Write(info);
+          sr.Write(temperature);
+          sr.Write(delimiter);
+          sr.Write(current);
+          sr.Write(delimiter);
+          sr.Flush();
+          sr.Write(forecast);
+          sr.Flush();
+
           fs.Close();
 
           break;
