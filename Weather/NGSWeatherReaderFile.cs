@@ -86,7 +86,7 @@ namespace weather
       _checkcollector = true;
     }
 
-    public void writeinfo(string temperature, string current, string forecast)
+    public void writeinfo(string temperature, string current, string forecast, string except)
     {
       string info = temperature + delimiter + current + delimiter + forecast;
       string fname = Path.Combine(_foldername, _filename);
@@ -104,6 +104,10 @@ namespace weather
           sr.Write(delimiter);
           sr.Flush();
           sr.Write(forecast);
+          sr.Flush();
+          sr.Write(delimiter);
+          sr.Flush();
+          sr.Write(except);
           sr.Flush();
 
           fs.Close();
@@ -181,15 +185,35 @@ namespace weather
         string schedulertaskname = "WeatherCollector";
         string taskname = schedulerfolder + @"\" + schedulertaskname;
 
+        bool recreate = false;
         TS.Task t = ts.GetTask(taskname);
-        if (t == null)
+        if (t != null)
+        {
+          // check if existing task correspnds to current parameters
+          foreach (var action in t.Definition.Actions)
+          {
+            var eaction = action as ExecAction;
+            if (eaction == null)
+              continue;
+
+            if (eaction.Arguments == execparams && eaction.Path == execname && eaction.WorkingDirectory == execfolder)
+              continue;
+
+            TaskFolder tf = ts.RootFolder.FindFolder(schedulerfolder);
+            tf.DeleteTask(schedulertaskname);
+            recreate = true;
+            break;
+          }
+        }
+        
+        if (t == null || recreate)
         {
           // Create a new task definition and assign properties
           TaskDefinition td = ts.NewTask();
           td.RegistrationInfo.Description = "Read weather info from pogoda.ngs.ru and store it into file";
           td.Principal.LogonType = TaskLogonType.InteractiveToken;
           td.Settings.Enabled = true;
-          td.Settings.ExecutionTimeLimit = TimeSpan.FromHours(2);
+          td.Settings.ExecutionTimeLimit = TimeSpan.FromMinutes(5);
           td.Settings.Hidden = false;
 
           td.Actions.Add(new ExecAction(execname, execparams, execfolder));
@@ -215,5 +239,4 @@ namespace weather
       }
     }
   }
-
 }

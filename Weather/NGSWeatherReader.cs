@@ -11,7 +11,7 @@ using System.Xml;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-
+using OpenQA.Selenium.Support.UI;
 using WatiN.Core;
 
 namespace weather
@@ -63,7 +63,7 @@ namespace weather
       {
         el = self.FindElement(by);
       }
-      catch
+      catch (Exception e)
       {
       }
 
@@ -211,7 +211,7 @@ namespace weather
     public NGSSeleniumReader()
     {
       _driver = new ChromeDriver();
-      _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+      _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
     }
 
     public void close()
@@ -225,8 +225,9 @@ namespace weather
     public string current()
     {
       navigate(_weather_url);
-      Thread.Sleep(10000);
 
+      // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+      //var info = wait.Until((d) => { return d.findElement(By.ClassName("today-panel__info")); });
       var info = _driver.findElement(By.ClassName("today-panel__info"));
       if (info == null)
         return null;
@@ -243,32 +244,44 @@ namespace weather
       if (_driver.Url != _weather_url)
       {
         navigate(_weather_url);
-        Thread.Sleep(10000);
       }
 
+      // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(22));
+      // var tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']")); });
       var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
       if (tbl == null)
+      {
+        // wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(24));
+        // tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']")); });
         tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
+      }
 
       if (tbl == null)
         return null;
 
       string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
       return outerhtml;
-    }
+     }
 
     private void navigate(string url = null)
     {
+      
       if (_driver == null)
       {
         _driver = new ChromeDriver();
-        _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+        _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
       }
 
-      if (url == null)
-        _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
-      else
-        _driver.Navigate().GoToUrl(url);
+      try
+      {
+        if (url == null)
+          _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
+        else
+          _driver.Navigate().GoToUrl(url);
+      }
+      catch (Exception e)
+      {
+      }
     }
 
     public void restart()

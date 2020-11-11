@@ -279,7 +279,10 @@ class LocalImages : ImagesProvider
   {
     lock (_locker)
     {
-      string fn = System.IO.Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("MM-dd-HHmm")));
+      if (!Directory.Exists(write_stat_path))
+        return;
+
+      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("MM-dd-HHmm")));
       using (StreamWriter tw = new StreamWriter(fn))
       {
         foreach (string s in _messages)
