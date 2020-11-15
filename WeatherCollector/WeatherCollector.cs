@@ -23,36 +23,43 @@ namespace WeatherCollector
       if (args.Length > 1)
         _type = int.Parse(args[1]);
 
-      // check if mother app is running
-      Process[] pl = Process.GetProcesses();
-      bool running = false;
-      foreach (var p in pl)
+      bool nocheck = false;
+      if (args.Length > 2)
+        nocheck = true;
+
+      if (!nocheck)
       {
-        if (p.ProcessName.Equals("PictureSlideshowScreensaver", StringComparison.OrdinalIgnoreCase))
+        // check if mother app is running
+        Process[] pl = Process.GetProcesses();
+        bool running = false;
+        foreach (var p in pl)
         {
-          running = true;
-          break;
+          if (p.ProcessName.Equals("PictureSlideshowScreensaver", StringComparison.OrdinalIgnoreCase))
+          {
+            running = true;
+            break;
+          }
         }
+
+        if (!running)
+          return;
       }
 
-      if (!running)
-        return;
-
       NGSFileReader writer = new NGSFileReader(_folder);
-
       INGSWeatherReader reader;
       if (_type == 1)
         reader = new NGSWatinReader();
       else
         reader = new NGSSeleniumReader();
 
-      string temp = "", current = "", forecast = "";
+      string temp = "", current = "", forecast = "", except="";
       try
       {
         temp = reader.temperature();
       }
       catch (Exception e)
       {
+        except += "\n\n\n ======================= \n" + e.Message;
       }
 
       try
@@ -61,6 +68,7 @@ namespace WeatherCollector
       }
       catch (Exception e)
       {
+        except += "\n\n\n ======================= \n" + e.Message;
       }
 
       try
@@ -69,9 +77,10 @@ namespace WeatherCollector
       }
       catch (Exception e)
       {
+        except += "\n\n\n ======================= \n" + e.Message;
       }
 
-      writer.writeinfo(temp, current, forecast);
+      writer.writeinfo(temp, current, forecast, except);
 
       writer.close();
       reader.close();

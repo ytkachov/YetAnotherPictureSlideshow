@@ -200,7 +200,7 @@ namespace weather
       {
         _sitereader.getrest();
       }
-      catch (Exception e)
+      catch (Exception)
       {
 
       }
