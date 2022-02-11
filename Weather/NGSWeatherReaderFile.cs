@@ -31,7 +31,7 @@ namespace weather
 
   public class NGSFileReader : INGSWeatherReader
   {
-    private string _foldername = ".";
+    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
     private string _filename = "ngs_weather_info.txt";
     private bool _checkcollector = true;
 
@@ -196,13 +196,27 @@ namespace weather
             if (eaction == null)
               continue;
 
-            if (eaction.Arguments == execparams && eaction.Path == execname && eaction.WorkingDirectory == execfolder)
-              continue;
+            if (eaction.Path == execname && eaction.WorkingDirectory == execfolder)
+            {
+              if (eaction.Arguments == execparams)
+                continue;
+              if (string.IsNullOrEmpty(eaction.Arguments) && string.IsNullOrEmpty(execparams))
+                continue;
+            }
 
-            TaskFolder tf = ts.RootFolder.FindFolder(schedulerfolder);
-            tf.DeleteTask(schedulertaskname);
-            recreate = true;
-            break;
+            try
+            {
+              //t.Definition.Actions.RemoveAt(0);
+
+              TaskFolder tf = ts.RootFolder.FindFolder(schedulerfolder);
+              tf.DeleteTask(schedulertaskname);
+              recreate = true;
+              break;
+            }
+            catch (Exception e)
+            {
+              string em = e.Message;
+            }
           }
         }
         

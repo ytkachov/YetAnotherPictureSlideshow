@@ -219,7 +219,15 @@ namespace informers
         RaisePropertyChanged("Weather"); }
     }
 
-    public WeatherPeriod Weather_Period { get { return _weather_period; } set { _weather_period = value; update_Weather(); RaisePropertyChanged("Weather_Period"); } }
+    public WeatherPeriod Weather_Period
+    {
+      get { return _weather_period; }
+      set
+      {
+        _weather_period = value; 
+        update_Weather(); RaisePropertyChanged("Weather_Period");
+      }
+    }
     public bool Weather_Status_Temperature { get { return _weather_status_temperature; } set { _weather_status_temperature = value; RaisePropertyChanged("Weather_Status_Temperature"); } }
     public bool Weather_Status_Weather { get { return _weather_status_weather; } set { _weather_status_weather = value; RaisePropertyChanged("Weather_Status_Weather"); } }
     public bool Weather_Status_Wind { get { return _weather_status_wind; } set { _weather_status_wind = value; RaisePropertyChanged("Weather_Status_Wind"); } }
