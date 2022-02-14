@@ -131,6 +131,7 @@
     <Compile Include="ImagesInfo.cs" />
     <Compile Include="Informers.cs" />
     <Compile Include="FaceDetection.cs" />
+    <Compile Include="LocalImageInfo.cs" />
     <Compile Include="LocalImages.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
     <Compile Include="WeatherForecast.xaml.cs">
