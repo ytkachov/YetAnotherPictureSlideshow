@@ -27,6 +27,10 @@ namespace WeatherCollector
       if (args.Length > 2)
         nocheck = true;
 
+      bool nokill = false;
+      if (args.Length > 3)
+        nokill = true;
+
       if (!nocheck)
       {
         // check if mother app is running
@@ -44,6 +48,39 @@ namespace WeatherCollector
         if (!running)
           return;
       }
+
+      if (!nokill)
+      {
+        Process[] pl = Process.GetProcesses();
+
+        foreach (var p in pl)
+        {
+          string mwt = p.MainWindowTitle;
+          string pn = p.ProcessName;
+          if (p.ProcessName.Equals("chrome", StringComparison.OrdinalIgnoreCase))
+          {
+            //p.CloseMainWindow();
+            try
+            {
+              p.Kill();
+            }
+            catch (Exception)
+            {
+            }
+          }
+      }
+
+        foreach (var p in pl)
+        {
+          string mwt = p.MainWindowTitle;
+          string pn = p.ProcessName;
+          if (p.ProcessName.Equals("chromedriver", StringComparison.OrdinalIgnoreCase))
+          {
+            p.Kill();
+          }
+        }
+      }
+
 
       NGSFileReader writer = new NGSFileReader(_folder);
       INGSWeatherReader reader;
