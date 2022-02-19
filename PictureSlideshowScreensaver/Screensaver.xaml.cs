@@ -190,25 +190,34 @@ namespace PictureSlideshowScreensaver
       {
         try
         {
+          if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 10)
+            return;
+
           PhotoProperties.Photo_Description = nextphoto.description;
-          var dt = TimeSpan.FromMilliseconds(_settings._noImageFading || 
+          var ft = TimeSpan.FromMilliseconds(_settings._noImageFading || 
                                              (_isNightTime && _settings._noNightImageFading) 
                                             ? 0 : _settings._fadeSpeed);
 
-            if (img1.Opacity == 0)
-          {
-            SetImage(img1, nextphoto);
+          var mt = TimeSpan.MinValue;
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
-          }
-          else if (img2.Opacity == 0)
-          {
-            SetImage(img2, nextphoto);
+          if (!(_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 20) &&
+              !(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
+            mt = TimeSpan.FromSeconds(_settings._updateInterval);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
+          bool acc = !_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents);
+
+          if (!img1.Active)
+          {
+            img1.Activate(nextphoto, ft, mt, acc);
+            img2.Deactivate(ft);
           }
+          else
+          {
+            img2.Activate(nextphoto, ft, mt, acc);
+            img1.Deactivate(ft);
+          }
+
+          PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
           return;
         }
         catch (Exception ex)
@@ -217,57 +226,6 @@ namespace PictureSlideshowScreensaver
           return;
         }
       }
-    }
-
-    //private int nxtimg = 0;
-    private void SetImage(Image img, ImageInfo nextphoto)
-    {
-      if (_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 10)
-        return;
-
-      BitmapImage bmp_img = nextphoto.bitmap;
-
-      img.Stretch = Stretch.Uniform;
-      if (bmp_img.Width > bmp_img.Height * 1.2)
-        img.Stretch = Stretch.UniformToFill;
-
-      img.Source = bmp_img;
-      if (img.ActualHeight > 0 && img.ActualWidth > 0)
-      {
-        // if image is valid
-        if (!(_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 20) &&
-            !(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
-        {
-          double cx = img.ActualWidth / 2;
-          double cy = img.ActualHeight / 2;
-          double cs = 1.0 + 0.1 * _rand.NextDouble();
-
-          if (!_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents))
-          {
-            PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
-            if (nextphoto.accent_count != 0)
-            {
-              double dc = 1;
-              dc = bmp_img.PixelHeight / img.ActualHeight;
-              var accent = nextphoto.accent;
-
-              cx += accent.X / dc;
-              cy += accent.Y / dc;
-              cs = 1.05 + 0.4 * _rand.NextDouble();
-            }
-          }
-
-          ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
-          DoubleAnimation da = new DoubleAnimation(cs, new Duration(TimeSpan.FromSeconds(_settings._updateInterval)));
-
-          st.BeginAnimation(ScaleTransform.ScaleXProperty, da);
-          st.BeginAnimation(ScaleTransform.ScaleYProperty, da);
-
-          img.RenderTransform = st;
-        }
-      }
-
-      nextphoto.ReleaseResources();
     }
 
     private void Shutdown()

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media.Imaging;
 using System.Drawing;
 
-interface ImageInfo
+public interface ImageInfo
 {
   void ReleaseResources();
 
@@ -16,7 +16,7 @@ interface ImageInfo
 }
 
 
-interface ImagesProvider
+public interface ImagesProvider
 {
   void init(string [] parameters);
   ImageInfo GetNext();
