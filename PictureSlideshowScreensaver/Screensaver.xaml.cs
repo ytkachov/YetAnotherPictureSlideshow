@@ -9,7 +9,6 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 
 using BatteryMonitor;
-using WindowsInput;
 
 using weather;
 using presenters;
@@ -78,7 +77,6 @@ namespace PictureSlideshowScreensaver
   {
     private Random _rand;
     private Settings _settings = new Settings();
-    private InputSimulator _input = new InputSimulator();
 
     private ImagesProvider _images = new LocalImages();
     private DispatcherTimer _switchImage;
@@ -176,9 +174,6 @@ namespace PictureSlideshowScreensaver
 
     private void NextImage()
     {
-      // move mouse to prevent sleeping
-      try { _input.Mouse.MoveMouseBy(_rand.Next(-1, 2), _rand.Next(-1, 2)); } catch (Exception e) { }
-
       // write stat every day at 8PM
       if (_settings._writeStat && _prevTime == 20 && DateTime.Now.Hour == _prevTime + 1)
         _images.WriteStat(_settings._writeStatPath);

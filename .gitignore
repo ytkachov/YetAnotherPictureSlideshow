@@ -1,5 +1,6 @@
 # third party libraries
 EmguCV/
+LeapSDK/
 
 
 ## Ignore Visual Studio temporary files, build results, and
