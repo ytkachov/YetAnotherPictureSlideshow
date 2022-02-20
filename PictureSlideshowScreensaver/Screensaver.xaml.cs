@@ -186,24 +186,30 @@ namespace PictureSlideshowScreensaver
         try
         {
           PhotoProperties.Photo_Description = nextphoto.description;
-          var dt = TimeSpan.FromMilliseconds(_settings._noImageFading || 
+          var ft = TimeSpan.FromMilliseconds(_settings._noImageFading || 
                                              (_isNightTime && _settings._noNightImageFading) 
                                             ? 0 : _settings._fadeSpeed);
 
-            if (img1.Opacity == 0)
-          {
-            SetImage(img1, nextphoto);
+          var mt = TimeSpan.MinValue;
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
-          }
-          else if (img2.Opacity == 0)
-          {
-            SetImage(img2, nextphoto);
+          if (!(_settings._dependOnBattery && _power.HasBattery && _power.BatteryLifePercent < 20) &&
+              !(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
+            mt = TimeSpan.FromSeconds(_settings._updateInterval);
 
-            img1.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(0, dt));
-            img2.BeginAnimation(Image.OpacityProperty, new DoubleAnimation(1, dt));
+          bool acc = !_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents);
+
+          if (!img1.Active)
+          {
+            img1.Activate(nextphoto, ft, mt, acc);
+            img2.Deactivate(ft);
           }
+          else
+          {
+            img2.Activate(nextphoto, ft, mt, acc);
+            img1.Deactivate(ft);
+          }
+
+          PhotoProperties.Set_Faces_Found = nextphoto.accent_count;
           return;
         }
         catch (Exception ex)

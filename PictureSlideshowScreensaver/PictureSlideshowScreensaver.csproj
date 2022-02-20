@@ -117,12 +117,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="cPower.cs" />
+    <Compile Include="FrameView.xaml.cs">
+      <DependentUpon>FrameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImagesInfo.cs" />
     <Compile Include="Informers.cs" />
     <Compile Include="FaceDetection.cs" />
     <Compile Include="LocalImageInfo.cs" />
     <Compile Include="LocalImages.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ScreensavserViewModel.cs" />
     <Compile Include="WeatherForecast.xaml.cs">
       <DependentUpon>WeatherForecast.xaml</DependentUpon>
     </Compile>
@@ -133,6 +138,10 @@
     <Page Include="Configuration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FrameView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="res\clear_d.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -399,9 +408,6 @@
     <Resource Include="recognition\haarcascade_frontalface_default.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="License-LGPL.txt" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="SHDocVw">

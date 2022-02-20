@@ -87,6 +87,8 @@ namespace PictureSlideshowScreensaver
         scr.Height = s.Bounds.Height;
 
         scr.Show();
+
+        break;
       }
 
       foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
