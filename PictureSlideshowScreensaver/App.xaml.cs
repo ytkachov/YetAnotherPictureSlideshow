@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
+using PictureSlideshowScreensaver.ViewModels;
 
 namespace PictureSlideshowScreensaver
 {
@@ -71,14 +72,11 @@ namespace PictureSlideshowScreensaver
       RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
       int interval = int.Parse((string)key.GetValue("Interval"));
       System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-      int offsetStep = interval / screens.Length;
-      int offset = 0;
 
       for (int i = 0; i < screens.Length; i++)
       {
         System.Windows.Forms.Screen s = screens[i];
-        Screensaver scr = new Screensaver(s.Bounds, offset);
-        offset += offsetStep;
+        Screensaver scr = new Screensaver(new ScreensaverViewModel()) ;
 
         scr.WindowStartupLocation = WindowStartupLocation.Manual;
         scr.Left = s.Bounds.X;

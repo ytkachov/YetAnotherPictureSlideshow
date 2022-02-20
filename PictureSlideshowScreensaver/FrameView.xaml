@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PictureSlideshowScreensaver"
+             xmlns:vm="clr-namespace:PictureSlideshowScreensaver.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-      <Image Name="image" Opacity="1" Stretch="Uniform" />
-      <MediaElement Name="video" Opacity="0" Stretch="Uniform" />
+      <Image Source="{Binding ImageSource}" Opacity="1" Stretch="{Binding ImageStretch}" />
+      <MediaElement Opacity="0" Stretch="Uniform" />
     </Grid>
 </UserControl>

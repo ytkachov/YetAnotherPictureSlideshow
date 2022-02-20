@@ -9,10 +9,8 @@ using System.Drawing;
 using System.Windows.Interop;
 using Emgu.CV;
 
-class LocalImageInfo : ImageInfo
+public class LocalImageInfo : ImageInfo
 {
-  public LocalImageInfo(string nm, string videoname = null) { _name = nm; _video_name = videoname; }
-
   internal string _name;
   internal string _video_name;  // for iPhone accompanying video file
   internal DateTime? _dateTaken;
@@ -21,12 +19,16 @@ class LocalImageInfo : ImageInfo
 
   internal List<string> _messages = new List<string>();
 
-  private List<System.Drawing.Rectangle> _faces = null;
+  private List<PointF> _faces = null;
   private bool _processed = false;
-  private double _dmult;
-  private int _pixel_width, _pixel_height;
-  private System.Drawing.Bitmap _bitmap;
   private static Random _rand = new Random(DateTime.Now.Millisecond);
+
+  public LocalImageInfo(string nm, string videoname = null)
+  {
+    _name = nm;
+    _video_name = videoname;
+  }
+
 
   public bool has_accompanying_video
   {
@@ -56,57 +58,54 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
-      if (_bitmap != null)
-        return Bitmap2BitmapImage(_bitmap);
-
       BitmapImage bmp_img = new BitmapImage(new Uri(_name));
-      using (MemoryStream outStream = new MemoryStream())
+
+      System.Drawing.RotateFlipType rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
+      switch (_orientation)
       {
-        BitmapEncoder enc = new BmpBitmapEncoder();
-        enc.Frames.Add(BitmapFrame.Create(bmp_img));
-        enc.Save(outStream);
-        _bitmap = new System.Drawing.Bitmap(outStream);
+        case 1:
+          break;
 
-        System.Drawing.RotateFlipType rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
-        switch (_orientation)
-        {
-          case 1:
-            break;
+        case 2:
+          rf = System.Drawing.RotateFlipType.RotateNoneFlipX;
+          break;
 
-          case 2:
-            rf = System.Drawing.RotateFlipType.RotateNoneFlipX;
-            break;
-
-          case 3:
-            rf = System.Drawing.RotateFlipType.Rotate180FlipNone;
-            break;
-          case 4:
-            rf = System.Drawing.RotateFlipType.RotateNoneFlipY;
-            break;
-          case 5:
-            rf = System.Drawing.RotateFlipType.Rotate90FlipX;
-            break;
-          case 6:
-            rf = System.Drawing.RotateFlipType.Rotate90FlipNone;
-            break;
-          case 7:
-            rf = System.Drawing.RotateFlipType.Rotate270FlipX;
-            break;
-          case 8:
-            rf = System.Drawing.RotateFlipType.Rotate270FlipNone;
-            break;
-        }
-
-        if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone)
-        {
-          _bitmap.RotateFlip(rf);
-          bmp_img = Bitmap2BitmapImage(_bitmap);
-        }
+        case 3:
+          rf = System.Drawing.RotateFlipType.Rotate180FlipNone;
+          break;
+        case 4:
+          rf = System.Drawing.RotateFlipType.RotateNoneFlipY;
+          break;
+        case 5:
+          rf = System.Drawing.RotateFlipType.Rotate90FlipX;
+          break;
+        case 6:
+          rf = System.Drawing.RotateFlipType.Rotate90FlipNone;
+          break;
+        case 7:
+          rf = System.Drawing.RotateFlipType.Rotate270FlipX;
+          break;
+        case 8:
+          rf = System.Drawing.RotateFlipType.Rotate270FlipNone;
+          break;
       }
 
-      _pixel_width = bmp_img.PixelWidth;
-      _pixel_height = bmp_img.PixelHeight;
+      if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone || !_processed)
+      {
+        using (MemoryStream outStream = new MemoryStream())
+        {
+          BitmapEncoder enc = new BmpBitmapEncoder();
+          enc.Frames.Add(BitmapFrame.Create(bmp_img));
+          enc.Save(outStream);
+          Bitmap bitmap = new Bitmap(outStream);
 
+          bitmap.RotateFlip(rf);
+
+          bmp_img = Bitmap2BitmapImage(bitmap);
+
+          //FindFaces(bitmap);
+        }
+      }
 
       return bmp_img;
     }
@@ -116,7 +115,6 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
-      FindFaces();
       return _faces != null ? _faces.Count : 0;
     }
   }
@@ -125,45 +123,32 @@ class LocalImageInfo : ImageInfo
   {
     get
     {
-      FindFaces();
-      return get_accent(_rand.Next(_faces.Count));
+      PointF pt = new PointF(-1.0F, -1.0F);
+      if (_faces != null && _faces.Count != 0)
+      {
+        int acc = _rand.Next(_faces.Count);
+        if (acc >= 0 && acc < _faces.Count)
+          pt = _faces[acc];
+      }
+
+      return pt;
     }
   }
 
-  public PointF get_accent(int acc)
+  private void FindFaces(Bitmap bitmap)
   {
-    float fx = -1.0F, fy = -1.0F;
-    if (_faces != null && _faces.Count != 0 && acc >= 0 && acc < _faces.Count)
+    if (!_processed && bitmap != null)
     {
-      fx = (float)((_faces[acc].Right + _faces[acc].Left) * _dmult / 2.0 - _pixel_width / 2.0);
-      fy = (float)((_faces[acc].Top + _faces[acc].Bottom) * _dmult / 2.0 - _pixel_height / 2.0);
-    }
-
-    return new PointF(fx, fy);
-  }
-
-  public void ReleaseResources()
-  {
-    if (_bitmap != null)
-    {
-      _bitmap.Dispose();
-      _bitmap = null;
-    }
-  }
-
-  private void FindFaces()
-  {
-
-    if (!_processed)
-    {
-      _dmult = 3.0;
+      int pixel_width = bitmap.Width;
+      int pixel_height = bitmap.Height;
+      double dmult = 3.0;
       List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
 
-      System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(_pixel_width / _dmult), (int)(_pixel_height / _dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+      System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(pixel_width / dmult), (int)(pixel_height / dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
       using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
       {
         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-        g.DrawImage(_bitmap, 0, 0, b.Width, b.Height);
+        g.DrawImage(bitmap, 0, 0, b.Width, b.Height);
 
         try
         {
@@ -174,7 +159,12 @@ class LocalImageInfo : ImageInfo
           FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
 
           if (faces.Count != 0)
-            _faces = faces;
+          {
+            _faces = new List<PointF>();
+            foreach (var f in faces)
+              _faces.Add(new PointF((float)((f.Right + f.Left) * dmult / 2.0 - pixel_width / 2.0),
+                                    (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
+          }
 
           _processed = true;
         }

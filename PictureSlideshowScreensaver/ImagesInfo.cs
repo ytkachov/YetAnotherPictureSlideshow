@@ -3,8 +3,6 @@ using System.Drawing;
 
 public interface ImageInfo
 {
-  void ReleaseResources();
-
   BitmapImage bitmap { get; }
   bool has_accompanying_video { get; }
   string video_name { get; }
@@ -12,7 +10,6 @@ public interface ImageInfo
 
   int accent_count { get; }
   PointF accent { get; }
-  PointF get_accent(int idx);
 }
 
 

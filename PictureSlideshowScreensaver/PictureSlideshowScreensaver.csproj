@@ -116,18 +116,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="cPower.cs" />
     <Compile Include="FrameView.xaml.cs">
       <DependentUpon>FrameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImagesInfo.cs" />
-    <Compile Include="Informers.cs" />
+    <Compile Include="ViewModels\FrameViewModel.cs" />
+    <Compile Include="ViewModels\Informers.cs" />
     <Compile Include="FaceDetection.cs" />
     <Compile Include="LocalImageInfo.cs" />
     <Compile Include="LocalImages.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\ScreensavserViewModel.cs" />
+    <Compile Include="ViewModels\ScreensaverViewModel.cs" />
     <Compile Include="WeatherForecast.xaml.cs">
       <DependentUpon>WeatherForecast.xaml</DependentUpon>
     </Compile>

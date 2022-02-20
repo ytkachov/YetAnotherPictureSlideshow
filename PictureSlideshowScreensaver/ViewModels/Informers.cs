@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
+using PictureSlideshowScreensaver.ViewModels;
 
 class dateformatter
 {
@@ -16,30 +17,20 @@ class dateformatter
 namespace informers
 {
 
-  class PhotoPropertiesInformer : INotifyPropertyChanged
+  public class PhotoProperties : BaseViewModel
   {
     private string _faces_found = "";
     private string _date_taken = "21/12/1997";
 
-    public string Photo_Description { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged("Photo_Description"); } }
-    public string Faces_Found { get { return _faces_found; } }
-    public int Set_Faces_Found
+    public string PhotoDescription { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged(); } }
+    public string FacesFound { get { return _faces_found; } }
+    public void SetFacesFound(int num)
     {
-      set
-      {
         _faces_found = "";
-        for (int i = 0; i < value; i++)
+        for (int i = 0; i < num; i++)
           _faces_found += "\u263B";
 
-        RaisePropertyChanged("Faces_Found");
-      }
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void RaisePropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        RaisePropertyChanged("FacesFound");
     }
   }
 
@@ -58,7 +49,7 @@ namespace informers
     }
   }
 
-  class DateTimeInformer : INotifyPropertyChanged
+  class DateTimeInformer : BaseViewModel
   {
     private int    _time_Tick = 0;
     private string _time_Hours = "00";
@@ -77,21 +68,14 @@ namespace informers
       _clockTick.Start();
     }
 
-    public string Time_Hours { get { return _time_Hours; } set { _time_Hours = value; RaisePropertyChanged("Time_Hours"); } }
-    public string Time_Minutes { get { return _time_Minutes; } set { _time_Minutes = value; RaisePropertyChanged("Time_Minutes"); } }
-    public string Time_Seconds { get { return _time_Seconds; } set { _time_Seconds = value; RaisePropertyChanged("Time_Seconds"); } }
-    public string Date_Full { get { return _date_Full; } set { _date_Full = value; RaisePropertyChanged("Date_Full"); } }
-    public string Date_DayMon { get { return _date_DayMon; } set { _date_DayMon = value; RaisePropertyChanged("Date_DayMon"); } }
-    public string Date_DayMonTomorrow { get { return _date_DayMonTomorrow; } set { _date_DayMonTomorrow = value; RaisePropertyChanged("Date_DayMonTomorrow"); } }
-    public string Date_DayMonAfterTomorrow { get { return _date_DayMonAfterTomorrow; } set { _date_DayMonAfterTomorrow = value; RaisePropertyChanged("Date_DayMonAfterTomorrow"); } }
-    public int Time_Tick { get { return _time_Tick; } set { _time_Tick = value; RaisePropertyChanged("Time_Tick"); } }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void RaisePropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    }
+    public string Time_Hours { get { return _time_Hours; } set { if (_time_Hours != value) { _time_Hours = value; RaisePropertyChanged(); } } }
+    public string Time_Minutes { get { return _time_Minutes; } set { if (_time_Minutes != value) { _time_Minutes = value; RaisePropertyChanged(); } } }
+    public string Time_Seconds { get { return _time_Seconds; } set { if (_time_Seconds != value) { _time_Seconds = value; RaisePropertyChanged(); } } }
+    public string Date_Full { get { return _date_Full; } set { if (_date_Full != value) { _date_Full = value; RaisePropertyChanged(); } } }
+    public string Date_DayMon { get { return _date_DayMon; } set { if (_date_DayMon != value) { _date_DayMon = value; RaisePropertyChanged(); } } }
+    public string Date_DayMonTomorrow { get { return _date_DayMonTomorrow; } set { if (_date_DayMonTomorrow != value) { _date_DayMonTomorrow = value; RaisePropertyChanged(); } } }
+    public string Date_DayMonAfterTomorrow { get { return _date_DayMonAfterTomorrow; } set { if (_date_DayMonAfterTomorrow != value) { _date_DayMonAfterTomorrow = value; RaisePropertyChanged(); } } }
+    public int Time_Tick { get { return _time_Tick; } set { if (_time_Tick != value) { _time_Tick = value; RaisePropertyChanged(); } } }
 
     void clock_Tick(object sender, EventArgs e)
     {
