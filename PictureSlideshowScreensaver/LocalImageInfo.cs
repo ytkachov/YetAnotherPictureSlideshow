@@ -50,7 +50,8 @@ public class LocalImageInfo : ImageInfo
     get
     {
       // return _name + " :: " + (_dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy"));
-      return _dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy");
+      string d = /*Path.GetFileName(_name) + " " + */ (_dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy"));
+      return d;
     }
   }
 
@@ -103,7 +104,7 @@ public class LocalImageInfo : ImageInfo
 
           bmp_img = Bitmap2BitmapImage(bitmap);
 
-          //FindFaces(bitmap);
+          // FindFaces(bitmap);
         }
       }
 

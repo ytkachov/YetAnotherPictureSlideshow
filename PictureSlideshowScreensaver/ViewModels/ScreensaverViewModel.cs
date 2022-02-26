@@ -34,8 +34,8 @@ namespace PictureSlideshowScreensaver.ViewModels
     public ScreensaverViewModel()
     {
       _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
-      FirstImage = new FrameViewModel() { IsActive = true };
-      SecondImage = new FrameViewModel() { IsActive = false };
+      FirstImage = new FrameViewModel("one") { IsActive = true };
+      SecondImage = new FrameViewModel("two") { IsActive = false };
       PhotoProperties = new PhotoProperties();
 
       NextImage(); // to show from the very start
@@ -86,12 +86,12 @@ namespace PictureSlideshowScreensaver.ViewModels
           if (!FirstImage.IsActive)
           {
             FirstImage.Activate(nextphoto, ft, mt, acc);
-            SecondImage.IsActive = false;
+            SecondImage.Deactivate(ft);
           }
           else
           {
             SecondImage.Activate(nextphoto, ft, mt, acc);
-            FirstImage.IsActive = false;
+            FirstImage.Deactivate(ft);
           }
 
           PhotoProperties.SetFacesFound(nextphoto.accent_count);

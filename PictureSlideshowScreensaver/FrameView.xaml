@@ -5,10 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PictureSlideshowScreensaver"
              xmlns:vm="clr-namespace:PictureSlideshowScreensaver.ViewModels"
+             xmlns:cc="clr-namespace:CustomControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-      <Image Source="{Binding ImageSource}" Opacity="1" Stretch="{Binding ImageStretch}" />
-      <MediaElement Opacity="0" Stretch="Uniform" />
-    </Grid>
+  <UserControl.Resources>
+    <ResourceDictionary>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid x:Name="ImageGrid" Background="Black" >
+    <i:Interaction.Triggers>
+      <i:EventTrigger EventName="Loaded">
+        <i:InvokeCommandAction Command="{Binding Path=OnGridLoaded}" CommandParameter="{Binding ElementName=ImageGrid}" />
+      </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" />
+    <MediaElement Opacity="0" Stretch="Uniform" />
+    <cc:OutlinedTextBlock  Text="{Binding FrameName}" FontSize="30" FontFamily="Segoe UI Light" StrokeThickness="3" Stroke="White" Fill="DarkRed"/>
+  </Grid>
 </UserControl>
