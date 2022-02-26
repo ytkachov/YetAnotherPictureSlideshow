@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
 using Emgu.CV;
+using Newtonsoft.Json;
 
 public class LocalImageInfo : ImageInfo
 {
@@ -140,9 +141,29 @@ public class LocalImageInfo : ImageInfo
   {
     if (!_processed && bitmap != null)
     {
+      double dmult = 3.0;
       int pixel_width = bitmap.Width;
       int pixel_height = bitmap.Height;
-      double dmult = 3.0;
+
+      // Может быть, лица уже есть в файле?
+      string finfoname = Path.ChangeExtension(_name, "finfo");
+      if (File.Exists(finfoname))
+      {
+        string json = File.ReadAllText(finfoname);
+        var rfaces = JsonConvert.DeserializeObject<System.Drawing.Rectangle[]>(json);
+        if (rfaces != null && rfaces.Length != 0)
+        {
+          _faces = new List<PointF>();
+          foreach (var f in rfaces)
+            _faces.Add(new PointF((float)((f.Right + f.Left) * dmult / 2.0 - pixel_width / 2.0),
+                                  (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
+
+        }
+
+        _processed = true;
+        return;
+      }
+
       List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
 
       System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(pixel_width / dmult), (int)(pixel_height / dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -158,6 +179,9 @@ public class LocalImageInfo : ImageInfo
 
           long detectionTime;
           FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
+
+          string json = JsonConvert.SerializeObject(faces.ToArray(), Formatting.Indented);
+          File.WriteAllText(finfoname, json);
 
           if (faces.Count != 0)
           {
