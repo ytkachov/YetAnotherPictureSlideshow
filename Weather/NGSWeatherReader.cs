@@ -11,6 +11,8 @@ using System.Xml;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
 using WatiN.Core;
 
@@ -208,16 +210,29 @@ namespace weather
     private IWebDriver _driver = null;
     private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
 
-    public NGSSeleniumReader()
+    public NGSSeleniumReader(int type)
     {
-      _driver = new ChromeDriver();
+      if (type == 2)
+        _driver = new InternetExplorerDriver();
+      else if (type == 3)
+        _driver = new OpenQA.Selenium.Edge.EdgeDriver();
+      else
+        _driver = new ChromeDriver();
+
       _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
     }
 
     public void close()
     {
+      try
+      {
       _driver.Close();
       _driver.Quit();
+      }
+      catch (Exception e)
+      {
+
+      }
 
       _driver = null;
     }

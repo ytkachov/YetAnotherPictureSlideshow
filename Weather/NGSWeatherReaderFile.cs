@@ -177,7 +177,7 @@ namespace weather
     {
       using (TaskService ts = new TaskService())
       {
-        string execparams = "";
+        string execparams = ". 2";
         string execfolder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         string execname = Path.Combine(execfolder, "WeatherCollector.exe");
 

@@ -12,7 +12,7 @@ namespace WeatherCollector
   class WeatherCollectorApp
   {
     private static string _folder = ".";
-    private static int _type = 0;
+    private static int _type = 1;
 
     [STAThread]
     static void Main(string[] args)
@@ -52,13 +52,21 @@ namespace WeatherCollector
       // nokill = true;
       if (!nokill)
       {
+        string browsername = "chrome";
+        string drivername = "chromedriver";
+        if (_type == 2)
+        {
+          browsername = "iexplore";
+          drivername = "IEDriverServer";
+        }
+
         Process[] pl = Process.GetProcesses();
 
         foreach (var p in pl)
         {
           string mwt = p.MainWindowTitle;
           string pn = p.ProcessName;
-          if (p.ProcessName.Equals("chrome", StringComparison.OrdinalIgnoreCase))
+          if (p.ProcessName.Equals(browsername, StringComparison.OrdinalIgnoreCase))
           {
             //p.CloseMainWindow();
             try
@@ -69,13 +77,13 @@ namespace WeatherCollector
             {
             }
           }
-      }
+        }
 
         foreach (var p in pl)
         {
           string mwt = p.MainWindowTitle;
           string pn = p.ProcessName;
-          if (p.ProcessName.Equals("chromedriver", StringComparison.OrdinalIgnoreCase))
+          if (p.ProcessName.Equals(drivername, StringComparison.OrdinalIgnoreCase))
           {
             p.Kill();
           }
@@ -85,10 +93,10 @@ namespace WeatherCollector
 
       NGSFileReader writer = new NGSFileReader(_folder);
       INGSWeatherReader reader;
-      if (_type == 1)
+      if (_type == 0)
         reader = new NGSWatinReader();
       else
-        reader = new NGSSeleniumReader();
+        reader = new NGSSeleniumReader(_type); // 1 - chrome; 2 - IE; 3 - Edge;
 
       string temp = "", current = "", forecast = "", except="";
       try

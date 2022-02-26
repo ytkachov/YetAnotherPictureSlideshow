@@ -6,7 +6,7 @@ Windows Registry Editor Version 5.00
 "WriteStat"="1"
 "WriteStatFolder"="D:\\PH\\LOG"
 "DependOnBattery"="0"
-"ImageFolder"="D:\\PH\\*"
+"ImageFolder"="D:\\PH\\iCloud Photos\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
 
