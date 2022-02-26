@@ -177,7 +177,7 @@ namespace PictureSlideshowScreensaver
     private void NextImage()
     {
       // move mouse to prevent sleeping
-      try { _input.Mouse.MoveMouseBy(_rand.Next(-1, 2), _rand.Next(-1, 2)); } catch (Exception e) { }
+      // try { _input.Mouse.MoveMouseBy(_rand.Next(-1, 2), _rand.Next(-1, 2)); } catch (Exception e) { }
 
       // write stat every day at 8PM
       if (_settings._writeStat && _prevTime == 20 && DateTime.Now.Hour == _prevTime + 1)

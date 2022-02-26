@@ -4,10 +4,6 @@ using System.Linq;
 using System.IO;
 using ExifLib;
 using System.Threading;
-using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Windows.Interop;
-using Emgu.CV;
 
 
 class LocalImages : ImagesProvider
@@ -87,7 +83,7 @@ class LocalImages : ImagesProvider
       if (!Directory.Exists(write_stat_path))
         return;
 
-      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("MM-dd-HHmm")));
+      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("YYYY-MM-dd-HHmm")));
       using (StreamWriter tw = new StreamWriter(fn))
       {
         foreach (string s in _messages)

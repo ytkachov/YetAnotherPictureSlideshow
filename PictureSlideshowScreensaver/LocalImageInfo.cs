@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
 using Emgu.CV;
+using Newtonsoft.Json;
 
 class LocalImageInfo : ImageInfo
 {
@@ -156,6 +157,19 @@ class LocalImageInfo : ImageInfo
 
     if (!_processed)
     {
+      // Может быть, лица уже есть в файле?
+      string finfoname = Path.ChangeExtension(_name, "finfo");
+      if (File.Exists(finfoname))
+      {
+        string json = File.ReadAllText(finfoname);
+        var rfaces = JsonConvert.DeserializeObject<System.Drawing.Rectangle[]>(json);
+        if (rfaces != null && rfaces.Length != 0)
+          _faces = new List<Rectangle>(rfaces);
+
+        _processed = true;
+        return;
+      }
+
       _dmult = 3.0;
       List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
 
@@ -172,6 +186,9 @@ class LocalImageInfo : ImageInfo
 
           long detectionTime;
           FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
+
+          string json = JsonConvert.SerializeObject(faces.ToArray(), Formatting.Indented);
+          File.WriteAllText(finfoname, json);
 
           if (faces.Count != 0)
             _faces = faces;
