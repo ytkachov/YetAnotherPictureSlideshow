@@ -49,7 +49,7 @@ namespace WeatherCollector
           return;
       }
 
-      nokill = true;
+      // nokill = true;
       if (!nokill)
       {
         Process[] pl = Process.GetProcesses();
