@@ -23,6 +23,6 @@
 
     <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" />
     <MediaElement Opacity="0" Stretch="Uniform" />
-    <cc:OutlinedTextBlock  Text="{Binding FrameName}" FontSize="30" FontFamily="Segoe UI Light" StrokeThickness="3" Stroke="White" Fill="DarkRed"/>
+<!--     <cc:OutlinedTextBlock  Text="{Binding FrameName}" FontSize="30" FontFamily="Segoe UI Light" StrokeThickness="3" Stroke="White" Fill="DarkRed"/> -->
   </Grid>
 </UserControl>

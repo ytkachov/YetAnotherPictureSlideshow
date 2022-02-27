@@ -105,7 +105,7 @@ public class LocalImageInfo : ImageInfo
 
           bmp_img = Bitmap2BitmapImage(bitmap);
 
-          // FindFaces(bitmap);
+          FindFaces(bitmap);
         }
       }
 
