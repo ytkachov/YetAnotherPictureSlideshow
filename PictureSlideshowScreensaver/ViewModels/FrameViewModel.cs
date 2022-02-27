@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,31 +58,70 @@ namespace PictureSlideshowScreensaver.ViewModels
     private Random _rand;
     private Stretch _imageStretch;
     private BitmapImage _imageSource;
+    private string _videoSource;
+    private bool _imageVisible;
     private string _frameName;
-    private Grid _gridControl;    // animation parameters can not be set 
+    private Grid _gridControl;    // animation parameters can not be set in xaml
+    private double _videoRotationAngle;
+
+    private ScaleTransform _scaleTransform;
+    private DoubleAnimation _fadeAnimation;
+    private DoubleAnimation _scaleAnimation;
+
+
     private ICommand _onGridLoaded;
+    private ICommand _onVideoOpened;
+    private ICommand _onVideoEnded;
 
     public bool IsActive { get { return _isActive; } set { _isActive = value; RaisePropertyChanged(); } }
     public Stretch ImageStretch { get { return _imageStretch; } set { _imageStretch = value; RaisePropertyChanged(); } }
     public BitmapImage ImageSource { get { return _imageSource; } set { _imageSource = value; RaisePropertyChanged(); } }
-    public ICommand OnGridLoaded => _onGridLoaded;
+    public string VideoSource { get { return _videoSource; } set { _videoSource = value; RaisePropertyChanged(); } }
+    public bool ImageVisible { get { return _imageVisible; } set { _imageVisible = value; RaisePropertyChanged(); } }
+    public double VideoRotationAngle { get { return _videoRotationAngle; } set { _videoRotationAngle = value; RaisePropertyChanged(); } }
     public string FrameName => _frameName;
+
+    public ICommand OnGridLoaded => _onGridLoaded;
+    public ICommand OnVideoOpened => _onVideoOpened;
+    public ICommand OnVideoEnded => _onVideoEnded;
 
     public FrameViewModel(string frame_name)
     {
       _frameName = frame_name;
       _rand = new Random(DateTime.Now.Millisecond);
       _onGridLoaded = new SimpleCommand((grid) => GridLoaded(grid));
+      _onVideoOpened = new SimpleCommand((video) => VideoOpened(video));
+      _onVideoEnded = new SimpleCommand((video) => StartImage());
     }
 
     public void Activate(ImageInfo nextphoto, TimeSpan fadetime, TimeSpan movetime, bool accented)
     {
       SetImage(nextphoto, movetime, accented);
 
-      IsActive = true;
+      if (!nextphoto.has_accompanying_video)
+      {
+        ImageVisible = true;
+        _fadeAnimation = new DoubleAnimation(0.0, 1.0, fadetime);
 
-      if (_gridControl != null)
-        _gridControl.BeginAnimation(Grid.OpacityProperty, new DoubleAnimation(0.0, 1.0, fadetime));
+        IsActive = true;
+      }
+      else
+      {
+        _fadeAnimation = null;
+
+        ImageVisible = false;
+        if (nextphoto.orientation == RotateFlipType.Rotate180FlipNone || nextphoto.orientation == RotateFlipType.Rotate180FlipX ||
+            nextphoto.orientation == RotateFlipType.Rotate180FlipXY || nextphoto.orientation == RotateFlipType.Rotate180FlipY)
+          VideoRotationAngle = 180.0;
+        else if (nextphoto.orientation == RotateFlipType.Rotate270FlipNone || nextphoto.orientation == RotateFlipType.Rotate270FlipX ||
+                 nextphoto.orientation == RotateFlipType.Rotate270FlipXY || nextphoto.orientation == RotateFlipType.Rotate270FlipY)
+          VideoRotationAngle = 90.0; // this is correct!
+        else if (nextphoto.orientation == RotateFlipType.Rotate90FlipNone || nextphoto.orientation == RotateFlipType.Rotate90FlipX ||
+                 nextphoto.orientation == RotateFlipType.Rotate90FlipXY || nextphoto.orientation == RotateFlipType.Rotate90FlipY)
+          VideoRotationAngle = 90.0;
+
+        VideoSource = nextphoto.video_name;
+      }
     }
 
     public void Deactivate(TimeSpan fadetime)
@@ -116,19 +156,37 @@ namespace PictureSlideshowScreensaver.ViewModels
           cs = 1.05 + 0.8 * _rand.NextDouble();
         }
 
-        ScaleTransform st = new ScaleTransform(1.0, 1.0, cx, cy);
-        DoubleAnimation da = new DoubleAnimation(cs, new Duration(movetime));
-
-        st.BeginAnimation(ScaleTransform.ScaleXProperty, da);
-        st.BeginAnimation(ScaleTransform.ScaleYProperty, da);
-
-        _gridControl.RenderTransform = st;
+        _scaleTransform = new ScaleTransform(1.0, 1.0, cx, cy);
+        _scaleAnimation = new DoubleAnimation(cs, new Duration(movetime));
       }
     }
 
     private void GridLoaded(object gridControl)
     {
       _gridControl = gridControl as Grid;
+    }
+
+    private void VideoOpened(object videoControl)
+    {
+      IsActive = true;
+    }
+
+    private void StartImage()
+    {
+      ImageVisible = true;
+      if (_gridControl != null)
+      {
+        if (_fadeAnimation != null)
+          _gridControl.BeginAnimation(Grid.OpacityProperty, _fadeAnimation);
+
+        if (_scaleAnimation != null && _scaleTransform != null)
+        {
+          _scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, _scaleAnimation);
+          _scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, _scaleAnimation);
+
+          _gridControl.RenderTransform = _scaleTransform;
+        }
+      }
     }
 
   }

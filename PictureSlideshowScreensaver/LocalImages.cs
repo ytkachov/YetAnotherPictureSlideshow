@@ -165,13 +165,13 @@ class LocalImages : ImagesProvider
       {
         using (var reader = new ExifReader(name))
         {
-          DateTime datePictureTaken;
-          if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
-            ii._dateTaken = datePictureTaken;
-
           UInt16 orientation;
           if (reader.GetTagValue(ExifTags.Orientation, out orientation))
             ii._orientation = orientation;
+
+          DateTime datePictureTaken;
+          if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
+            ii._dateTaken = datePictureTaken;
         }
       }
       catch (Exception ex)
