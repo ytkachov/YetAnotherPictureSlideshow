@@ -30,6 +30,27 @@ public class LocalImageInfo : ImageInfo
     _video_name = videoname;
   }
 
+  public RotateFlipType orientation
+  {
+    get
+    {
+      var rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
+      switch (_orientation)
+      {
+        case 1: break;
+        case 2: rf = System.Drawing.RotateFlipType.RotateNoneFlipX; break;
+        case 3: rf = System.Drawing.RotateFlipType.Rotate180FlipNone; break;
+        case 4: rf = System.Drawing.RotateFlipType.RotateNoneFlipY; break;
+        case 5: rf = System.Drawing.RotateFlipType.Rotate90FlipX; break;
+        case 6: rf = System.Drawing.RotateFlipType.Rotate90FlipNone; break;
+        case 7: rf = System.Drawing.RotateFlipType.Rotate270FlipX; break;
+        case 8: rf = System.Drawing.RotateFlipType.Rotate270FlipNone; break;
+      }
+
+      return rf;
+    }
+  }
+
 
   public bool has_accompanying_video
   {
@@ -62,37 +83,7 @@ public class LocalImageInfo : ImageInfo
     {
       BitmapImage bmp_img = new BitmapImage(new Uri(_name));
 
-      System.Drawing.RotateFlipType rf = System.Drawing.RotateFlipType.RotateNoneFlipNone;
-      switch (_orientation)
-      {
-        case 1:
-          break;
-
-        case 2:
-          rf = System.Drawing.RotateFlipType.RotateNoneFlipX;
-          break;
-
-        case 3:
-          rf = System.Drawing.RotateFlipType.Rotate180FlipNone;
-          break;
-        case 4:
-          rf = System.Drawing.RotateFlipType.RotateNoneFlipY;
-          break;
-        case 5:
-          rf = System.Drawing.RotateFlipType.Rotate90FlipX;
-          break;
-        case 6:
-          rf = System.Drawing.RotateFlipType.Rotate90FlipNone;
-          break;
-        case 7:
-          rf = System.Drawing.RotateFlipType.Rotate270FlipX;
-          break;
-        case 8:
-          rf = System.Drawing.RotateFlipType.Rotate270FlipNone;
-          break;
-      }
-
-      if (rf != System.Drawing.RotateFlipType.RotateNoneFlipNone || !_processed)
+      if (orientation != RotateFlipType.RotateNoneFlipNone || !_processed)
       {
         using (MemoryStream outStream = new MemoryStream())
         {
@@ -101,7 +92,7 @@ public class LocalImageInfo : ImageInfo
           enc.Save(outStream);
           Bitmap bitmap = new Bitmap(outStream);
 
-          bitmap.RotateFlip(rf);
+          bitmap.RotateFlip(orientation);
 
           bmp_img = Bitmap2BitmapImage(bitmap);
 

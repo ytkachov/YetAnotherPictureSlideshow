@@ -9,6 +9,7 @@ public interface ImageInfo
   string description { get; }
 
   int accent_count { get; }
+  RotateFlipType orientation { get; }
   PointF accent { get; }
 }
 

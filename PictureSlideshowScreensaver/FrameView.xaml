@@ -11,6 +11,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
   <UserControl.Resources>
     <ResourceDictionary>
+      <vm:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+      <vm:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" Inverse="True"/>
+
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -21,8 +24,23 @@
       </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" />
-    <MediaElement Opacity="0" Stretch="Uniform" />
-<!--     <cc:OutlinedTextBlock  Text="{Binding FrameName}" FontSize="30" FontFamily="Segoe UI Light" StrokeThickness="3" Stroke="White" Fill="DarkRed"/> -->
+    <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" Visibility="{Binding ImageVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+    <MediaElement x:Name="VideoElement" Stretch="Uniform" Source="{Binding VideoSource}" Visibility="{Binding ImageVisible, Converter={StaticResource inverseBooleanToVisibilityConverter}}" >
+      <MediaElement.LayoutTransform>
+        <TransformGroup>
+          <RotateTransform Angle="{Binding VideoRotationAngle}"/>
+        </TransformGroup>
+      </MediaElement.LayoutTransform>
+      <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MediaOpened">
+          <i:InvokeCommandAction Command="{Binding Path=OnVideoOpened}" CommandParameter="{Binding ElementName=VideoElement}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MediaEnded">
+          <i:InvokeCommandAction Command="{Binding Path=OnVideoEnded}" CommandParameter="{Binding ElementName=VideoElement}" />
+        </i:EventTrigger>
+      </i:Interaction.Triggers>
+
+    </MediaElement>
+<!--    <cc:OutlinedTextBlock  Text="{Binding FrameName}" FontSize="30" FontFamily="Segoe UI Light" StrokeThickness="3" Stroke="White" Fill="DarkRed"/> -->
   </Grid>
 </UserControl>

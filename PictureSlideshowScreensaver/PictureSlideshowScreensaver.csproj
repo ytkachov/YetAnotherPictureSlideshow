@@ -126,6 +126,7 @@
       <DependentUpon>FrameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImagesInfo.cs" />
+    <Compile Include="ViewModels\converters.cs" />
     <Compile Include="ViewModels\FrameViewModel.cs" />
     <Compile Include="ViewModels\Informers.cs" />
     <Compile Include="FaceDetection.cs" />
