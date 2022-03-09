@@ -18,7 +18,7 @@ using WatiN.Core;
 
 namespace weather
 {
-  public interface INGSWeatherReader
+  public interface IWeatherReader
   {
     void close();
     void restart();
@@ -91,24 +91,10 @@ namespace weather
     }
   }
 
-  public class NGSWatinReader : INGSWeatherReader
+  public class NGSWatinReader : IWeatherReader
   {
     private IE _browser;
     private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
-
-    private class StringStartsWith : WatiN.Core.Comparers.Comparer<string>
-    {
-      public StringStartsWith()
-      {
-      }
-
-      public string startswith { get; set; }
-
-      public override bool Compare(string V)
-      {
-        return V != null && V.StartsWith(startswith);
-      }
-    }
 
     public NGSWatinReader()
     {
@@ -205,21 +191,16 @@ namespace weather
     }
   }
 
-  public class NGSSeleniumReader : INGSWeatherReader
+  public abstract class WeatherSeleniumReader : IWeatherReader
   {
-    private IWebDriver _driver = null;
-    private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
+    protected IWebDriver _driver = null;
+    protected int _type = 0;
+    protected string _weather_url;
 
-    public NGSSeleniumReader(int type)
+    public WeatherSeleniumReader(int type)
     {
-      if (type == 2)
-        _driver = new InternetExplorerDriver();
-      else if (type == 3)
-        _driver = new OpenQA.Selenium.Edge.EdgeDriver();
-      else
-        _driver = new ChromeDriver();
-
-      _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+      _type = type;
+      _driver = create_driver();
     }
 
     public void close()
@@ -240,52 +221,58 @@ namespace weather
     public string current()
     {
       navigate(_weather_url);
-
-      // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
-      //var info = wait.Until((d) => { return d.findElement(By.ClassName("today-panel__info")); });
-      var info = _driver.findElement(By.ClassName("today-panel__info"));
-      if (info == null)
-        return null;
-
-      string outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
-
-      // remove usually incorrect <img > tags
-      string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
-      return Regex.Replace(outerhtml, img, " ");
+      return get_current();
     }
 
     public string forecast()
     {
       if (_driver.Url != _weather_url)
-      {
         navigate(_weather_url);
-      }
 
-      // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(22));
-      // var tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']")); });
-      var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
-      if (tbl == null)
-      {
-        // wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(24));
-        // tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']")); });
-        tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
-      }
+      return get_forecast();
+    }
 
-      if (tbl == null)
-        return null;
-
-      string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
-      return outerhtml;
-     }
-
-    private void navigate(string url = null)
+    public string temperature()
     {
-      
+      navigate();
+      Thread.Sleep(1000);
+
+      return get_temperature();
+    }
+
+    public void restart()
+    {
+      _driver.Close();
+      _driver.Quit();
+
+      _driver = null;
+    }
+
+    public void getrest()
+    {
+      _driver.Navigate().GoToUrl("http://google.com/");
+    }
+
+    protected virtual IWebDriver create_driver()
+    {
+      IWebDriver driver = null;
+      if (_type == 2)
+        driver = new InternetExplorerDriver();
+      else if (_type == 3)
+        driver = new EdgeDriver();
+      else
+        driver = new ChromeDriver();
+
+      driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+
+      return driver;
+    }
+
+    protected virtual void navigate(string url = null)
+    {
+
       if (_driver == null)
-      {
-        _driver = new ChromeDriver();
-        _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-      }
+        _driver = create_driver();
 
       try
       {
@@ -299,19 +286,8 @@ namespace weather
       }
     }
 
-    public void restart()
+    protected virtual string get_temperature()
     {
-      _driver.Close();
-      _driver.Quit();
-
-      _driver = null;
-    }
-
-    public string temperature()
-    {
-      navigate();
-      Thread.Sleep(1000);
-
       var temp = _driver.findElement(By.Id("temp"));
       if (temp != null)
       {
@@ -322,9 +298,8 @@ namespace weather
       return null;
     }
 
-    public void getrest()
-    {
-      _driver.Navigate().GoToUrl("http://google.com/");
-    }
+
+    protected abstract string get_forecast();
+    protected abstract string get_current();
   }
 }

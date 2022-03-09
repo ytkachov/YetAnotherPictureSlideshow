@@ -29,7 +29,7 @@ namespace weather
     }
   }
 
-  public class NGSFileReader : INGSWeatherReader
+  public class NGSFileReader : IWeatherReader
   {
     private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
     private string _filename = "ngs_weather_info.txt";
@@ -96,19 +96,19 @@ namespace weather
         try
         {
           FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.None);
-          StreamWriter sr = new StreamWriter(fs);
+          StreamWriter sw = new StreamWriter(fs);
 
-          sr.Write(temperature);
-          sr.Write(delimiter);
-          sr.Write(current);
-          sr.Write(delimiter);
-          sr.Flush();
-          sr.Write(forecast);
-          sr.Flush();
-          sr.Write(delimiter);
-          sr.Flush();
-          sr.Write(except);
-          sr.Flush();
+          sw.Write(temperature);
+          sw.Write(delimiter);
+          sw.Write(current);
+          sw.Write(delimiter);
+          sw.Flush();
+          sw.Write(forecast);
+          sw.Flush();
+          sw.Write(delimiter);
+          sw.Flush();
+          sw.Write(except);
+          sw.Flush();
 
           fs.Close();
 
@@ -224,7 +224,7 @@ namespace weather
         {
           // Create a new task definition and assign properties
           TaskDefinition td = ts.NewTask();
-          td.RegistrationInfo.Description = "Read weather info from pogoda.ngs.ru and store it into file";
+          td.RegistrationInfo.Description = "Read weather info from web and store it into file";
           td.Principal.LogonType = TaskLogonType.InteractiveToken;
           td.Settings.Enabled = true;
           td.Settings.ExecutionTimeLimit = TimeSpan.FromMinutes(5);

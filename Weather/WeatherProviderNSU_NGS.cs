@@ -94,7 +94,7 @@ namespace weather
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
     };
-    private INGSWeatherReader _sitereader = null;
+    private IWeatherReader _sitereader = null;
 
     private WeatherProviderNGS()
     {

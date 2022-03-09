@@ -103,6 +103,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         ImageVisible = true;
         _fadeAnimation = new DoubleAnimation(0.0, 1.0, fadetime);
 
+        StartImage();
         IsActive = true;
       }
       else

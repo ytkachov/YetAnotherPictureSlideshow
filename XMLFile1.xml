@@ -1,0 +1,1165 @@
+﻿<!DOCTYPE html>
+<html class="i-ua_js_no i-ua_css_standard" lang="ru">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>Прогноз погоды в Новосибирске на 10 дней — Яндекс.Погода</title>
+        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">
+            ;(function(d,e,c,r){e=d.documentElement;c="className";r="replace";e[c]=e[c][r]("i-ua_js_no","i-ua_js_yes");if(d.compatMode!="CSS1Compat")e[c]=e[c][r]("i-ua_css_standart","i-ua_css_quirks")})(document);;(function(d,e,c,n,w,v,f){e=d.documentElement;c="className";n="createElementNS";f="firstChild";w="http://www.w3.org/2000/svg";e[c]+=" i-ua_svg_"+(!!d[n]&&!!d[n](w,"svg").createSVGRect?"yes":"no");v=d.createElement("div");v.innerHTML="<svg/>";e[c]+=" i-ua_inlinesvg_"+((v[f]&&v[f].namespaceURI)==w?"yes":"no");})(document);;(function(d,e,p){e=d.documentElement;p="placeholder";e.className+=" i-ua_"+p+(p in d.createElement("input")?"_yes":"_no")})(document);
+        </script>
+        <link rel="preconnect" href="https://yastatic.net/"/>
+        <link rel="preconnect" href="https://static-maps.yandex.ru/"/>
+        <link rel="preconnect" href="https://api.weather.yandex.ru/"/>
+        <link rel="preconnect" href="https://mc.yandex.ru/"/>
+        <link rel="stylesheet" href="//yastatic.net/s3/weather-frontend/11.98.101/desktop.bundles/index/_index.css"/>
+        <link rel="stylesheet" href="//yastatic.net/s3/weather-frontend/11.98.101/i/print/print.css" media="print"/>
+        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">window.yaContextCb = window.yaContextCb || []</script>
+        <script src="https://yandex.ru/ads/system/context.js" defer=""></script>
+        <meta name="viewport" content="width=1000"/>
+        <meta name="description" content="Подробный прогноз погоды для Новосибирска на сегодня, завтра, неделю, 10 дней, месяц на Яндекс.Погоде. Прогноз погоды в Новосибирске с точностью до района. ☂ Карта осадков онлайн и другие погодные карты. Температура воздуха и воды, давление и влажность, скорость ветра, магнитное поле и УФ-индекс. ☼ Время восхода и заката солнца. Информация о климате регионов. Прогноз погоды в мобильном приложении."/>
+        <meta name="keywords"/>
+        <meta property="og:title"/>
+        <meta property="og:description" content="Подробный прогноз погоды для Новосибирска на сегодня, завтра, неделю, 10 дней, месяц на Яндекс.Погоде. Прогноз погоды в Новосибирске с точностью до района. ☂ Карта осадков онлайн и другие погодные карты. Температура воздуха и воды, давление и влажность, скорость ветра, магнитное поле и УФ-индекс. ☼ Время восхода и заката солнца. Информация о климате регионов. Прогноз погоды в мобильном приложении."/>
+        <meta property="og:site_name" content="Яндекс.Погода"/>
+        <meta property="og:image" content="/pogoda/static/og_image.jpeg"/>
+        <meta property="og:image:type" content="image/png"/>
+        <link rel="shortcut icon" href="/pogoda/static/favicon.ico?v=3"/>
+        <meta name="application-name" content="Яндекс.Погода"/>
+        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">
+            try{!function(i,t){function n(){Ya.Rum.vsChanged=!0,document.removeEventListener("visibilitychange",n)}if(i.Ya=i.Ya||{},Ya.Rum)throw new Error("Rum: interface is already defined");var e=i.performance,s=e&&e.timing&&e.timing.navigationStart||Ya.startPageLoad||+new Date,a=i.requestAnimationFrame;Ya.Rum={enabled:!!e,vsStart:document.visibilityState,vsChanged:!1,_defTimes:[],_defRes:[],_deltaMarks:{},_markListeners:{},_settings:{},_vars:{},init:function(i,t){this._settings=i,this._vars=t},getTime:e&&e.now?function(){return e.now()}:Date.now?function(){return Date.now()-s}:function(){return new Date-s},time:function(i){this._deltaMarks[i]=[this.getTime()]},timeEnd:function(i,t){var n=this._deltaMarks,e=n[i];e&&0!==e.length&&e.push(this.getTime(),t)},sendTimeMark:function(i,n,e,s){n===t&&(n=this.getTime()),this._defTimes.push([i,n,s]),this.mark(i,n)},sendResTiming:function(i,t){this._defRes.push([i,t])},sendRaf:function(i){var t=this.getSetting("forcePaintTimeSending");if(a&&(t||!this.isVisibilityChanged())){var n=this,e="2616."+i;a(function(){!t&&n.isVisibilityChanged()||(n.getSetting("sendFirstRaf")&&n.sendTimeMark(e+".205"),a(function(){!t&&n.isVisibilityChanged()||n.sendTimeMark(e+".1928")}))})}},isVisibilityChanged:function(){return this.vsStart&&("visible"!==this.vsStart||this.vsChanged)},mark:e&&e.mark?function(i,t){e.mark(i+(t?": "+t:""))}:function(){},getSetting:function(i){var t=this._settings[i];return null===t?null:t||""},on:function(i,t){"function"==typeof t&&(this._markListeners[i]=this._markListeners[i]||[]).push(t)},sendTrafficData:function(){},finalizeLayoutShiftScore:function(){},finalizeLargestContentfulPaint:function(){}},document.addEventListener&&document.addEventListener("visibilitychange",n)}(window);Ya.Rum.observeDOMNode=window.IntersectionObserver?function(e,i,n){function t(){if(r||!o.isVisibilityChanged()){var s="string"==typeof i?document.querySelector(i):i;s?new IntersectionObserver(function(i,n){!r&&o.isVisibilityChanged()||(Ya.Rum.sendTimeMark(e),n.unobserve(s))},n).observe(s):setTimeout(t,100)}}var o=this,r=Ya.Rum.getSetting("forcePaintTimeSending");t()}:function(){};!function(){if(window.PerformanceLongTaskTiming){var e=300,n=function(n,r){return n=n.concat(r),n.length>e&&(n=n.slice(n.length-e)),n},r=Ya.Rum._tti={events:[],eventsAfterTTI:[],fired:!1,observer:new PerformanceObserver(function(e){var t=e.getEntries();r.events=n(r.events,t),r.fired&&(r.eventsAfterTTI=n(r.eventsAfterTTI,t))})};r.observer.observe({entryTypes:["longtask"]})}}();!function(){function e(){var e=Ya.Rum.getSetting("clck"),n=a.join("\r\n");if(a=[],t=null,e){var i=navigator.sendBeacon&&Ya.Rum.getSetting("beacon"),o=i&&navigator.sendBeacon(e,n);if(!o){var s=new XMLHttpRequest;s.open("POST",e),s.send(n)}}}var t,n=42,i=15,a=[];Ya.Rum.send=function(o,s,g,r,u,m,c){clearTimeout(t);var v=Ya.Rum.getSetting("slots"),l=Ya.Rum.getSetting("experiments"),R=["/reqid="+Ya.Rum.getSetting("reqid"),c?"/"+c.join("/"):"",s?"/path="+s:"",u?"/events="+u:"",v?"/slots="+v.join(";"):"",l?"/experiments="+l.join(";"):"",g?"/vars="+g:"","/cts="+(new Date).getTime(),"/*"];a.push(R.join("")),a.length<n?t=setTimeout(e,i):e()}}();!function(n){if(!n.Ya||!Ya.Rum)throw="" new="" Error=""("Rum: interface is not defined");var="" e=""Ya.Rum;e.getSetting="function(n){var" t="e._settings"[n=""];return="" null=""==t=""?null:t=""||""}}("undefined"!=typeof="" self=""?self:window="");!function=""(e="",r=""){function="" n=""(e="",r=""){for=""(var="" n="" in="" r="")r.hasOwnProperty=""(n="")&&(e[n]=r[n]);return e}function t(e){var r=[];for(var n in e)e.hasOwnProperty(n)&&(e[n]||0===e[n])&&r.push(n+"="+encodeURIComponent(e[n]).replace(/\*/g,"%2A"));return r.join(",")}function o(e){return"boolean"==typeof e&&(e=+e),"number"==typeof e?e+"":null}function a(){if(e.addEventListener)e.addEventListener("error",x),"Promise"in e&&r._errorSettings.unhandledRejection&&e.addEventListener("unhandledrejection",function(e){var r,n=e.reason,t={};n&&(n.stack&&n.message?r=n.message:(r=String(n),"[object Event]"===r?r="event.type: "+n.type:"[object Object]"===r&&(t.unhandledObject=n)),n.target&&n.target.src&&(t.src=n.target.src),x({message:"Unhandled rejection: "+r,stack:n.stack,additional:t}))});else{var n=e.onerror;e.onerror=function(e,r,t,o,a){x({error:a||new Error(e||"Empty error"),message:e,lineno:t,colno:o,filename:r}),n&&n.apply(this,arguments)}}}var i="690.2354",s="690.2361",l="690.2854",c="690.2609",u=-1,d=100,f=100,m=100,p=100,g=10,v=10,E=10,h={client:[i,u,p,0],uncaught:[s,d,g,0],external:[l,f,v,0],script:[c,m,E,0]},y={};r.ERROR_LEVEL={INFO:"info",DEBUG:"debug",WARN:"warn",ERROR:"error",FATAL:"fatal"},r._errorSettings={clck:"https://yandex.ru/clck/click",beacon:!0,project:"unknown",page:"",env:"",experiments:[],additional:{},platform:"",region:"",dc:"",level:"",version:"",yandexuid:"",referrer:"",preventError:!1,unhandledRejection:!1,uncaughtException:!0,debug:!1,limits:{},silent:{},filters:{}};var b=!1;r.initErrors=function(e){n(r._errorSettings,e),!b&&r._errorSettings.uncaughtException&&(a(),b=!0)},r.updateErrors=function(e){n(r._errorSettings,e)},r._handleError=function(t,o){var a=r._errorSettings;a.preventError&&t.preventDefault&&t.preventDefault();var i,s;if(o)i=t,s="client";else{i=r._normalizeError(t),s=i.type;var l=a.onError;"function"==typeof l&&l(i);var c=a.transform;"function"==typeof c&&(i=c(i))}var u=h[s][1];"number"==typeof a.limits[s]&&(u=a.limits[s]);var d=h[s][2];"number"==typeof a.silent[s]&&(d=a.silent[s]);var f=h[s][3];if(f<u||u=""==-1=""){i.path="h"[s=""][0=""];var="" m="";try{var="" p="n"({},a.additional="");m="JSON.stringify"(n=""(p="",i.additional=""))}catch=""(r=""){a.debug=""&&e.console&&console.error("[error-counter] json.stringify:",r)}var g=function(){y[i.message]=!1,r._sendError(i,{additional:m,silent:f<d||d=""==-1=""?"no":="""yes",isCustom:Boolean=""(o="")}),h=""[s=""][3=""]++}.bind=""(this="");if=""("undefined"==typeof="" a.throttleSend="")g=""();else{if=""(y=""[i.message=""])return;y=""[i.message=""]=!0="",setTimeout=""(g="",a.throttleSend="")}}},r._baseNormalizeError="function"(e=""){e="e"||{};var="" r="e.filename"||e.fileName=""||"",n="e.error"&&e.error.stack||e.stack||"",t=e.message||"";return{file:r,line:e.lineno||e.lineNumber,col:e.colno||e.colNumber,stack:n,message:t,additional:e.additional}},r._normalizeError=function(e){var n=r._baseNormalizeError(e),t="uncaught",o=r._isExternalError(n.file,n.message,n.stack),a="",i="";return o.hasExternal?(t="external",a=o.common,i=o.custom):/^Script error\.?$/.test(n.message)&&(t="script"),n.external=a,n.externalCustom=i,n.type=t,n},r._sendError=function(n,a){a=a||{};var i=r._errorSettings,s=i.experiments.length?i.experiments.join(";"):"",l={"-url":n.file,"-line":n.line,"-col":n.col,"-stack":n.stack,"-env":i.env,"-msg":n.message,"-external":n.external,"-externalCustom":n.externalCustom,"-project":i.project,"-service":n.service,"-page":n.page||i.page,"-platform":i.platform,"-level":n.level,"-experiments":s,"-version":i.version,"-region":i.region,"-dc":i.dc,"-yandexuid":i.yandexuid,"-referrer":i.referrer,"-source":n.source,"-sourceMethod":n.sourceMethod,"-type":a.isCustom?n.type:"","-block":n.block,"-method":n.method,"-additional":a.additional,"-adb":o(Ya.blocker)||o(i.blocker),"-cdn":e.YaStaticRegion,"-ua":navigator.userAgent,"-silent":a.silent,"-ts":+new Date};i.debug&&e.console&&console.error("[error-counter]",l),r.send(null,n.path,t(l),null,null,null,null)};var x=function(e){r._handleError(e,!1)}}("undefined"!=typeof self?self:window,Ya.Rum);!function(e){function r(r,n,t){var s=e._errorSettings.filters||{},a={url:(r||"")+"",message:(n||"")+"",stack:(t||"")+""},c=o(a,i),u=o(a,s);return{common:c,custom:u,hasExternal:!(!c&&!u)}}function n(e,r){if(e&&r){var n=[];for(var o in r)if(r.hasOwnProperty(o)){var i=r[o];"string"==typeof i&&(i=new RegExp(i)),i instanceof RegExp&&i.test(e)&&n.push(o)}return n.join("_")}}function o(e,r){var o,t=[];for(var s in i)i.hasOwnProperty(s)&&(o=n(e[s],r[s]),o&&t.push(s+"~"+o));return t.join(";")}var i={url:{0:/(miscellaneous|extension)_bindings/,1:/^chrome:/,2:/kaspersky-labs\.com\//,3:/^(?:moz|chrome)-extension:\/\//,4:/^file:/,5:/^resource:\/\//,6:/webnetc\.top/,7:/local\.adguard\.com/},message:{0:/__adgRemoveDirect/,1:/Content Security Policy/,2:/vid_mate_check/,3:/ucapi/,4:/Access is denied/i,5:/^Uncaught SecurityError/i,6:/__ybro/,7:/__show__deepen/,8:/ntp is not defined/,9:/Cannot set property 'install' of undefined/,10:/NS_ERROR/,11:/Error loading script/,12:/^TypeError: undefined is not a function$/,13:/__firefox__\.(?:favicons|metadata|reader|searchQueryForField|searchLoginField)/},stack:{0:/(?:moz|chrome)-extension:\/\//,1:/adguard.*\.user\.js/i}};e._isExternalError=r}(Ya.Rum);!function(){"use strict";!function(e){e.logError=function(r,o){r=r||{},"string"!=typeof o&&"undefined"!=typeof o||(o=new Error(o),o.justCreated=!0);var s=r.message||"",t=e._baseNormalizeError(o);t.message&&(s&&(s+="; "),s+=t.message),t.message=s||"Empty error";for(var a=["service","source","type","block","additional","level","page","method","sourceMethod"],n=0;n<a.length;n++){var="" i="a"[n=""];r=""[i=""]?t=""[i=""]=r=""[i=""]:o=""&&o[i]&&(t[i]=o[i])}e._handleError(t,!0)}}(Ya.Rum)}();(function(){Ya.Rum.init({beacon:!!navigator.sendBeacon,clck:"https://yandex.ru/clck/click",slots:["204303","466407","384799","258984","188861","186872","299079","299098"],reqid:'1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL',sendClientUa:true,sendBeforeBemInited:true,},{"region": "65","rum_id": "28.663.2942.629","-blocker": 0,"-project": "weather","-page": "index","-version": "11.98.101","-platform": "desktop"});Ya.Rum.observeDOMNode('2876','.fact');Ya.Rum.initErrors({"project":"weather","page":"index","env":"production","platform":"desktop","version":"11.98.101","region":65,"yandexuid":"1081749621454051536","blocker":false,"debug":false,"additional":{"rawEnv":"cloud","locale":"ru_RU"},"limits":{"client":10,"uncaught":100,"script":0,"external":10},"filters":{"message":{"0":"Uncaught TypeError: document.querySelectorAll\\(...\\)\\[Symbol.iterator\\] is not a function","1":"Uncaught ReferenceError: MutationObserver is not defined","2":"\"MutationObserver\" не определено","3":"Uncaught TypeError: Cannot assign to read only property"},"stack":{"0":"^$"}},"throttleSend":0});})()}catch(e){};var el = document.createElement("span");el.classList.add("check-static");document.addEventListener("DOMContentLoaded", function () {document.body.appendChild(el);var backgroundColor = getComputedStyle(el, null).backgroundColor;if (backgroundColor !== "rgb(255, 255, 255)") {Ya.Rum.logError({message: "Css bundle does not loaded",page: "index",level: Ya.Rum.ERROR_LEVEL.FATAL,additional: { backgroundColor: backgroundColor }})}}, false);
+        </script>
+        <link rel="alternate" href="https://yandex.ua/pogoda/?lang=ru&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="ru-ua"/>
+        <link rel="alternate" href="https://yandex.ua/pogoda/?lat=54.85194397&amp;lon=83.10189056" hrefLang="uk"/>
+        <link rel="alternate" href="https://yandex.by/pogoda/?lat=54.85194397&amp;lon=83.10189056" hrefLang="be"/>
+        <link rel="alternate" href="https://yandex.kz/pogoda/?lat=54.85194397&amp;lon=83.10189056" hrefLang="kz"/>
+        <link rel="alternate" href="https://yandex.uz/pogoda/?lat=54.85194397&amp;lon=83.10189056" hrefLang="uz"/>
+        <link rel="alternate" href="https://yandex.com.tr/hava/?lat=54.85194397&amp;lon=83.10189056" hrefLang="tr"/>
+        <link rel="alternate" href="https://meteum.ai/?lat=54.85194397&amp;lon=83.10189056" hrefLang="en"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=hu&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="hu"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=es&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="es"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=it&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="it"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=de&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="de"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=pt&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="pt"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=ro&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="ro"/>
+        <link rel="alternate" href="https://meteum.ai/?lang=fr&amp;lat=54.85194397&amp;lon=83.10189056" hrefLang="fr"/>
+        <link rel="alternate" href="https://yandex.ru/pogoda/?lat=54.85194397&amp;lon=83.10189056" hrefLang="x-default"/>
+        <link rel="canonical" href="https://yandex.ru/pogoda/novosibirsk"/>
+    </head>
+    <body class="b-page b-page_type_index b-page_align_center i-metrika i-yp_szm-cookie adblock-detector b-page__body i-ua i-global i-bem" data-bem='{"b-page":{},"i-yp_szm-cookie":{"url":"https://yandex.ru/portal/set/my/"},"adblock-detector":{"param":"involved"},"i-ua":{},"i-global":{"lang":"ru","tld":"ru","content-region":"ru","click-host":"//clck.yandex.ru","passport-host":"https://passport.yandex.ru","pass-host":"https://pass.yandex.ru","social-host":"https://social.yandex.ru","export-host":"https://export.yandex.ru","id":"weather","host":"https://yandex.ru","kubr":true,"user-region":"ru","secret-key":"ya81f176a9a69d6c675964ba336299488","service-root":"/pogoda","retpath":"https://yandex.ru/pogoda/?lat=54.85194397&amp;lon=83.10189056","nonce":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL","yandexuid":"1081749621454051536","rid":65,"urid":65,"metrikaId":115080,"stHost":"//yastatic.net/s3/weather-frontend/11.98.101","map-version":"2.1.78","reqId":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL","rumAdvPosNames":{"404":3195,"touch":584,"index":629,"top":77,"side":507,"bottom":668,"wide":3521,"narrow":3522,"month":797,"extra":1800,"compare":2203,"details":1362,"map":367,"nowcast":2943,"high":3523,"middle":2028,"small":150,"temperature":285,"wind":3067,"pressure":3068,"pollen":3026,"additional":3524,"up":600,"down":601,"below":3757,"event":32,"sticky":1578,"first":205,"second":3951,"third":3952},"unit":{"temp":"C","pressure":"mm","wind":"mps"},"laasTimestamp":1646496726,"is-region-user-choice":false,"gdpr":{"levels":{"tech":[0,1,2,3],"analytics":[0,2],"other":[0,3]}},"isMeteumAi":false,"isMTLang":false,"mtLangsPrepositions":{"fr":"de","de":"in","es":"en","la":"en","br":"en","hu":"","it":"a","pt":"em","ro":"în"},"extParams":{}}}'>
+        <style nonce="">.yandex-header{position:relative;z-index:20;padding:0 20px;font-family:'YS Text',arial,sans-serif;background:#fff}.yandex-header__content{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;max-width:1400px;height:60px;margin:auto;background:#fff}.yandex-header .favorites-icon,.yandex-header .notifier,.yandex-header .yaplus,.yandex-header__extra,.yandex-header__nav{-webkit-transition:opacity .2s ease;transition:opacity .2s ease}.yandex-header_suggest-opened .favorites-icon,.yandex-header_suggest-opened .notifier,.yandex-header_suggest-opened .yandex-header__extra,.yandex-header_suggest-opened .yandex-header__nav,.yandex-header_suggest-opened .yaplus{opacity:0}.yandex-header__content{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:0 24px}.yandex-header .link{text-decoration:none;outline:0;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer}.yandex-header .utilityfocus .link:focus{outline:2px solid #fc0}.yandex-header .link[aria-disabled=true]{pointer-events:none;color:#ddd;cursor:default}.yandex-header .link__icon{-webkit-transition:opacity .15s ease-out;transition:opacity .15s ease-out}.yandex-header .link[aria-disabled=true]:hover{color:#ddd}.yandex-header .login-button{position:relative;display:inline-block;vertical-align:top;white-space:nowrap;text-decoration:none}.yandex-header .login-button__text{white-space:nowrap}.yandex-header .link__inner{color:inherit}.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link,.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link:visited{color:#222426}.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link:active,.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link:focus,.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link:hover,.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link_active_yes[class],.yandex-header_theme_default .yandex-header__nav .yandex-header__nav-link_active_yes[class]:visited{color:#d00}.yandex-header_theme_default .yandex-header__input{background-color:rgba(147,156,176,.15)}.yandex-header_theme_default .yandex-header__input::-webkit-input-placeholder{color:#939cb0}.yandex-header_theme_default .yandex-header__input:-moz-placeholder,.yandex-header_theme_default .yandex-header__input::-moz-placeholder{color:#939cb0}.yandex-header_theme_default .yandex-header__input:focus{border:2px solid #fdde55;background-color:#fff}.yandex-header_theme_default .yandex-header__search-icon svg{fill:#939cb0}.yandex-header_theme_default .yandex-header__search-icon:focus svg,.yandex-header_theme_default .yandex-header__search-icon:hover svg{fill:#4b4c5a}.yandex-header_theme_default .yandex-header__extra .yandex-header__extra-link:hover{color:#222426}.yandex-header__logo{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:29px;white-space:nowrap}.yandex-header__logo-base,.yandex-header__logo-service{display:inline-block;vertical-align:top;outline:0}.yandex-header__logo-base{width:26px;height:26px;background-repeat:no-repeat;background-position:center center;background-size:contain}.yandex-header__logo-base,.yandex-header__logo-base_lang_be,.yandex-header__logo-base_lang_kk,.yandex-header__logo-base_lang_ru,.yandex-header__logo-base_lang_uk{background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2xwAb33a.svg)}.yandex-header__logo-base_lang_en,.yandex-header__logo-base_lang_tr,.yandex-header__logo-base_lang_uz{background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3mZ6Xs8W.svg)}@media screen and (max-width:1279px){.yandex-header_collapse .yandex-header__logo{margin-right:17px}}@media screen and (max-width:1024px){.yandex-header__logo[class]{margin-right:20px}}.yandex-header__logo-service{height:26px;background-repeat:no-repeat;background-position:center center;background-size:contain}.yandex-header__logo-service,.yandex-header__logo-service_lang_ru,.yandex-header__logo-service_lang_uk{width:105px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3Tem6c4g.svg)}.yandex-header__logo-service_lang_en{width:114px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/4uFLV1BZ.svg)}.yandex-header__logo-service_lang_uz{width:117px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2JDVBZv2.svg)}.yandex-header__logo-service_lang_kk{width:130px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2yay9C87.svg)}.yandex-header__logo-service_lang_tr{width:168px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2cDCh4CA.svg)}.yandex-header__logo-service_lang_be{width:127px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/23Nw76zf.svg)}.yandex-header__nav{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:1279px){.yandex-header__nav .yandex-header__nav-link:not([data-s-text='']) span{display:none}.yandex-header__nav .yandex-header__nav-link::before{display:block}}@media screen and (max-width:1023px){.yandex-header_wrap-nav{padding-bottom:34px}.yandex-header_wrap-nav .yandex-header__nav{position:absolute;top:52px;left:20px}}.yandex-header__nav-link{display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:8px 2px;font-size:16px;font-weight:500;line-height:21px;white-space:nowrap;border:2px solid transparent;-webkit-transition:.1s;transition:.1s}.yandex-header__nav-link,.yandex-header__nav-link:visited{text-decoration:none;color:#939cb0;fill:#939cb0}.yandex-header__nav-link:active,.yandex-header__nav-link:hover{color:#222426;outline:0;fill:#222426}.yandex-header__nav-link+.yandex-header__nav-link{margin-left:12px}.yandex-header__nav-link:focus{color:#222426;outline:0;fill:#222426}.yandex-header__nav-link::before{display:none;content:attr(data-s-text)}@media screen and (max-width:1279px){.yandex-header__nav-link+.yandex-header__nav-link{margin-left:8px}}.yandex-header__search{width:100%;min-width:220px;max-width:470px;margin-left:29px}.yandex-header__search form{margin:0}.yandex-header__input{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;width:100%;height:36px;padding-right:64px;padding-left:12px;font-size:16px;color:#222426;border:2px solid transparent;border-radius:6px;outline:0}.yandex-header__search-icon{position:absolute;top:0;bottom:0;display:inline-block;width:36px;height:36px;margin:auto;padding:0;cursor:pointer;border:0;outline:0;background-color:transparent}.yandex-header__search-icon svg{position:absolute;top:0;right:0;bottom:0;left:0;margin:auto}.yandex-header__submit svg{width:20px;height:20px}.yandex-header__submit{right:4px;display:inline-block}.yandex-header__clear{right:40px;display:none}.yandex-header__search_show-clear_yes .yandex-header__clear{display:inline-block}@media screen and (max-width:1279px){.yandex-header__search{margin-left:20px}}@media screen and (max-width:1024px){.yandex-header__search{margin-left:20px}}@media (min-width:1024px){.yandex-header__nav-icon{display:inline-block;margin-right:8px;vertical-align:baseline;background-repeat:no-repeat;background-position:center center;background-size:contain}.yandex-header__nav-icon_type_all{display:inline-block!important;width:20px;height:20px}.yandex-header__nav-icon_type_all svg{padding:2px 0 0 2px}.yandex-header__nav-icon_type_sport{width:21px;height:19px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/291umYDY.svg)}.yandex-header__nav-icon_type_weather{width:20px;height:20px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3RD2tCrH.svg)}.yandex-header__nav-icon_type_news{width:20px;height:20px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3Cg1ajVM.svg)}}.yandex-header__search{position:relative}.yandex-header__extra,.yandex-header__extra-link{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}.yandex-header__extra-link{-webkit-transition:.1s;transition:.1s}.yandex-header__extra{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;padding-left:24px}.yandex-header__logo+.yandex-header__extra{margin-left:3px}.yandex-header__extra .yandex-header__nav-link,.yandex-header__extra .yandex-header__nav-link:visited{text-decoration:none;color:#939cb0}@media screen and (max-width:1279px){.yandex-header_collapse-extra .yandex-header__extra-link:not(.yandex-header__extra-link_type_all),.yandex-header_collapse-extra .yandex-header__extra-link_type_all .yandex-header__nav-text{display:none}.yandex-header_collapse-extra .yandex-header__extra-link_type_all::after{content:attr(data-s-text)}}@media screen and (max-width:1024px){.yandex-header__extra{padding-left:12px}}@media (min-width:1024px){.yandex-header__nav-icon_type_all{width:20px;height:20px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/4dUw9Din.svg)}}.yandex-header__actions{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-webkit-justify-content:flex-end;-ms-flex-pack:end;justify-content:flex-end;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;margin-left:auto;padding-left:24px;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}.yandex-header__actions .user-account .user-account__pic,.yandex-header__actions .user-account .user-pic__image{width:42px;height:42px}.yandex-header__actions .legouser,.yandex-header__actions .signup-link,.yandex-header__actions .user2{margin-left:12px}.yandex-header__actions .legouser__current-account .user-account__name,.yandex-header__actions .user2__current-account .user-account__name{display:none}.yandex-header .login-button{height:36px;padding:0 16px;line-height:36px}.yandex-header .login-button_pic_yes svg{margin-top:8px;vertical-align:top}.yandex-header .login-button__text{margin-left:6px}.yandex-header .signup-link{position:relative;display:inline-block;height:40px;margin-right:16px;padding:0;font:16px/40px 'YS Text',arial,sans-serif;vertical-align:top;white-space:nowrap;text-decoration:none;color:#222426}.yandex-header .signup-link:focus{color:#d00;outline:0}.yandex-header__services-icon{width:40px;height:44px;opacity:.3;background:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2HTKebBu.svg) center 9px no-repeat}.yandex-header__services-icon:hover{opacity:1}.yandex-header__nav-icon_type_all{display:none}</style>
+        <header class="yandex-header yandex-header_collapse yandex-header_auth_no header yandex-header_theme_default">
+            <div class="yandex-header__content">
+                <div class="yandex-header__logo">
+                    <a class="yandex-header__logo-base yandex-header__logo-base_lang_ru" href="//yandex.ru" tabindex="-1"></a>
+                    <a class="yandex-header__logo-service yandex-header__logo-service_lang_ru" href="/pogoda?via=hl" tabindex="-1"></a>
+                </div>
+                <div class="yandex-header__nav yandex-header__item">
+                    <a class="yandex-header__nav-link yandex-header__nav-link_active_yes " rel="noopener" href="/pogoda/?lat=54.85194397&amp;lon=83.10189056&amp;via=hnav" data-s-text="На 10 дней" data-tab-id="">
+                        <span>Прогноз на 10 дней</span>
+                    </a>
+                    <a class="yandex-header__nav-link yandex-header__nav-link_active_no " rel="noopener" href="/pogoda/month/?lat=54.85194397&amp;lon=83.10189056&amp;via=hnav" data-s-text="На месяц" data-tab-id="">
+                        <span>Прогноз на месяц</span>
+                    </a>
+                    <a class="yandex-header__nav-link yandex-header__nav-link_active_no " rel="noopener" href="/pogoda/maps/nowcast?lat=54.85194397&amp;lon=83.10189056&amp;via=hnav" data-s-text="На карте" data-tab-id="">
+                        <span>Карта осадков</span>
+                    </a>
+                </div>
+                <form class="mini-suggest-form mini-suggest mini-suggest_request_jsonp mini-suggest_form_yes mini-suggest_separate-popup_yes mini-suggest_a11y_yes i-bem" data-bem='{"mini-suggest-form":{"url":"//suggest-maps.yandex.ru/suggest-geo?v=8&amp;lang=ru_RU&amp;search_type=weather_v2&amp;n=10&amp;ll=82.92043%2C55.030199&amp;spn=0.5%2C0.5&amp;client_id=weather_v2","urlToSearch":"/pogoda/search?lat=54.85194397&amp;lon=83.10189056&amp;via=srp"}}'>
+                    <div class="mini-suggest__input-wrapper">
+                        <input class="mini-suggest-form__input mini-suggest__input" placeholder="Город или район"/>
+                        <div class="mini-suggest__input-clear"></div>
+                    </div>
+                </form>
+                <div class="yandex-header__actions">
+                    <style nonce="">.yaplus{position:relative;z-index:0;display:inline-block;clear:both;white-space:nowrap}.yaplus__badge-main{display:inline-block;vertical-align:top;background-repeat:no-repeat;width:55px;height:20px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2FZD95oo.svg);background-size:contain}.yaplus:hover .yaplus__badge-main{opacity:.8}@supports ((-webkit-filter:brightness(90%)) or (filter:brightness(90%))){.yaplus:hover .yaplus__badge-main{opacity:1;-webkit-filter:brightness(90%);filter:brightness(90%)}}.yaplus_hidden_yes{display:none}.yaplus .yaplus__link .link__inner{color:#333}.yaplus{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;height:40px;padding-top:8px}.yaplus:not(.yaplus_old-icon){width:46px}.yaplus:not(.yaplus_old-icon) .yaplus__badge-main{width:100%;height:24px;background:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3KEczNxk.svg) center center no-repeat}.yaplus:not(.yaplus_text) .link__inner{display:none}.yaplus .serp-header .yaplus{margin-right:16px;padding-top:11px;vertical-align:top}.yaplus .serp-header .yaplus_available_yes{padding-top:10px}.yaplus .serp-header .yaplus_available_yes~.notifier{margin-right:21px}.yaplus .serp-header .yaplus{font-family:Arial,Helvetica,sans-serif}.yaplus .link{text-decoration:none;outline:0;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer}.yaplus .utilityfocus .link:focus{outline:2px solid #fc0}.yaplus .link[aria-disabled=true]{pointer-events:none;color:#ddd;cursor:default}.yaplus .link__icon{-webkit-transition:opacity .15s ease-out;transition:opacity .15s ease-out}.yaplus .link[aria-disabled=true]:hover{color:#ddd}.yaplus_available_yes .yaplus__badge-main{width:22px;height:22px;background-image:url(//yastatic.net/s3/frontend/yandex-lego/serp-header/_/2FZD95oo.svg);background-size:contain}.yaplus_available_yes .yaplus__link.link{height:22px;line-height:21px}.yaplus .link_theme_normal:hover,.yaplus_available_yes:hover .yaplus__link .link__inner{color:#c00}.yaplus__link.link{display:block;overflow:hidden;height:20px;text-align:right;line-height:20px}.yaplus__link .link__inner{padding-right:8px;vertical-align:top;white-space:nowrap;font-family:Arial;font-size:15px;color:#333}@media screen and (max-width:930px){.yaplus__link .link__inner{display:none}}.yaplus .link__inner{color:inherit}.yaplus .link_theme_normal{color:#04b}</style>
+                    <div class="yaplus yaplus_available_yes i-bem" data-bem='{"yaplus":{}}'>
+                        <a class="link link_theme_normal yaplus__link i-bem" data-bem='{"link":{}}' rel="noopener" target="_blank" tabindex="0" href="https://plus.yandex.ru?from=header_weather&utm_campaign=plus&utm_medium=header_weather&utm_source=yandex&source=header_weather">
+                            <span class="link__inner">Будьте в Плюсе</span>
+                            <span class="yaplus__badge-main"></span>
+                        </a>
+                    </div>
+                    <style nonce="">.signup-link{position:relative;display:inline-block;height:40px;margin-right:16px;padding:0;font:16px/40px 'YS Text',arial,sans-serif;vertical-align:top;white-space:nowrap;text-decoration:none;color:#222426}.signup-link:focus{color:#d00;outline:0}</style>
+                    <a class="signup-link" href="https://passport.yandex.ru/registration?retpath=https%3A%2F%2Fyandex.ru%2Fpogoda%2F%3Flat%3D54.85194397%26lon%3D83.10189056&amp;origin=weather_header">
+                        <span class="signup-link__text">Регистрация</span>
+                    </a>
+                    <style nonce="">.login-button{position:relative;display:inline-block;vertical-align:top;text-decoration:none}.login-button,.login-button__text{white-space:nowrap}.login-button_theme_action{padding:0 13px;font:16px/32px 'YS Text',arial,sans-serif;color:#222426;border-radius:6px;background:#ffdc60}.login-button_theme_action:active{background:#f7c408}.login-button_theme_action:focus{outline:0;-webkit-box-shadow:inset 0 0 0 2px rgba(147,156,176,.3);box-shadow:inset 0 0 0 2px rgba(147,156,176,.3)}.login-button{height:36px;padding:0 16px;line-height:36px}.login-button_pic_yes svg{margin-top:8px;vertical-align:top}.login-button__text{margin-left:6px}</style>
+                    <a class="login-button login-button_theme_action login-button_pic_yes" href="https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2Fpogoda%2F%3Flat%3D54.85194397%26lon%3D83.10189056&amp;origin=weather_header" target="_parent">
+                        <svg width="16" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.75 5.219c0 2.663-1.608 4.948-3.75 4.948-2.144 0-3.75-2.285-3.75-4.948C4.25 2.556 5.631 1 8 1c2.366 0 3.75 1.556 3.75 4.219zm-10.332 10.9c.32.381 1.702 1.548 6.581 1.548 4.88 0 6.26-1.167 6.582-1.548a.346.346 0 0 0 .076-.264c-.075-.735-.737-4.022-6.658-4.022-5.92 0-6.583 3.287-6.657 4.022-.01.097.013.19.076.264z" fill="#000"/>
+                        </svg>
+                        <span class="login-button__text">Войти</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="b-page__container" role="main">
+            <div></div>
+            <div class="content content_compressed content_header-only">
+                <div class="content__row-inline">
+                    <nav class="breadcrumbs" role="navigation">
+                        <ol class="breadcrumbs__list" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+                            <li class="breadcrumbs__item breadcrumbs__item_clickable" itemscope="" itemprop="ItemListElement" itemtype="http://schema.org/ListItem">
+                                <a class="link link_theme_normal i-bem" tabindex="0" href="https://yandex.ru/pogoda/region/225?lat=54.85194397&amp;lon=83.10189056&amp;via=brd" itemprop="item" data-bem='{"link":{}}'>
+                                    <span class="breadcrumbs__title" itemprop="name">Россия</span>
+                                    <meta itemprop="position" content="1"/>
+                                </a>
+                            </li>
+                            <li class="breadcrumbs__item breadcrumbs__item_clickable" itemscope="" itemprop="ItemListElement" itemtype="http://schema.org/ListItem">
+                                <a class="link link_theme_normal i-bem" tabindex="0" href="https://yandex.ru/pogoda/region/11316?lat=54.85194397&amp;lon=83.10189056&amp;via=brd" itemprop="item" data-bem='{"link":{}}'>
+                                    <span class="breadcrumbs__title" itemprop="name">Новосибирская область</span>
+                                    <meta itemprop="position" content="2"/>
+                                </a>
+                            </li>
+                            <li class="breadcrumbs__item">
+                                <span class="breadcrumbs__title" itemprop="name">Новосибирск</span>
+                                <meta itemprop="position"/>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="content content_compressed i-bem" data-bem='{"content":{}}'>
+                <div class="alerts alerts_cols_2">
+                    <a class="link link_theme_normal alert alert_level_blue alert_index_0 card anchor i-bem" target="_blank" tabindex="0" href="https://yandex.ru/pogoda/65?lat=54.85194397&amp;lon=83.10189056&amp;via=malert#d_6" rel="noopener" data-bem='{"link":{},"anchor":{}}'>
+                        <div class="title-icon title-icon_without-content">
+                            <div class="title-icon__icon" aria-hidden="true">
+                                <img class="icon icon_thumb_ovc_ra_sn icon_color_circle icon_size_32" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/circle/ovc_ra_sn.svg"/>
+                            </div>
+                            <div class="title-icon__text">Завтра: сильный снег с дождём; +3°, на 7° теплее, чем сегодня; ветер 7⁠–⁠10 м⁠/⁠с</div>
+                        </div>
+                    </a>
+                    <a class="link link_theme_normal alert alert_level_blue alert_index_1 card anchor i-bem" target="_blank" tabindex="0" href="https://yandex.ru/pogoda/65?lat=54.85194397&amp;lon=83.10189056&amp;via=malert#d_7" rel="noopener" data-bem='{"link":{},"anchor":{}}'>
+                        <div class="title-icon title-icon_without-content">
+                            <div class="title-icon__icon" aria-hidden="true">
+                                <img class="icon icon_thumb_temp icon_color_circle icon_size_32" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/circle/temp.svg"/>
+                            </div>
+                            <div class="title-icon__text">На следующей неделе: перепады температуры от −13° до +2°; снег; ветер 6⁠–⁠9 м⁠/⁠с, порывы до 15 м⁠/⁠с</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="content__top">
+                    <div class="fact card card_size_big" role="region" aria-labelledby="main_title">
+                        <div class="fact__theme fact__theme_night-cloudy"></div>
+                        <style>
+                            .fact__theme_night-cloudy:before{background-image:url('data:image/jpeg;base64,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')}
+                        </style>
+                        <div class="fact__title">
+                            <div class="header-title header-title_in-fact header-title_with-district">
+                                <h1 class="title title_level_1 header-title__title" id="main_title">Микрорайон Академгородок, Новосибирск</h1>
+                                <div class="header-title__buttons header-title__buttons_theme_transparent">
+                                    <button class="button button_theme_pseudo button_size_xs my-location header-title__geolocation i-bem" type="button" autocomplete="off" aria-label="Рассчитать прогноз для моих координат" data-bem='{"button":{},"my-location":{"manualLink":"/support/common/browsers-settings/geolocation.html","defaultText":"Рядом со мной","progressText":"Подождите.."}}'>
+                                        <span class="button__text">
+                                            <span class="inline-icon inline-icon_id_geolocation my-location__icon" aria-hidden="true">
+                                                <svg viewBox="0 0 16 16">
+                                                    <path fill="currentColor" d="M6.3 9.7l-3.5-1a1 1 0 01-.2-1.9l9.7-4.2a.8.8 0 011.1 1l-4.2 9.8a1 1 0 01-2-.2l-.9-3.5z"/>
+                                                </svg>
+                                            </span>
+                                            <div class="spin2 spin2_tone_dark spin2_size_xxs spin2_view_default my-location__spin"></div>
+                                            <div class="my-location__text">Рядом со мной</div>
+                                            <div class="popup2 popup2_target_anchor popup2_hiding_yes popup2_autoclosable_no popup2_theme_normal popup2_view_classic tooltip tooltip_size_m tooltip_view_classic tooltip_tone_default tooltip_theme_promo tooltip_info_geo-error my-location__tooltip i-bem" data-bem='{"popup2":{"secondaryOffset":-30,"tailOffset":30,"directions":["bottom-left"]}}'>
+                                                <div class="tooltip__backdrop">
+                                                    <div class="popup2__tail"></div>
+                                                </div>
+                                                <div class="tooltip__content"></div>
+                                            </div>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="fact__time-yesterday-wrap">
+                                <time class="time fact__time" datetime="2022-03-05 23:12+0700">Сейчас 23:12. </time>
+                                <div class="term term_orient_h fact__yesterday">
+                                    <div class="term__label">Вчера в это время</div>
+                                    <div class="term__value">
+                                        <div class="temp" role="text">
+                                            <span class="temp__value temp__value_with-unit">−6</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fact__spacer fact__spacer_size_l"></div>
+                        <div class="fact__temp-wrap">
+                            <a class="link fact__basic fact__basic_size_wide day-anchor i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=mf#5" data-bem='{"link":{},"day-anchor":{"anchor":5}}'>
+                                <div class="temp fact__temp fact__temp_size_s" role="text">
+                                    <span class="temp__pre-a11y a11y-hidden">Текущая температура</span>
+                                    <span class="temp__value temp__value_with-unit">−5</span>
+                                </div>
+                                <img class="icon icon_color_light icon_size_48 icon_thumb_ovc fact__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/light/ovc.svg"/>
+                                <div class="link__feelings fact__feelings">
+                                    <div class="link__condition day-anchor i-bem" data-bem='{"day-anchor":{"anchor":5}}'>Пасмурно</div>
+                                    <div class="term term_orient_h fact__feels-like">
+                                        <div class="term__label">Ощущается как</div>
+                                        <div class="term__value">
+                                            <div class="temp" role="text">
+                                                <span class="temp__value temp__value_with-unit">−9</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="fact__spacer fact__spacer_size_s"></div>
+                        <div class="fact__props">
+                            <div class="term term_orient_v fact__wind-speed">
+                                <div class="term__label"></div>
+                                <div class="term__value" aria-label="Ветер: 1 Метров в секунду, юго-восточный" role="text">
+                                    <i class="icon icon_wind-airflow-white term__fact-icon" aria-hidden="true"></i>
+                                    <span class="wind-speed">1,0</span>
+                                    <span class="fact__unit">
+                                        м/с, <abbr class=" icon-abbr" title="Ветер: юго-восточный" aria-label="Ветер: юго-восточный" role="text">ЮВ</abbr><i class="icon icon_size_12 icon_wind_se icon_wind" aria-hidden="true" data-width="12"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="term term_orient_v fact__humidity">
+                                <div class="term__label"></div>
+                                <div class="term__value" aria-label="Влажность: 85%" role="text">
+                                    <i class="icon icon_humidity-white term__fact-icon" aria-hidden="true"></i>85%
+                                </div>
+                            </div>
+                            <div class="term term_orient_v fact__pressure">
+                                <div class="term__label"></div>
+                                <div class="term__value" aria-label="Давление: 739 Миллиметров ртутного столба" role="text">
+                                    <i class="icon icon_pressure-white term__fact-icon" aria-hidden="true"></i>739 <span class="fact__unit">мм рт. ст.</span>
+                                </div>
+                            </div>
+                            <div class="term term_orient_v fact__water">
+                                <div class="term__label"></div>
+                                <div class="term__value" aria-label="Температура воды: 0°" role="text">
+                                    <i class="icon icon_temp-water-white term__fact-icon" aria-hidden="true"></i>
+                                    <div class="temp fact__water-temp" role="text">
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fact__spacer fact__spacer_size_s fact__spacer_with-border-bottom"></div>
+                        <div class="fact__spacer fact__spacer_size_l"></div>
+                        <div class="fact__hourly fact__hourly_nav-visible_next i-bem" data-bem='{"fact__hourly":{"a11yNextSlideText":"Пролистать вперед","a11yPrevSlideText":"Пролистать назад"}}'>
+                            <div class="swiper-container fact__hourly-swiper">
+                                <h2 class="title title_level_2 a11y-hidden">Почасовой прогноз</h2>
+                                <div class="fact__hourly-nav fact__hourly-nav_type_prev fact__hourly-nav_light swiper-button-disabled fact__hourly-nav-action fact__hourly-nav-action_type_prev"></div>
+                                <ul class="swiper-wrapper" aria-label="Почасовой прогноз">
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 23 часа пасмурно, −5°" role="text">
+                                            <div class="fact__hour-label">23:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−5°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour-separator" aria-hidden="true">
+                                        <div class="fact__hour-separator-border"></div>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 0 часов пасмурно, −5°" role="text">
+                                            <div class="fact__hour-label">вс, 0:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−5°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 1 час пасмурно, −5°" role="text">
+                                            <div class="fact__hour-label">1:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−5°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 2 часа пасмурно, −5°" role="text">
+                                            <div class="fact__hour-label">2:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−5°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 3 часа пасмурно, −4°" role="text">
+                                            <div class="fact__hour-label">3:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−4°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 4 часа пасмурно, −4°" role="text">
+                                            <div class="fact__hour-label">4:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−4°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 5 часов пасмурно, −3°" role="text">
+                                            <div class="fact__hour-label">5:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 6 часов пасмурно, −3°" role="text">
+                                            <div class="fact__hour-label">6:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">−3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 7 часов дождь со снегом, −1°" role="text">
+                                            <div class="fact__hour-label">7:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">−1°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 8 часов дождь со снегом, −1°" role="text">
+                                            <div class="fact__hour-label">8:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">−1°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="Восход в 8:06" role="text">
+                                            <div class="fact__hour-label">8:06</div>
+                                            <img class="icon icon_color_flat icon_thumb_sunrise fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/fct_sn_rs.svg"/>
+                                            <div class="fact__hour-temp">Восход</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 9 часов дождь со снегом, −1°" role="text">
+                                            <div class="fact__hour-label">9:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">−1°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 10 часов дождь со снегом, 0°" role="text">
+                                            <div class="fact__hour-label">10:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">0°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 11 часов дождь со снегом, +1°" role="text">
+                                            <div class="fact__hour-label">11:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">+1°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 12 часов дождь со снегом, +1°" role="text">
+                                            <div class="fact__hour-label">12:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-ra-sn fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_ra_sn.svg"/>
+                                            <div class="fact__hour-temp">+1°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 13 часов пасмурно, +2°" role="text">
+                                            <div class="fact__hour-label">13:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+2°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 14 часов пасмурно, +2°" role="text">
+                                            <div class="fact__hour-label">14:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+2°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 15 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">15:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 16 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">16:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 17 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">17:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 18 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">18:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 19 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">19:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="Закат в 19:11" role="text">
+                                            <div class="fact__hour-label">19:11</div>
+                                            <img class="icon icon_color_flat icon_thumb_sunset fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/fct_sn_dwn.svg"/>
+                                            <div class="fact__hour-temp">Закат</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 20 часов пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">20:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 21 час пасмурно, +3°" role="text">
+                                            <div class="fact__hour-label">21:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 22 часа небольшой дождь, +3°" role="text">
+                                            <div class="fact__hour-label">22:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-m-ra fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_-ra.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                    <li class="fact__hour swiper-slide">
+                                        <span class="fact__hour-elem" aria-label="В 23 часа небольшой дождь, +3°" role="text">
+                                            <div class="fact__hour-label">23:00</div>
+                                            <img class="icon icon_color_flat icon_thumb_ovc-m-ra fact__hour-icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/flat/ovc_-ra.svg"/>
+                                            <div class="fact__hour-temp">+3°</div>
+                                        </span>
+                                    </li>
+                                </ul>
+                                <div class="fact__hourly-nav fact__hourly-nav_type_next fact__hourly-nav-action fact__hourly-nav-action_type_next"></div>
+                            </div>
+                        </div>
+                        <div class="fact__spacer fact__spacer_size_l"></div>
+                    </div>
+                    <div class="maps-widget-nowcast card content__brief" role="region" aria-labelledby="maps_widget_nowcast_title">
+                        <h2 class="title title_level_2 a11y-hidden" id="maps_widget_nowcast_title">Погода на карте</h2>
+                        <a class="link maps-widget-nowcast__map-link i-bem" tabindex="-1" href="/pogoda/maps/nowcast?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapwb" aria-label="На карте" data-bem='{"link":{}}'>
+                            <img class="image maps-widget-nowcast__image maps-widget-nowcast__image_type_static-map" src="https://static-maps.yandex.ru/1.x/?l=map&amp;ll=83.10189055999997,54.21304192269025&amp;api_key=94f24b3f-273b-4608-a203-995a461adfb8&amp;z=6&amp;size=1100,600&amp;scale=2&amp;lang=ru_RU&amp;style=tags.any:landscape%7Ctags.none:land%7Cstylers[0-7].visibility:off&amp;signature=_bWGTtusDy8V6dPEuHDMJ74155RXt1RP-yN7KM3nulo=" alt="" style="height: 300px; width: 550px" aria-hidden="true"/>
+                            <div class="instant-map-layer maps-widget-nowcast__tiled-nowcast-layer maps-widget-nowcast__image maps-widget-nowcast__image_type_nowcast">
+                                <div class="instant-map-layer__layer" aria-hidden="true" style="width: 550px;height: 300px;margin-left: -275px;margin-top: -150px;background-position: -179px -244px,-179px 12px,-179px 268px,-179px 524px,77px -244px,77px 12px,77px 268px,77px 524px,333px -244px,333px 12px,333px 268px,333px 524px,589px -244px,589px 12px,589px 268px,589px 524px;background-image: url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=45&amp;y=19&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=45&amp;y=20&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=45&amp;y=21&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=45&amp;y=22&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=46&amp;y=19&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=46&amp;y=20&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=46&amp;y=21&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=46&amp;y=22&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=47&amp;y=19&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=47&amp;y=20&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=47&amp;y=21&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=47&amp;y=22&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=48&amp;y=19&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=48&amp;y=20&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=48&amp;y=21&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459),url(https://api.weather.yandex.ru/frontend/nowcast/tile?x=48&amp;y=22&amp;z=6&amp;scale=2&amp;for_date=1646496600&amp;nowcast_gen_time=1646496459)"></div>
+                            </div>
+                        </a>
+                        <div class="maps-widget-fact maps-widget-nowcast__inner">
+                            <a class="link maps-widget-fact__content i-bem" tabindex="0" href="/pogoda/maps/nowcast?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" data-bem='{"link":{}}'>
+                                <div class="maps-widget-fact__image maps-widget-fact__icon-wrapper">
+                                    <img class="icon icon_size_32 icon_thumb_ovc icon_color_light" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/light/ovc.svg"/>
+                                </div>
+                                <p class="maps-widget-fact__title">В ближайшие 2 часа осадков не ожидается</p>
+                                <div class="maps-widget-fact__link">Показать на карте</div>
+                            </a>
+                            <ul class="maps-widget-fact__buttons-list maps-widget-fact__buttons-list_elems-count_5">
+                                <li class="maps-widget-fact__button">
+                                    <a class="link maps-widget-fact__button-link i-bem" tabindex="0" href="/pogoda/maps/nowcast?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" aria-label="Перейти на карту осадков" data-bem='{"link":{}}'>
+                                        <i class="maps-widget-fact__tab-icon tab-icon tab-icon_color_black tab-icon_nowcast" aria-hidden="true"></i>
+                                        <div class="maps-widget-fact__button-text">осадки</div>
+                                    </a>
+                                </li>
+                                <li class="maps-widget-fact__button">
+                                    <a class="link maps-widget-fact__button-link i-bem" tabindex="0" href="/pogoda/maps/snow?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" aria-label="Перейти на карту глубины снега" data-bem='{"link":{}}'>
+                                        <i class="maps-widget-fact__tab-icon tab-icon tab-icon_color_black tab-icon_snow" aria-hidden="true"></i>
+                                        <div class="maps-widget-fact__button-text">Глубина снега</div>
+                                    </a>
+                                </li>
+                                <li class="maps-widget-fact__button">
+                                    <a class="link maps-widget-fact__button-link i-bem" tabindex="0" href="/pogoda/maps/temperature?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" aria-label="Перейти на карту температуры" data-bem='{"link":{}}'>
+                                        <i class="maps-widget-fact__tab-icon tab-icon tab-icon_color_black tab-icon_temperature" aria-hidden="true"></i>
+                                        <div class="maps-widget-fact__button-text">температура</div>
+                                    </a>
+                                </li>
+                                <li class="maps-widget-fact__button">
+                                    <a class="link maps-widget-fact__button-link i-bem" tabindex="0" href="/pogoda/maps/wind?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" aria-label="Перейти на карту ветра" data-bem='{"link":{}}'>
+                                        <i class="maps-widget-fact__tab-icon tab-icon tab-icon_color_black tab-icon_wind" aria-hidden="true"></i>
+                                        <div class="maps-widget-fact__button-text">Ветер</div>
+                                    </a>
+                                </li>
+                                <li class="maps-widget-fact__button">
+                                    <a class="link maps-widget-fact__button-link i-bem" tabindex="0" href="/pogoda/maps/pressure?lat=54.85194397&amp;lon=83.10189056&amp;via=mmapw" aria-label="Перейти на карту давления" data-bem='{"link":{}}'>
+                                        <i class="maps-widget-fact__tab-icon tab-icon tab-icon_color_black tab-icon_pressure" aria-hidden="true"></i>
+                                        <div class="maps-widget-fact__button-text">Давление</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <a class="link meteum-promo meteum-promo_hidden card i-bem" target="_blank" tabindex="0" href="/pogoda/meteum?lat=54.85194397&amp;lon=83.10189056" rel="noopener" data-bem='{"link":{},"meteum-promo":{}}'>
+                    <div class="meteum-promo__content">
+                        <div class="meteum-promo__logo" aria-hidden="true"></div>
+                        <div class="meteum-promo__text">Как Яндекс рассчитывает свой прогноз погоды?</div>
+                        <div class="meteum-promo__button" aria-hidden="true">Узнать</div>
+                    </div>
+                </a>
+                <div class="forecast-briefly card i-bem" role="region" aria-labelledby="forecast_briefly_title" data-bem='{"forecast-briefly":{"initialSlide":0,"a11yNextSlideText":"Пролистать вперед","a11yPrevSlideText":"Пролистать назад"}}'>
+                    <div class="forecast-briefly__header">
+                        <h2 class="title title_level_2 forecast-briefly__header-title" id="forecast_briefly_title">Прогноз на 10 дней</h2>
+                        <div class="forecast-briefly__header-buttons">
+                            <a class="link link_theme_normal forecast-briefly__header-button i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>Подробный прогноз на 10 дней</a>
+                            <a class="link link_theme_normal forecast-briefly__header-button i-bem" tabindex="0" href="/pogoda/month/?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>На месяц</a>
+                        </div>
+                    </div>
+                    <div class="forecast-briefly__side-button forecast-briefly__side-button_pos_left swiper4__button-wrapper swiper-button-disabled">
+                        <div class="swiper4__fadeout swiper4__fadeout_side_prev swiper-button-black swiper-button-prev"></div>
+                    </div>
+                    <div class="forecast-briefly__days swiper-container">
+                        <ul class="swiper-wrapper">
+                            <div class="forecast-briefly__day forecast-briefly__day_preview-day swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вчера</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-04 00:00+0700">4 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−5</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−8</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#5" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Сегодня</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-05 00:00+0700">5 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−4</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−5</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_sunday forecast-briefly__day_weekend swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#6" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вс</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-06 00:00+0700">6 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+3</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь со снегом</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend forecast-briefly__day_weekstart swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#7" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пн</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-07 00:00+0700">7 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−1</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь со снегом</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#8" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-08 00:00+0700">8 марта</time>
+                                    <img class="icon icon_thumb_ovc-m-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_-sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−15</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Небольшой снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#9" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Ср</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-09 00:00+0700">9 марта</time>
+                                    <img class="icon icon_thumb_bkn-m-sn-d icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/bkn_-sn_d.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−13</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−19</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Небольшой снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#10" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Чт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-10 00:00+0700">10 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−11</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−15</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#11" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-11 00:00+0700">11 марта</time>
+                                    <img class="icon icon_thumb_ovc-m-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_-sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−12</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−18</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Небольшой снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#12" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Сб</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-12 00:00+0700">12 марта</time>
+                                    <img class="icon icon_thumb_ovc-m-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_-sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−11</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−18</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Небольшой снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_sunday forecast-briefly__day_weekend swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#13" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вс</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-13 00:00+0700">13 марта</time>
+                                    <img class="icon icon_thumb_skc-d icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/skc_d.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−8</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−16</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Малооблачно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekstart swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=ms#14" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пн</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-14 00:00+0700">14 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−6</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−11</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-15 00:00+0700">15 марта</time>
+                                    <img class="icon icon_thumb_ovc-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−4</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−5</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Ср</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-16 00:00+0700">16 марта</time>
+                                    <img class="icon icon_thumb_ovc-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−4</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−6</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Чт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-17 00:00+0700">17 марта</time>
+                                    <img class="icon icon_thumb_ovc-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−7</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-18 00:00+0700">18 марта</time>
+                                    <img class="icon icon_thumb_ovc-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−4</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Сб</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-19 00:00+0700">19 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−4</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_sunday forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вс</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-20 00:00+0700">20 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−5</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekstart forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пн</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-21 00:00+0700">21 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−5</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-22 00:00+0700">22 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−3</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Ср</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-23 00:00+0700">23 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Чт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-24 00:00+0700">24 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−1</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-25 00:00+0700">25 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Сб</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-26 00:00+0700">26 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−1</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_sunday forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вс</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-27 00:00+0700">27 марта</time>
+                                    <img class="icon icon_thumb_ovc-sn icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_sn.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Снег</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekstart forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пн</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-28 00:00+0700">28 марта</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+1</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−3</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-29 00:00+0700">29 марта</time>
+                                    <img class="icon icon_thumb_skc-d icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/skc_d.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−2</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Ясно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Ср</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-30 00:00+0700">30 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">−1</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/march?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Чт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-03-31 00:00+0700">31 марта</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+3</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/april?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Пт</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-04-01 00:00+0700">1 апр</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+2</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/april?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Сб</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-04-02 00:00+0700">2 апр</time>
+                                    <img class="icon icon_thumb_ovc icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+3</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Пасмурно</div>
+                                </a>
+                            </div>
+                            <div class="forecast-briefly__day forecast-briefly__day_sunday forecast-briefly__day_weekend forecast-briefly__day_climate swiper-slide">
+                                <a class="link link_theme_normal text forecast-briefly__day-link i-bem" tabindex="0" href="/pogoda/month/april?lat=54.85194397&amp;lon=83.10189056&amp;via=ms" data-bem='{"link":{}}'>
+                                    <div class="forecast-briefly__name">Вс</div>
+                                    <time class="time forecast-briefly__date" datetime="2022-04-03 00:00+0700">3 апр</time>
+                                    <img class="icon icon_thumb_ovc-ra icon_size_48 icon_color_dark forecast-briefly__icon" aria-hidden="true" src="//yastatic.net/weather/i/icons/funky/dark/ovc_ra.svg"/>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_day" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">днём</span>
+                                        <span class="temp__value temp__value_with-unit">+3</span>
+                                    </div>
+                                    <div class="temp forecast-briefly__temp forecast-briefly__temp_night" role="text">
+                                        <span class="temp__pre-a11y a11y-hidden">ночью</span>
+                                        <span class="temp__value temp__value_with-unit">0</span>
+                                    </div>
+                                    <div class="forecast-briefly__condition">Дождь</div>
+                                </a>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="forecast-briefly__side-button forecast-briefly__side-button_pos_right swiper4__button-wrapper swiper-button-disabled">
+                        <div class="swiper4__fadeout swiper4__fadeout_side_next swiper-button-black swiper-button-next"></div>
+                    </div>
+                    <div class="popup2 popup2_target_anchor popup2_hiding_yes popup2_autoclosable_yes popup2_theme_normal popup2_view_classic tooltip tooltip_theme_normal tooltip_size_s tooltip_autoclosable_yes tooltip_view_classic forecast-briefly__tooltip i-bem" data-bem='{"popup2":{"mainOffset":7,"directions":["top-center"]}}'>
+                        <div class="tooltip__backdrop">
+                            <div class="popup2__tail"></div>
+                        </div>
+                        <div class="tooltip__content"></div>
+                    </div>
+                    <div class="forecast-briefly__cameras-anchor forecast-briefly__cameras-anchor_home-region" id="cameras_anchor"></div>
+                </div>
+                <div class="content__bottom content__bottom_cards-count_2 content__bottom_first-card-low-priority" id="content_bottom">
+                    <div class="sun-card sun-card_theme_light card content__elem content__elem_pos_1" role="region" aria-labelledby="sun_card_title">
+                        <div class="sun-card__planet">
+                            <div class="sun-card__sun-circles sun-card__sun-circles_sun-pos_right sun-card__sun-circles_earth-pos_before"></div>
+                            <div class="sun-card__earth">
+                                <div class="earth-right_5 sun-card__earth-icon"></div>
+                            </div>
+                            <style>
+                                .earth-right_5{background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAiIGhlaWdodD0iOTEiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNDUiIGN5PSI0NS44OTQiIHI9IjQzIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMC44NTQgNi4wNDZjLTEuMDI2LjM1LTMuNzI5IDEuMjctMy43MjkuOTA4IDAtLjc0OCA3LjUtMy41IDgtMyAuNDk4LjQ5OC0yLjUgMS41LTQgMmwtLjI3MS4wOTJ6bTcuNzcyIDIuNDA4YzIgMCA1LjA4NyAxLjc1NSA2LjUgNC41LjU5NiAxLjE1OC40NSAyLjE3OC4zMDEgMy4yMzMtLjE0MyAxLjAwNy0uMjkgMi4wNDYuMTk5IDMuMjY3LjUzNiAxLjM0MiA1Ljc4IDUuOTY1IDkuMjEzIDguOTk0IDEuMzE5IDEuMTYyIDIuMzcgMi4wOSAyLjc4NyAyLjUwNiAxLjUgMS41IDYuMDI5IDMuMjA2IDcuNSAzLjUgMS40MjIuMjg0IDMuODE1IDEuODY0IDUuNzk5IDMuMTcyIDEuNTAyLjk5MiAyLjc3IDEuODI4IDMuMiAxLjgyOC42ODkgMCAuMjY0LS45NjktLjI4LTIuMjEtLjI0Ni0uNTYzLS41MTYtMS4xOC0uNzItMS43OS0uMzA4LS45MjUtLjgwNy0uOTkzLTEuNDk1LTEuMDg2LS40MjgtLjA1Ny0uOTMtLjEyNS0xLjUwNC0uNDE0LS45Mi0uNDYzLTEuNS0xLTItMnMtMi4zNjgtLjMxNi0zIDBjLTEgLjUtMi00LjUtMi03IDAtMS4zNzggMS44MjQtMS4yMzcgMy43OTUtMS4wODQgMS42MDUuMTI1IDMuMzA3LjI1NyA0LjIwNC0uNDE2IDItMS41LjUtMTAgMC0xMS41cy03LjUtNS05LjUtNWMtLjk2OCAwLS42NDcuNTg1LS4yODUgMS4yNDcuMzg1LjcwNC44MTcgMS40OTUtLjIxNSAxLjc1My0yIC41LTQtMi00LTNzLTEtMi00LTIuNWMtMi4xOS0uMzY1LTcuMzA5LS4xOTctMTAuODg3LS4wOC0xLjMyNC4wNDMtMi40MzcuMDgtMy4xMTIuMDgtMi41IDAtNi41IDIuNS02LjUgNCAwIDEgMS43NzcuNjY3IDMuNTU1LjMzMy44ODktLjE2NiAxLjc3OC0uMzMzIDIuNDQ1LS4zMzN6bTM4LjUgMzAuNWMxLjU5LTEuOTg4IDQuNS0xLjUgNi41LjUuMjQ2LjI0Ni40OTIuNDg2LjczNC43MjIgMi40NyAyLjQxIDQuNTk1IDQuNDgxIDMuOTM2IDEwLjM0My0uNTE2IDQuNTgtMy4xNjcgMTYuODg0LTkuNjUzIDIwLjUwMy0yLjE5NyAxLjIyNi00Ljk1MSAzLjEzNi03LjMxOSA0Ljc3OS0yLjcyIDEuODg3LTQuOTMxIDMuNDItNS4xOTggMy4xNTMtLjE2LS4xNi44MTMtMS40NzggMi4yNTYtMy40MzUgMy4wOTUtNC4xOTYgOC4zNTItMTEuMzI1IDkuMjQzLTE2LjIzLjIxNi0xLjE4NC0uNDYxLTIuNDc3LTEuMjMxLTMuOTQ1LS45NTItMS44MTYtMi4wNDUtMy45MDItMS43NjktNi4zOS4wNTYtLjUwMS4xMDYtMS4wMDguMTU2LTEuNTE2LjMxLTMuMTQzLjYyMy02LjMzMiAyLjM0NC04LjQ4NHoiIGZpbGw9InVybCgjcGFpbnQxX2xpbmVhcikiLz48cGF0aCBvcGFjaXR5PSIuNSIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zNS45MTMgOC44MzdjLjIxMy0xLjI2Ny40MzctMi41My42NzMtMy43ODkuODgyLS4zNjMgMS43OC0uNTk0IDIuNTQtLjU5NC42NzUgMCAxLjc4OC0uMDM3IDMuMTEyLS4wOCAzLjU3OC0uMTE3IDguNjk4LS4yODUgMTAuODg4LjA4IDMgLjUgNCAxLjUgNCAyLjVzMiAzLjUgNCAzYzEuMDMyLS4yNTguNi0xLjA0OS4yMTQtMS43NTMtLjM2Mi0uNjYxLS42ODItMS4yNDcuMjg2LTEuMjQ3IDIgMCA5IDMuNSA5LjUgNXMyIDEwIDAgMTEuNWMtLjg5OC42NzMtMi42LjU0LTQuMjA1LjQxNi0xLjk3MS0uMTUzLTMuNzk1LS4yOTQtMy43OTUgMS4wODQgMCAyLjUgMSA3LjUgMiA3IC42MzItLjMxNiAyLjUtMSAzIDBzMS4wOCAxLjUzNyAyIDJjLjU3NC4yOSAxLjA3Ni4zNTcgMS41MDQuNDE1LjY4OS4wOTMgMS4xODcuMTYgMS40OTYgMS4wODUuMjAzLjYxLjQ3MyAxLjIyNy43MiAxLjc5LjU0NCAxLjI0MS45NjggMi4yMS4yOCAyLjIxLS40MzEgMC0xLjY5OS0uODM2LTMuMjAxLTEuODI4LTEuOTgzLTEuMzA4LTQuMzc3LTIuODg4LTUuOC0zLjE3Mi0xLjQ3LS4yOTQtNi0yLTcuNS0zLjUtLjQxNi0uNDE2LTEuNDY3LTEuMzQ0LTIuNzg2LTIuNTA2LTMuNDM0LTMuMDI5LTguNjc3LTcuNjUyLTkuMjEzLTguOTk0LS40ODktMS4yMjEtLjM0MS0yLjI2LS4xOTktMy4yNjcuMTUtMS4wNTUuMjk1LTIuMDc1LS4zMDEtMy4yMzMtMS40MTMtMi43NDUtNC41LTQuNS02LjUtNC41LS42NjcgMC0xLjU1Ni4xNjctMi40NDUuMzMzbC0uMjY4LjA1em00Ny43MTMgMzAuNjE3Yy0yLTItNC45MS0yLjQ4OC02LjUtLjUtMS43MjIgMi4xNTItMi4wMzYgNS4zNDEtMi4zNDUgOC40ODQtLjA1LjUwOC0uMSAxLjAxNS0uMTU1IDEuNTE2LS4yNzcgMi40ODguODE2IDQuNTc0IDEuNzY4IDYuMzkuNzcgMS40NjkgMS40NDcgMi43NiAxLjIzMiAzLjk0NS0uODkyIDQuOTA1LTYuMTUgMTIuMDM0LTkuMjQ0IDE2LjIzLTEuNDQzIDEuOTU3LTIuNDE1IDMuMjc2LTIuMjU3IDMuNDM1LjI2OC4yNjcgMi40NzgtMS4yNjYgNS4yLTMuMTUzIDIuMzY3LTEuNjQzIDUuMTItMy41NTMgNy4zMTgtNC43NzkgNi40ODYtMy42MTkgOS4xMzctMTUuOTIyIDkuNjUzLTIwLjUwMy42Ni01Ljg2Mi0xLjQ2Ni03LjkzNC0zLjkzNi0xMC4zNDNhODEuNjg4IDgxLjY4OCAwIDAxLS43MzQtLjcyMnoiIGZpbGw9IiM5NEUyOEQiLz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSI2NC41IiB5MT0iNDUuODk0IiB4Mj0iMjMiIHkyPSI0NS44OTQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjNjZCMUZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjE4OEZGIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXIiIHgxPSIzOC42NjIiIHkxPSI1MC40MjMiIHgyPSI3NS4wNDQiIHkyPSI1MC40OTUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjMzFCNDk5Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNTVFM0FBIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+')}
+                            </style>
+                            <div class="sun-card__sun-circles sun-card__sun-circles_sun-pos_right sun-card__sun-circles_earth-pos_after"></div>
+                            <div class="sun-card__moon" style="transform: rotateZ(0.875turn)">
+                                <div class="moon2_waxing-crescent sun-card__moon-icon"></div>
+                            </div>
+                            <style>
+                                .moon2_waxing-crescent{background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTQiIGN5PSIxNCIgcj0iMTQiIHRyYW5zZm9ybT0icm90YXRlKC0xODAgMTQgMTQpIiBmaWxsPSIjRENEQ0RDIi8+PG1hc2sgaWQ9ImEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjAiIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCI+PGNpcmNsZSBjeD0iMTQiIGN5PSIxNCIgcj0iMTQiIHRyYW5zZm9ybT0icm90YXRlKC0xODAgMTQgMTQpIiBmaWxsPSIjOUU5RkE3Ii8+PC9tYXNrPjxnIG1hc2s9InVybCgjYSkiIGZpbGw9IiNCM0FFQUUiPjxwYXRoIG9wYWNpdHk9Ii42IiBkPSJNMjQuNTQxIDEwLjM1MWMxLjA4IDEuMTc4IDEuODU3IDIuODg1LjczNyA0LjAyNS0xLjE0NSAxLjE2NS0zLjIxNy0uMjAzLTQuMTAzLS44MTYtLjgwNC0uNTU3LTIuMjEtMS45Mi0xLjk3My0zLjUyNS4yMzctMS42MDQgMy45MjgtMS4yMjMgNS4zNC4zMTZ6bS04Ljk4MyAxLjY4OWMxLjUwNi4yIDIuMjQyIDIuMTI0IDEuMTc4IDIuNjY2LS44NjEuNDQtMi4yNSAxLjk0Mi0zLjQ4NCAxLjIzNC0xLjQxLS44MDctMS4yMy0xLjg3Ni0uNjItMi42MzcuNjg1LS44NTcgMS4zNi0xLjQ3IDIuOTI2LTEuMjYyeiIvPjxwYXRoIG9wYWNpdHk9Ii42IiBkPSJNMTcuNjgyIDIzLjM5MmMtMS43NzMuNjI0IDEuMDc2IDMuMDU0LS41MyA0LjIwMy0yLjI3IDEuNjIzLTYuMjYgMS42MTctOC45MjMtLjAwMi0yLjQ5NC0xLjUxNy01LjQyOS0zLjE4MS01LjYxNS02LjMxLS4xMzItMi4yMTItLjM2OS00LjUxMSAyLjcyNi01LjI4NCAxLjc5Ny0uNDQ5IDUuMzU1IDIuMTgxIDYuMjg1IDIuNzEgMi40MSAxLjM3MiAzLjM2NC0xLjAzMyA1LjUyNy0yLjE5NSAxLjY3LS44OTggNS45NzcuNDE1IDUuNzggMy4yNTQtLjE4MiAyLjYxNC0yLjkzNyAyLjgwOC01LjI1IDMuNjIzek01LjExNCAxMi45NjNjLS42MDUgMS43MSAxLjM0MiAxLjg5NCAyLjg2NyAxLjg0LjI4LS40NDYuODQ3LTEuNTI1Ljg2OC0yLjI2MS4wMjYtLjkyLS4zNDItMS45Mi0xLjYzLTIuMTU3LTEuMjktLjIzNy0xLjUuODY4LTIuMTA1IDIuNTc4em04LjIzMS0yLjMzNmMtMS4wMDUuNzE4LTIuOTIxIDMuMzA4LTMuMzQ1IDEuMjM5LS40MjMtMi4wNy0yLjMwMi0yLjY4Ni0yLjU5Ni0zLjE5LS4zNjktLjYzMi44NDEtMS43OSAyLjAyNS0zIDEuMTgzLTEuMjA5IDMuNzYtMy4wMjQgNi40MTYtMi43ODcgMi42NTcuMjM2IDEuOTA1IDMuMi42MSA0Ljg1LS42MzQuODA4LTIuMTI3IDIuMTg3LTMuMTEgMi44ODh6bS03LjY2OS0zLjY3Yy40MDctLjg5NCAxLjA3LTIuMzcgMi4yMTMtMy45MTEuNjg0LS45MjMtLjkyNy0xLjQwOS0xLjU2NS0xLjExNi0uNDguMjItMS41ODkgMS4yNi0yLjAyNyAxLjY4OWwtLjAwOC4wMDhjLS40NTMuNDQzLTIuMzQ1IDIuMjk0LTIuMDUxIDIuNyAxLjA0NCAxLjQ0NSAzLjA5MSAxLjM5IDMuNDM4LjYzeiIvPjwvZz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE2LjQ5NyAyNy43NzlhMTkuOTMyIDE5LjkzMiAwIDAwNS41MDctMTMuNzgzQTE5LjkzMyAxOS45MzMgMCAwMDE2LjUwNi4yMjMgMTQuMDgzIDE0LjA4MyAwIDAwMTQuMDA0IDBjLTcuNzMyIDAtMTQgNi4yNjgtMTQgMTRzNi4yNjggMTQgMTQgMTRjLjg1IDAgMS42ODQtLjA3NiAyLjQ5My0uMjIxeiIgZmlsbD0iIzUzNUQ3NCIvPjwvc3ZnPg==')}
+                            </style>
+                        </div>
+                        <div class="sun-card__info">
+                            <div class="sun-card__sunrise-sunset">
+                                <div class="sun-card__sunrise-sunset-icon"></div>
+                                <div class="sun-card__day-duration">
+                                    <h2 class="sun-card__day-duration-label" id="sun_card_title" aria-label="Световой день">Световой день</h2>
+                                    <div class="sun-card__day-duration-value">11 ч 1 мин</div>
+                                </div>
+                                <div class="sun-card__sunrise-sunset-info-wrapper">
+                                    <div class="sun-card__sunrise-sunset-info sun-card__sunrise-sunset-info_value_rise-time">
+                                        <div class="a11y-hidden">Восход</div>08:08
+                                    </div>
+                                    <div class="sun-card__sunrise-sunset-info sun-card__sunrise-sunset-info_value_set-time">
+                                        <div class="a11y-hidden">Закат</div>19:09
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sun-card__text-info">
+                                Растущая луна<br>
+                                    Неустойчивое магнитное поле<br>Низкий УФ-индекс</div>
+                        </div>
+                    </div>
+                    <div class="camera card content__elem content__elem_pos_2 i-bem" role="region" aria-labelledby="camera_title" data-bem='{"camera":{"src":"https://frontend.vh.yandex.ru/player/432aa9a630a12e7fbc5fe9c32c8e9d41?from=ya-weather&amp;tv=0&amp;mute=1&amp;autoplay=1&amp;play_on_visible=true&amp;hidden=sound","frameId":"weather_camera","buttonId":"weather_camera_button"}}'>
+                        <h2 class="title title_level_2 card-title" id="camera_title">Улица Державина</h2>
+                        <iframe class="camera__broadcast" id="weather_camera" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen=""></iframe>
+                        <div class="camera__button" id="weather_camera_button" style="background-image:url(//avatars.mds.yandex.net/get-vh-cv/1906190/2a0000017e55d00266c482e1ccd2e19fec60/564x318)"></div>
+                    </div>
+                </div>
+                <div class="content__right">
+                    <div class="adv adv_pos_index-side-up">
+                        <div id="R-I-49688-2539"></div>
+                        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">(function(w,d,n,s,t){var initTime = new Date();w[n]=w[n]||[];w[n].push(function(){var params={"blockId":"R-I-49688-2539","defaultId":"R-I-49688-2539","renderTo":"R-I-49688-2539","async":true,"extParams":"&temp=-5&icon=ovc&humidity=85&city=65&country=225&reqid=1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL&awaps_section=8939","pos":["index","side","up"],"cspNonce":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL"};var advPosNames=".629.507.600";var advStartTime=Ya.Rum && Ya.Rum.getTime();params.initTime = initTime;params.onRender=function(data){if (Ya.Rum && Ya.Rum.makeSubPage && advPosNames) {var subPage = Ya.Rum.makeSubPage('155' + advPosNames);Ya.Rum.sendTTI(false, advStartTime, subPage);var timeMarkName = '2046';if (data.product === 'direct') {timeMarkName += '.155';} else if (data.product === 'rtb') {timeMarkName += '.3431';};Ya.Rum.sendTimeMark(timeMarkName, Ya.Rum.getTime(), false, subPage);};var el = document.getElementById("R-I-49688-2539");var parent = el.parentNode;if (data.product === 'rtb') {parent.classList.add('adv_type_rtb');} else { parent.classList.add('adv_type_direct');};};Ya.Context.AdvManager.render(params);window.insertDebugPanel && window.insertDebugPanel({"defaultId":"R-I-49688-2539","blockId":"R-I-49688-2539","renderTo":"R-I-49688-2539","place":"side_up"});});}).bind(this, this, this.document, "yandexContextAsyncCallbacks")();</script>
+                    </div>
+                    <div class="adv adv_pos_index-side-down">
+                        <div id="R-I-49688-151"></div>
+                        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">(function(w,d,n,s,t){var initTime = new Date();w[n]=w[n]||[];w[n].push(function(){var params={"blockId":"R-I-49688-151","defaultId":"R-I-49688-151","renderTo":"R-I-49688-151","async":true,"extParams":"&temp=-5&icon=ovc&humidity=85&city=65&country=225&reqid=1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL&awaps_section=8939","pos":["index","side","down"],"cspNonce":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL"};var advPosNames=".629.507.601";var advStartTime=Ya.Rum && Ya.Rum.getTime();params.initTime = initTime;params.onRender=function(data){if (Ya.Rum && Ya.Rum.makeSubPage && advPosNames) {var subPage = Ya.Rum.makeSubPage('155' + advPosNames);Ya.Rum.sendTTI(false, advStartTime, subPage);var timeMarkName = '2046';if (data.product === 'direct') {timeMarkName += '.155';} else if (data.product === 'rtb') {timeMarkName += '.3431';};Ya.Rum.sendTimeMark(timeMarkName, Ya.Rum.getTime(), false, subPage);};var el = document.getElementById("R-I-49688-151");var parent = el.parentNode;if (data.product === 'rtb') {parent.classList.add('adv_type_rtb');} else { parent.classList.add('adv_type_direct');};};Ya.Context.AdvManager.render(params);window.insertDebugPanel && window.insertDebugPanel({"defaultId":"R-I-49688-151","blockId":"R-I-49688-151","renderTo":"R-I-49688-151","place":"side_down"});});}).bind(this, this, this.document, "yandexContextAsyncCallbacks")();</script>
+                    </div>
+                </div>
+                <div class="content__adv">
+                    <div class="adv adv_pos_index-details_top">
+                        <div id="R-I-49688-2891"></div>
+                        <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">(function(w,d,n,s,t){var initTime = new Date();w[n]=w[n]||[];w[n].push(function(){var params={"blockId":"R-I-49688-2891","defaultId":"R-I-49688-2891","renderTo":"R-I-49688-2891","async":true,"extParams":"&temp=-5&icon=ovc&humidity=85&city=65&country=225&reqid=1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL&awaps_section=8939","pos":["index","details_top"],"cspNonce":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL"};var advPosNames=".629.1362.77";var advStartTime=Ya.Rum && Ya.Rum.getTime();params.initTime = initTime;params.onRender=function(data){if (Ya.Rum && Ya.Rum.makeSubPage && advPosNames) {var subPage = Ya.Rum.makeSubPage('155' + advPosNames);Ya.Rum.sendTTI(false, advStartTime, subPage);var timeMarkName = '2046';if (data.product === 'direct') {timeMarkName += '.155';} else if (data.product === 'rtb') {timeMarkName += '.3431';};Ya.Rum.sendTimeMark(timeMarkName, Ya.Rum.getTime(), false, subPage);};var el = document.getElementById("R-I-49688-2891");var parent = el.parentNode;if (data.product === 'rtb') {parent.classList.add('adv_type_rtb');} else { parent.classList.add('adv_type_direct');};};Ya.Context.AdvManager.render(params);window.insertDebugPanel && window.insertDebugPanel({"defaultId":"R-I-49688-2891","blockId":"R-I-49688-2891","renderTo":"R-I-49688-2891","place":"details_top"});});}).bind(this, this, this.document, "yandexContextAsyncCallbacks")();</script>
+                    </div>
+                </div>
+                <div class="forecast-details-segment i-bem" data-bem='{"forecast-details-segment":{"query":{"lat":"54.85194397","lon":"83.10189056","cameras":0},"css":"//yastatic.net/s3/weather-frontend/11.98.101/desktop.bundles/segment-details/_segment-details.css","serviceRoot":"/pogoda"}}'>
+                    <div class="forecast-details-segment__container"></div>
+                </div>
+            </div>
+            <footer class="footer clearfix i-bem" role="contentinfo" data-bem='{"footer":{}}'>
+                <p class="copyright-tech">
+                    Прогноз погоды в Новосибирске на сегодня, завтра и на ближайшую неделю с точностью до района — рассчитан с помощью <a class="link i-bem" target="_blank" tabindex="0" href="https://yandex.ru/pogoda/meteum" rel="noopener" data-bem='{"link":{}}'>технологии Meteum</a>
+                </p>
+                <div class="footer__links">
+                    <div class="links-section">
+                        <h3 class="links-section__title">Ссылки</h3>
+                        <div class="links-section__list">
+                            <a class="link link_theme_normal links-section__link i-bem" target="_blank" tabindex="0" href="//yandex.ru/chat/#/c/yandexpogoda" rel="noopener" data-bem='{"link":{}}'>Канал в Мессенджере</a>
+                            <a class="link link_theme_normal links-section__link i-bem" target="_blank" tabindex="0" href="//yandex.ru/support/weather/" rel="noopener" data-bem='{"link":{}}'>Справка</a>
+                            <a class="link link_theme_normal links-section__link i-bem" target="_blank" tabindex="0" href="//yandex.ru/legal/weather_termsofuse/" rel="noopener" data-bem='{"link":{}}'>Пользовательское соглашение</a>
+                            <a class="link link_theme_normal links-section__link i-bem" target="_blank" tabindex="0" href="//yandex.ru/support/weather/troubleshooting.xml" rel="noopener" data-bem='{"link":{}}'>Обратная связь</a>
+                            <a class="link link_theme_normal links-section__link footer__chat-link i-bem" target="_blank" tabindex="0" href="//yandex.ru/chat/#/user/79e29205-4ada-9321-4d10-d7c3d79c5d04" rel="noopener" data-bem='{"link":{}}'>Поддержка</a>
+                        </div>
+                    </div>
+                    <div class="links-section">
+                        <h3 class="links-section__title">Партнёрам</h3>
+                        <div class="links-section__list">
+                            <a class="link link_theme_normal links-section__link i-bem" tabindex="0" href="//yandex.ru/adv/products/context" data-bem='{"link":{}}'>Реклама</a>
+                            <a class="link link_theme_normal links-section__link i-bem" target="_blank" tabindex="0" href="//tech.yandex.ru/weather" rel="noopener" data-bem='{"link":{}}'>API Яндекс.Погоды</a>
+                        </div>
+                    </div>
+                    <div class="links-section">
+                        <h3 class="links-section__title">Прогноз погоды</h3>
+                        <div class="links-section__list">
+                            <a class="link link_theme_normal links-section__link i-bem" tabindex="0" href="//p.ya.ru?via=f" data-bem='{"link":{}}'>Почасовой прогноз</a>
+                            <a class="link link_theme_normal links-section__link i-bem" tabindex="0" href="/pogoda/details?lat=54.85194397&amp;lon=83.10189056&amp;via=f" data-bem='{"link":{}}'>Подробный прогноз на 10 дней</a>
+                            <a class="link link_theme_normal links-section__link i-bem" tabindex="0" href="/pogoda/month/?lat=54.85194397&amp;lon=83.10189056&amp;via=f" data-bem='{"link":{}}'>Прогноз на месяц</a>
+                            <a class="link link_theme_normal links-section__link i-bem" tabindex="0" href="/pogoda/maps?lat=54.85194397&amp;lon=83.10189056&amp;via=f" data-bem='{"link":{}}'>Погода на карте</a>
+                        </div>
+                    </div>
+                    <div class="links-section">
+                        <h3 class="links-section__title">Мобильное приложение</h3>
+                        <div class="apps">
+                            <a class="store store_lang_ru" title="Скачать приложение Яндекс в Google Play" aria-label="Скачать приложение Яндекс в Google Play" href="https://redirect.appmetrica.yandex.com/serve/673628255453989055?c=weather_footer_desk">
+                                <div class="store__badge store_google_ru"></div>
+                            </a>
+                            <a class="store store_lang_ru" title="Скачать приложение Яндекс в App Store" aria-label="Скачать приложение Яндекс в App Store" href="https://redirect.appmetrica.yandex.com/serve/817743447623542148?c=weather_footer_desk">
+                                <div class="store__badge store_apple_ru"></div>
+                            </a>
+                            <a class="store store_lang_ru" title="Скачать приложение Яндекс в App Gallery" aria-label="Скачать приложение Яндекс в App Gallery" href="https://appgallery.huawei.com/#/app/C101219645">
+                                <div class="store__badge store_huawei store_huawei_ru"></div>
+                            </a>
+                            <style>
+                                .store_google_ru{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxMzUgNDAiPjxwYXRoIGZpbGw9IiMwMDAiIGQ9Ik0xMzAgMEg1YTUgNSAwIDAwLTUgNXYzMGE1IDUgMCAwMDUgNWgxMjVhNSA1IDAgMDA1LTVWNWE1IDUgMCAwMC01LTV6Ii8+PHBhdGggZmlsbD0iI0E2QTZBNiIgZD0iTTEzMCAuOGE0LjIgNC4yIDAgMDE0LjIgNC4ydjMwYTQuMTk4IDQuMTk4IDAgMDEtNC4yIDQuMkg1QTQuMiA0LjIgMCAwMS44IDM1VjVBNC4yIDQuMiAwIDAxNSAuOGgxMjV6bTAtLjhINWE1IDUgMCAwMC01IDV2MzBhNSA1IDAgMDA1IDVoMTI1YTUuMDAyIDUuMDAyIDAgMDA1LTVWNWE1LjAwMiA1LjAwMiAwIDAwLTUtNXoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNNjguMTQgMjEuNzVBNC4yNSA0LjI1IDAgMTA3Mi40MSAyNmE0LjE5IDQuMTkgMCAwMC00LjI3LTQuMjV6bTAgNi44M2EyLjU4IDIuNTggMCAxMTIuNC0yLjU4IDIuNDYgMi40NiAwIDAxLTIuNCAyLjU4em0tOS4zMS02LjgzQTQuMjUgNC4yNSAwIDEwNjMuMDkgMjZhNC4xOTIgNC4xOTIgMCAwMC00LjI3LTQuMjVoLjAxem0wIDYuODNBMi41OCAyLjU4IDAgMTE2MS4yMiAyNmEyLjQ2IDIuNDYgMCAwMS0yLjQgMi41OGguMDF6bS0xMS4wOS01LjUydjEuOGg0LjMyYTMuNzcgMy43NyAwIDAxLTEgMi4yNyA0LjQyIDQuNDIgMCAwMS0zLjMzIDEuMzIgNC44IDQuOCAwIDAxMC05LjZBNC42IDQuNiAwIDAxNTEgMjAuMTRsMS4yNy0xLjI3QTYuMjkgNi4yOSAwIDAwNDcuNzQgMTdhNi42MSA2LjYxIDAgMTAwIDEzLjIxIDYgNiAwIDAwNC42MS0xLjg1IDYgNiAwIDAwMS41Ni00LjIyIDUuODc1IDUuODc1IDAgMDAtLjEtMS4xM2wtNi4wNy4wNXptNDUuMzEgMS40YTQgNCAwIDAwLTMuNjQtMi43MSA0IDQgMCAwMC00IDQuMjUgNC4xNTkgNC4xNTkgMCAwMDQuMjIgNC4yNSA0LjIzIDQuMjMgMCAwMDMuNTQtMS44OGwtMS40NS0xYTIuNDMgMi40MyAwIDAxLTIuMDkgMS4xOCAyLjE2IDIuMTYgMCAwMS0yLjA2LTEuMjlsNS42OS0yLjM1LS4yMS0uNDV6bS01LjggMS40MmEyLjMzIDIuMzMgMCAwMTIuMjItMi40OCAxLjY1IDEuNjUgMCAwMTEuNTguOWwtMy44IDEuNTh6TTgyLjYzIDMwaDEuODdWMTcuNWgtMS44N1YzMHptLTMuMDYtNy4zaC0uMDdhMyAzIDAgMDAtMi4yNC0xIDQuMjYgNC4yNiAwIDAwMCA4LjUxIDIuOSAyLjkgMCAwMDIuMjQtMWguMDZ2LjYxYzAgMS42My0uODcgMi41LTIuMjcgMi41YTIuMzUgMi4zNSAwIDAxLTIuMTQtMS41MWwtMS42My42OEE0LjA1IDQuMDUgMCAwMDc3LjI5IDM0YzIuMTkgMCA0LTEuMjkgNC00LjQzVjIyaC0xLjcydi43em0tMi4xNCA1Ljg4YTIuNTkgMi41OSAwIDAxMC01LjE2QTIuNCAyLjQgMCAwMTc5LjcgMjZhMi4zODEgMi4zODEgMCAwMS0yLjI4IDIuNThoLjAxem0yNC4zOC0xMS4wOGgtNC40N1YzMGgxLjg3di00Ljc0aDIuNjFhMy44ODkgMy44ODkgMCAxMDAtNy43NmgtLjAxem0wIDZIOTkuMnYtNC4yNmgyLjY1YTIuMTQ1IDIuMTQ1IDAgMTEwIDQuMjlsLS4wNC0uMDN6bTExLjUzLTEuOGEzLjQ5OCAzLjQ5OCAwIDAwLTMuMzMgMS45MWwxLjY2LjY5YTEuNzc2IDEuNzc2IDAgMDExLjctLjkyIDEuODA0IDEuODA0IDAgMDExLjc5Mi45MzEgMS44IDEuOCAwIDAxLjIwOC42OHYuMTNhNC4xMyA0LjEzIDAgMDAtMS45NS0uNDhjLTEuNzkgMC0zLjYgMS0zLjYgMi44MWEyLjkwNSAyLjkwNSAwIDAwLjk2OSAyLjAyOSAyLjg5MiAyLjg5MiAwIDAwMi4xMzEuNzIgMi42MzMgMi42MzMgMCAwMDIuNC0xLjJoLjA2djFoMS44di00LjgxYzAtMi4xOS0xLjY2LTMuNDYtMy43OS0zLjQ2bC0uMDUtLjAzem0tLjIzIDYuODVjLS42MSAwLTEuNDYtLjMxLTEuNDYtMS4wNiAwLTEgMS4wNi0xLjMzIDItMS4zM2EzLjMyMSAzLjMyMSAwIDAxMS43LjQyIDIuMjYgMi4yNiAwIDAxLTIuMTkgMmwtLjA1LS4wM3pNMTIzLjc0IDIybC0yLjE0IDUuNDJoLS4wNkwxMTkuMzIgMjJoLTJsMy4zMyA3LjU4LTEuOSA0LjIxaDEuOTVMMTI1LjgyIDIyaC0yLjA4em0tMTYuODEgOGgxLjg3VjE3LjVoLTEuODdWMzB6Ii8+PHBhdGggZmlsbD0idXJsKCNwYWludDBfbGluZWFyKSIgZD0iTTEwLjQ0IDcuNTRhMiAyIDAgMDAtLjQ2IDEuNHYyMi4xMmEyIDIgMCAwMC40NiAxLjRsLjA3LjA3TDIyLjkgMjAuMTV2LS4yOUwxMC41MSA3LjQ3bC0uMDcuMDd6Ii8+PHBhdGggZmlsbD0idXJsKCNwYWludDFfbGluZWFyKSIgZD0iTTI3IDI0LjI4bC00LjEtNC4xM3YtLjI5bDQuMS00LjE0LjA5LjA1TDMyIDE4LjU2YzEuNC43OSAxLjQgMi4wOSAwIDIuODlsLTQuODkgMi43OC0uMTEuMDV6Ii8+PHBhdGggZmlsbD0idXJsKCNwYWludDJfbGluZWFyKSIgZD0iTTI3LjEyIDI0LjIyTDIyLjkgMjAgMTAuNDQgMzIuNDZhMS42MyAxLjYzIDAgMDAyLjA4LjA2bDE0LjYxLTguMyIvPjxwYXRoIGZpbGw9InVybCgjcGFpbnQzX2xpbmVhcikiIGQ9Ik0yNy4xMiAxNS43OGwtMTQuNjEtOC4zYTEuNjMgMS42MyAwIDAwLTIuMDguMDZMMjIuOSAyMGw0LjIyLTQuMjJ6Ii8+PHBhdGggZmlsbD0iIzAwMCIgZD0iTTI3IDI0LjEzbC0xNC40OSA4LjI1YTEuNjcgMS42NyAwIDAxLTIgMGwtLjA3LjA3LjA3LjA3YTEuNjYgMS42NiAwIDAwMiAwbDE0LjYxLTguMy0uMTItLjA5eiIgb3BhY2l0eT0iLjIiLz48cGF0aCBmaWxsPSIjMDAwIiBkPSJNMTAuNDQgMzIuMzJhMiAyIDAgMDEtLjQ2LTEuNHYuMTVhMiAyIDAgMDAuNDYgMS40bC4wNy0uMDctLjA3LS4wOHpNMzIgMjEuM2wtNSAyLjgzLjA5LjA5TDMyIDIxLjQ0QTEuNzUgMS43NSAwIDAwMzMgMjBhMS44NiAxLjg2IDAgMDEtMSAxLjN6IiBvcGFjaXR5PSIuMTIiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTIuNTEgNy42MkwzMiAxOC43YTEuODYgMS44NiAwIDAxMSAxLjMgMS43NSAxLjc1IDAgMDAtMS0xLjQ0TDEyLjUxIDcuNDhjLTEuNC0uNzktMi41NC0uMTMtMi41NCAxLjQ3di4xNWMuMDMtMS42MSAxLjE1LTIuMjcgMi41NC0xLjQ4eiIgb3BhY2l0eT0iLjI1Ii8+PHBhdGggZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmZmIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS13aWR0aD0iLjIiIGQ9Ik00Mi4xMSAxNC4yN2gtLjc0di0ySDQyYTIuODYgMi44NiAwIDAwLjc2LTIuM1Y3aDR2NS4yNmguNjd2MmgtLjc0VjEzaC00LjU4djEuMjd6TTQzLjUgMTBhNCA0IDAgMDEtLjU3IDIuM2gzVjcuNzRINDMuNVYxMHptOS45MSAyLjIyYTMuMTIgMy4xMiAwIDAxLTQuNCAwIDMuMjQgMy4yNCAwIDAxMC00LjQ1IDMuMSAzLjEgMCAwMTQuNCAwIDMuMjMgMy4yMyAwIDAxMCA0LjQ1em0tMy44My0uNWEyLjMxIDIuMzEgMCAwMDMuMjYgMCAyLjU2IDIuNTYgMCAwMDAtMy40NCAyLjMxIDIuMzEgMCAwMC0zLjI2IDAgMi41NiAyLjU2IDAgMDAwIDMuNDR6bTguNiAxLjQxQTMuMDYgMy4wNiAwIDAxNTUuMDYgMTBhMy4wNiAzLjA2IDAgMDEzLjEyLTMuMTMgMi43NyAyLjc3IDAgMDEyLjIgMWwtLjU0LjUyYTIgMiAwIDAwLTEuNjctLjc2IDIuMjcgMi4yNyAwIDAwLTEuNjYuNjYgMi41NyAyLjU3IDAgMDAwIDMuNDcgMi4yNyAyLjI3IDAgMDAxLjY2LjY2IDIuMzcxIDIuMzcxIDAgMDAxLjgzLS44OWwuNTQuNTRhMi45MiAyLjkyIDAgMDEtMSAuNzggMy4xNSAzLjE1IDAgMDEtMS4zNi4yOHptNS41LS4xM2gtLjc3VjcuNzRoLTEuNjhWN2g0LjEydi43NGgtMS42N1YxM3ptNi45Ny02bC0yLjI3IDUuMDZBMS41MSAxLjUxIDAgMDE2NyAxMy4xM2ExLjU0MyAxLjU0MyAwIDAxLS42LS4xM2wuMi0uNzFjLjEyMi4wNy4yNi4xMDkuNC4xMWEuNzEuNzEgMCAwMC40Mi0uMS45NC45NCAwIDAwLjI3LS4zOGwuMjItLjQ4LTItNC40M2guOTFsMS40OCAzLjQ0TDY5Ljc0IDdoLjkxem0uODcgNlY3aDQuMzR2NmgtLjc3VjcuNzRoLTIuOFYxM2gtLjc3em01LjcxIDBWN0g3OHYyLjU3aDNWN2guNzd2Nkg4MXYtMi43MWgtM1YxM2gtLjc3em0xMC44My0uNzhhMy4xMiAzLjEyIDAgMDEtNC40IDAgMy4yNCAzLjI0IDAgMDEwLTQuNDUgMy4xIDMuMSAwIDAxNC40IDAgMy4yMyAzLjIzIDAgMDEwIDQuNDV6bS0zLjgzLS41YTIuMzEgMi4zMSAwIDAwMy4yNiAwIDIuNTYgMi41NiAwIDAwMC0zLjQ0IDIuMzEgMi4zMSAwIDAwLTMuMjYgMCAyLjU2IDIuNTYgMCAwMDAgMy40NHpNOTIuMDkgMTNWN2gyLjE3YTEuNzYgMS43NiAwIDAxMS4yMi40NkExLjUxIDEuNTEgMCAwMTk2IDguNjNhMS4zMSAxLjMxIDAgMDEtLjIyLjc1IDEuMzkgMS4zOSAwIDAxLS41OS40OWMuMjkuMDk2LjU0NS4yNzcuNzMuNTIuMTkyLjI0NS4yOTUuNTQ5LjI5Ljg2YTEuNTcgMS41NyAwIDAxLS41NCAxLjIyIDEuODUgMS44NSAwIDAxLTEuMjguNDlsLTIuMy4wNHptLjc3LTMuNDNoMS40YS45LjkgMCAwMC43LS4yOUEuODg5Ljg4OSAwIDAwOTUgOGEuODYuODYgMCAwMC0uNjctLjI5SDkyLjlsLS4wNCAxLjg2em0wIDIuNjloMS41NWEuOTIuOTIgMCAwMC43Mi0uMzEgMSAxIDAgMDAuMjgtLjY4IDEgMSAwIDAwLTEtMWgtMS41MmwtLjAzIDEuOTl6Ii8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyIiB4MT0iMjEuOCIgeDI9IjUuMDIiIHkxPSI4LjcxIiB5Mj0iMjUuNDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjMDBBMEZGIi8+PHN0b3Agb2Zmc2V0PSIuMDEiIHN0b3AtY29sb3I9IiMwMEExRkYiLz48c3RvcCBvZmZzZXQ9Ii4yNiIgc3RvcC1jb2xvcj0iIzAwQkVGRiIvPjxzdG9wIG9mZnNldD0iLjUxIiBzdG9wLWNvbG9yPSIjMDBEMkZGIi8+PHN0b3Agb2Zmc2V0PSIuNzYiIHN0b3AtY29sb3I9IiMwMERGRkYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMEUzRkYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhciIgeDE9IjMzLjgzIiB4Mj0iOS42NCIgeTE9IjIwIiB5Mj0iMjAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjRkZFMDAwIi8+PHN0b3Agb2Zmc2V0PSIuNDEiIHN0b3AtY29sb3I9IiNGRkJEMDAiLz48c3RvcCBvZmZzZXQ9Ii43OCIgc3RvcC1jb2xvcj0ib3JhbmdlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkY5QzAwIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9InBhaW50Ml9saW5lYXIiIHgxPSIyNC44MyIgeDI9IjIuMDciIHkxPSIyMi4zIiB5Mj0iNDUuMDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjRkYzQTQ0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQzMxMTYyIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXIiIHgxPSI3LjMiIHgyPSIxNy40NiIgeTE9Ii4xOCIgeTI9IjEwLjM0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzMyQTA3MSIvPjxzdG9wIG9mZnNldD0iLjA3IiBzdG9wLWNvbG9yPSIjMkRBNzcxIi8+PHN0b3Agb2Zmc2V0PSIuNDgiIHN0b3AtY29sb3I9IiMxNUNGNzQiLz48c3RvcCBvZmZzZXQ9Ii44IiBzdG9wLWNvbG9yPSIjMDZFNzc1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDBGMDc2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+')}
+                                .store_apple_ru{background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjQ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTE1NC44MjQuMDFINS4xNzRBNS4xNzEgNS4xNzEgMCAwMDAgNS4xNzh2MzUuNjY0YTUuMTcyIDUuMTcyIDAgMDA1LjE3NSA1LjE2OGgxNDkuNjVBNS4xNzIgNS4xNzIgMCAwMDE2MCA0MC44NDJWNS4xNzhBNS4xNzEgNS4xNzEgMCAwMDE1NC44MjQuMDF6IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTMwLjY5IDExLjE4MmMxLjkwOC0yLjMzNyAxLjUxLTQuNzY0IDEuNTEtNC43NjRzLTIuNjcuMDEyLTQuNTkgMi41OTRjLTEuNzA3IDIuMjk0LTEuMjcyIDQuMjU3LTEuMjcyIDQuMjU3czIuMzE1LjQwOCA0LjM1LTIuMDg4em0zLjY2MyAxMS4wM2MwLTQgMy4xNjItNS42NDcgMy4xNjItNS42NDdzLTEuNjE4LTIuOTgtNS43MjQtMi45OGMtMi4zODcgMC00LjIyIDEuMzg1LTUuMjA4IDEuMzg1LTEuMTUgMC0yLjg2Ny0xLjMwMy01LjA4LTEuMzAzLTMuNDA2IDAtNy4wMzYgMy4xMS03LjAzNiA5LjAzOCAwIDYuMDIzIDQuMjg4IDEzLjUxNyA3LjY4NCAxMy41MTcgMS4xODQgMCAzLjAwNC0xLjIxOCA0LjgzNi0xLjIxOCAxLjggMCAzLjEyNiAxLjE3NCA0LjgzNSAxLjE3NCAzLjcxOCAwIDYuNDctNy45IDYuNDctNy45cy0zLjkzNy0xLjU1NS0zLjkzNy02LjA2NnoiIGZpbGw9IiNGRkYiLz48ZyBmaWxsPSIjRkZGIj48cGF0aCBkPSJNNTIuODUyIDcuNzljLjUzLS4zMyAxLjI1NC0uNjA1IDIuMjE1LS42MDUgMS41MTQgMCAyLjQ2My43NzYgMi40NjMgMS45MyAwIC45NTgtLjY1NSAxLjYzMi0xLjU0NyAxLjg1di4wMjJjMS4wMDYuMTEzIDEuODIuOCAxLjgyIDEuODYgMCAxLjY2Ny0xLjU2IDIuMjg1LTIuOTczIDIuMjg1LS43NDcgMC0xLjUzNy0uMTYtMi4xNi0uNTI2bC4zMy0xLjA4NGMuMzcyLjIwNSAxLjEwNy40NjcgMS43NzMuNDY3Ljk5NSAwIDEuNTYtLjQ4IDEuNTYtMS4yMSAwLS45ODItLjk3My0xLjIzMy0xLjgxLTEuMjMzaC0uNTk4di0xLjA1aC42Yy44OCAwIDEuNTYtLjQ3IDEuNTYtMS4xNjUgMC0uNjI4LS40ODctMS4wMDUtMS4yNTUtMS4wMDUtLjU4NyAwLTEuMjEuMjQtMS42MzguNDdsLS4zNC0xLjAwN3ptOS42OTIgNy4yMTVsLS4wOS0uNjE3aC0uMDM0Yy0uMzQuNDMzLS45MTYuNzQyLTEuNjI4Ljc0Mi0xLjEwOCAwLTEuNzMtLjgxLTEuNzMtMS42NTYgMC0xLjQwNCAxLjIzNC0yLjExMiAzLjI2OC0yLjF2LS4wOTJjMC0uMzY1LS4xNDctLjk3LTEuMTItLjk3LS41NDIgMC0xLjEwNy4xNy0xLjQ4LjQxbC0uMjctLjkxM2MuNDA2LS4yNTMgMS4xMTgtLjQ5MiAxLjk4OC0uNDkyIDEuNzYyIDAgMi4yNyAxLjEzIDIuMjcgMi4zNHYyLjAxYzAgLjUuMDI0Ljk5My4wOCAxLjMzNWgtMS4yNTR2LjAwMnptLS4xOC0yLjcxN2MtLjk4My0uMDIzLTEuOTIuMTk0LTEuOTIgMS4wNCAwIC41NDYuMzUuNzk4Ljc5Ljc5OC41NTQgMCAuOTYtLjM2NSAxLjA4NS0uNzY1LjAzMy0uMTAyLjA0NC0uMjE2LjA0NC0uMzA3di0uNzY1em02LjktMi44NDN2MS4xMDdoLTIuMjQ4djQuNDUyaC0xLjM5di01LjU2aDMuNjM4em0xLjI5NiAxLjg0OWMwLS43My0uMDIyLTEuMzI0LS4wNDQtMS44NDhoMS4yMmwuMDY4Ljg1NmguMDIzYy40MDctLjYyOCAxLjA1LS45ODIgMS44ODctLjk4MiAxLjI2NiAwIDIuMzE2IDEuMDk3IDIuMzE2IDIuODMyIDAgMi4wMS0xLjI1NCAyLjk4LTIuNTA4IDIuOTgtLjY5IDAtMS4yNjUtLjI5Ny0xLjU0OC0uNzQzaC0uMDIzdjIuODc2aC0xLjM4OHYtNS45NzJ6bTEuMzkgMS4zOGMwIC4xNC4wMTIuMjY1LjA0Ni4zOS4xMzUuNTcuNjMzLjk4IDEuMjIuOTguODgyIDAgMS40MDItLjc0IDEuNDAyLTEuODM2IDAtLjk4Mi0uNDc1LTEuNzgtMS4zNjctMS43OC0uNTc1IDAtMS4xMDcuNDItMS4yNDIgMS4wMzgtLjAzNC4xMTMtLjA1Ny4yNC0uMDU3LjM1NHYuODU1em02LjM3LTMuMjI5bC45OTQgMi45OGMuMTEzLjM0Mi4yMjYuNzY0LjMwNSAxLjA4M2guMDMzYy4wOS0uMzIuMTkyLS43My4yOTQtMS4wOTZsLjg1OC0yLjk2OGgxLjQ5MmwtMS4zOCAzLjc5Yy0uNzU2IDIuMDc4LTEuMjY1IDMuMDAzLTEuOTIgMy41NzQtLjU0Mi40OS0xLjEwNy42NzMtMS40NTcuNzJsLS4zMTctMS4xOWMuMjM4LS4wNTYuNTMyLS4xODIuODE0LS4zODcuMjYtLjE3LjU2Ni0uNTAyLjc1OC0uODc4LjA1Ni0uMTAzLjA5LS4xODMuMDktLjI1MmEuNTc3LjU3NyAwIDAwLS4wOC0uMjczbC0yLjAxLTUuMTAzaDEuNTI0em01LjgwNSAyLjI0OWguNjY2Yy43NiAwIDEuMi0uMzA4IDEuMi0uNzA3IDAtLjQtLjM3My0uNjc0LS45OTQtLjY3NC0uNDY0IDAtLjk3My4xNi0xLjM1Ny40bC0uMjk1LS44MzRjLjU5OC0uMzc3IDEuMzQ1LS41NDggMi4wNTctLjU0OC45MjcgMCAyLjA1Ny4zNjUgMi4wNTcgMS40NzIgMCAuNzItLjYzNCAxLjEyLTEuMjEgMS4yNTd2LjAyNGMuNzM0LjA4IDEuNDU4LjUyNSAxLjQ1OCAxLjM0NiAwIDEuMjktMS40MzYgMS42OS0yLjU2NiAxLjY5LS43MjQgMC0xLjQ0Ni0uMTgyLTEuOTktLjUwMmwuMzE4LS44OWMuMzg0LjIwNS45NzIuMzc2IDEuNTI1LjM3Ni43NjggMCAxLjE4Ni0uMzIgMS4xODYtLjc1NCAwLS41ODItLjU5OC0uNzY1LTEuMzc3LS43NjVoLS42Nzh2LS44OXptNi40NzItMi4yNDl2MS45OThjMCAuODc4LS4wMzQgMS40NzMtLjA4IDIuMjQ4aC4wMzNjLjI5NC0uNjUuNDY0LTEuMDYuNzQ2LTEuNjQzbDEuMzU2LTIuNjAyaDEuNjg1djUuNTZoLTEuMzIzdi0xLjk4N2MwLS44OS4wMzQtMS4zLjA5LTIuMzVoLS4wNDVjLS4yNy42Ni0uNDUyIDEuMDYtLjcyNCAxLjU5Ny0uNDMuODIzLS45MjYgMS44MjYtMS40IDIuNzRoLTEuNjYydi01LjU2aDEuMzIzem05LjcwMyAwdjEuMDg1aC0xLjY1djQuNDc1aC0xLjM5MlYxMC41M2gtMS42NVY5LjQ0NWg0LjY5em0yLjExIDMuMTc1Yy4wMzMgMS4wMDMuODEzIDEuNDM4IDEuNjkzIDEuNDM4LjY0NSAwIDEuMTA4LS4wOTIgMS41MjctLjI1MmwuMjAyLjk3Yy0uNDc1LjE5NC0xLjEzLjM0Mi0xLjkyLjM0Mi0xLjc4NiAwLTIuODM3LTEuMTA2LTIuODM3LTIuODA4IDAtMS41NC45MjctMi45OSAyLjY5LTIuOTkgMS43ODUgMCAyLjM3MiAxLjQ4MiAyLjM3MiAyLjcwNCAwIC4yNjMtLjAyMi40Ny0uMDQ0LjU5NGgtMy42ODR6bTIuNDE3LS45ODNjLjAxLS41MTQtLjIxNS0xLjM2LTEuMTQyLTEuMzYtLjg1OCAwLTEuMjIuNzktMS4yNzYgMS4zNmgyLjQxN3ptNS42NTYtMi4xMjRjLjQwNy0uMDY4IDEuMjQyLS4xMzcgMi0uMTM3LjkyNyAwIDIuNi4xMjYgMi42IDEuNDA0IDAgLjcwOC0uNTQzIDEuMTA4LTEuMTMgMS4yMzR2LjAyM2MuODEzLjEyNSAxLjM3Ny41OCAxLjM3NyAxLjM1OCAwIDEuNTMtMS45ODcgMS42NzgtMy4wOTUgMS42NzgtLjY5IDAtMS40MjUtLjA0NS0xLjc1Mi0uMDh2LTUuNDh6bTEuMzQ0IDQuNjQ3Yy4yMjYuMDI0LjM5NS4wMzQuNjc3LjAzNC42MzMgMCAxLjQwMi0uMTcgMS40MDItLjgyMiAwLS42MjgtLjYxLS44MzMtMS40OC0uODMzaC0uNnYxLjYyem0uMDEyLTIuNDY2aC41NzVjLjcxMiAwIDEuMy0uMjA1IDEuMy0uNzMgMC0uNDQ1LS4zODUtLjY4Ni0xLjIxLS42ODYtLjI3IDAtLjQ1LjAyMy0uNjY2LjA0NXYxLjM3ek02MS40MyAzNC43MjVoLTIuNTk1bC0xLjQyMi00LjU1N0g1Mi40N2wtMS4zNTUgNC41NTdoLTIuNTI4bDQuODk3LTE1LjUxNWgzLjAyNmw0LjkyIDE1LjUxNXptLTQuNDQ2LTYuNDdsLTEuMjg2LTQuMDVjLS4xMzUtLjQxNC0uMzktMS4zODgtLjc2Ny0yLjkyM2gtLjA0NWMtLjE1LjY2LS4zOSAxLjYzNS0uNzIyIDIuOTIzbC0xLjI2NCA0LjA1aDQuMDg0em0xNy4wNDIuNzM5YzAgMS45MDMtLjUwNCAzLjQwNi0xLjUxMiA0LjUxLS45MDQuOTgzLTIuMDI0IDEuNDc0LTMuMzY0IDEuNDc0LTEuNDQ1IDAtMi40ODItLjUzLTMuMTE0LTEuNTg4aC0uMDQ2djUuODkzaC0yLjQzOFYyNy4yMmMwLTEuMTk2LS4wMy0yLjQyMy0uMDktMy42ODJoMi4xNDNsLjEzNiAxLjc3M2guMDQ3Yy44MTMtMS4zMzUgMi4wNDYtMi4wMDIgMy43MDItMi4wMDIgMS4yOTMgMCAyLjM3My41MiAzLjIzNyAxLjU2NC44NjcgMS4wNDYgMS4zIDIuNDIgMS4zIDQuMTIyem0tMi40ODMuMDljMC0xLjA4OC0uMjQtMS45ODUtLjcyMi0yLjY5Mi0uNTI2LS43MzctMS4yMzQtMS4xMDUtMi4xMi0xLjEwNS0uNjAzIDAtMS4xNS4yMDUtMS42MzcuNjEtLjQ5LjQwOC0uODEuOTQtLjk2IDEuNi0uMDc0LjMxLS4xMTIuNTYtLjExMi43NnYxLjg2NGMwIC44MTUuMjQ2IDEuNTAyLjczNSAyLjA2Mi40OS41NiAxLjEyNS44NCAxLjkwNy44NC45MTggMCAxLjYzMi0uMzYgMi4xNDQtMS4wOC41MS0uNzIzLjc2Ny0xLjY3NS43NjctMi44NTd6bTE1LjEtLjA5YzAgMS45MDMtLjUwNCAzLjQwNi0xLjUxMyA0LjUxLS45MDIuOTgzLTIuMDI0IDEuNDc0LTMuMzYyIDEuNDc0LTEuNDQ1IDAtMi40ODMtLjUzLTMuMTE0LTEuNTg4aC0uMDQ2djUuODkzSDc2LjE3VjI3LjIyYzAtMS4xOTYtLjAzLTIuNDIzLS4wOS0zLjY4MmgyLjE0M2wuMTM2IDEuNzczaC4wNDVjLjgxMi0xLjMzNSAyLjA0NS0yLjAwMiAzLjcwMi0yLjAwMiAxLjI5MyAwIDIuMzczLjUyIDMuMjQgMS41NjQuODYzIDEuMDQ2IDEuMjk2IDIuNDIgMS4yOTYgNC4xMjJ6bS0yLjQ4Mi4wOWMwLTEuMDg4LS4yNC0xLjk4NS0uNzIzLTIuNjkyLS41MjctLjczNy0xLjIzMi0xLjEwNS0yLjEyLTEuMTA1LS42MDMgMC0xLjE0OC4yMDUtMS42MzguNjEtLjQ5LjQwOC0uODEuOTQtLjk2IDEuNi0uMDczLjMxLS4xMTIuNTYtLjExMi43NnYxLjg2NGMwIC44MTUuMjQ0IDEuNTAyLjczIDIuMDYyLjQ5LjU2IDEuMTI2Ljg0IDEuOTEuODQuOTIgMCAxLjYzMy0uMzYgMi4xNDQtMS4wOC41MTItLjcyMy43Ny0xLjY3NS43Ny0yLjg1N3ptMTYuNTg5IDEuMjkxYzAgMS4zMi0uNDUgMi4zOTMtMS4zNSAzLjIyMi0uOTkyLjkwNi0yLjM3MiAxLjM2LTQuMTQ1IDEuMzYtMS42MzggMC0yLjk1LS4zMjMtMy45NDMtLjk2OGwuNTY1LTIuMDcyYTYuNTggNi41OCAwIDAwMy41MjMuOTljLjkxOCAwIDEuNjMyLS4yMTIgMi4xNDYtLjYzNC41MS0uNDIyLjc2Ni0uOTkuNzY2LTEuNjk1IDAtLjYzLS4yMS0xLjE2LS42MzItMS41OS0uNDItLjQzLTEuMTItLjgzLTIuMS0xLjItMi42NjMtMS4wMTQtMy45OTMtMi40OTgtMy45OTMtNC40NSAwLTEuMjc1LjQ2Ni0yLjMyMiAxLjQtMy4xMzUuOTMtLjgxNSAyLjE3Mi0xLjIyMiAzLjcyNC0xLjIyMiAxLjM4NiAwIDIuNTM2LjI0NiAzLjQ1My43MzdsLS42MSAyLjAyNmMtLjg1Ni0uNDc1LTEuODI2LS43MTQtMi45MS0uNzE0LS44NTggMC0xLjUyNy4yMTYtMi4wMDguNjQ1LS40MDYuMzg0LS42MS44NS0uNjEgMS40MDUgMCAuNjEzLjIzMiAxLjEyLjY5OCAxLjUyLjQwNy4zNjcgMS4xNDQuNzY2IDIuMjE0IDEuMTk2IDEuMzA4LjUzNyAyLjI3IDEuMTY2IDIuODg4IDEuODg2LjYxOC43Mi45MjUgMS42MTguOTI1IDIuNjl6bTguMDYtNC45NzJoLTIuNjg3djUuNDMyYzAgMS4zODIuNDczIDIuMDcyIDEuNDIgMi4wNzJhNC4zIDQuMyAwIDAwMS4wODQtLjExNmwuMDY4IDEuODg4Yy0uNDguMTgzLTEuMTEyLjI3NS0xLjg5Ni4yNzUtLjk2MyAwLTEuNzE2LS4zLTIuMjU4LS44OTctLjU0LS42LS44MTMtMS42MDQtLjgxMy0zLjAxNlYyNS40aC0xLjYwMnYtMS44NjRoMS42di0yLjA1bDIuMzk1LS43MzZ2Mi43ODZoMi42ODd2MS44Njd6bTEyLjEyIDMuNjM3YzAgMS43Mi0uNDgyIDMuMTMtMS40NDUgNC4yMzUtMS4wMSAxLjEzNy0yLjM1IDEuNzA0LTQuMDIgMS43MDQtMS42MDggMC0yLjg5LS41NDYtMy44NDYtMS42MzUtLjk1Ny0xLjA5LTEuNDM1LTIuNDYzLTEuNDM1LTQuMTIgMC0xLjczMy40OTItMy4xNTMgMS40NzgtNC4yNTcuOTg1LTEuMTA1IDIuMzE0LTEuNjU3IDMuOTgzLTEuNjU3IDEuNjEgMCAyLjkwNS41NDUgMy44ODMgMS42MzUuOTM0IDEuMDU3IDEuNCAyLjQyMiAxLjQgNC4wOTV6bS0yLjUyOC4wOGMwLTEuMDMtLjIxNi0xLjkxNi0uNjU0LTIuNjU1LS41MS0uODkzLTEuMjQyLTEuMzM4LTIuMTg4LTEuMzM4LS45OCAwLTEuNzI0LjQ0Ny0yLjIzNSAxLjMzOC0uNDM4Ljc0LS42NTQgMS42MzgtLjY1NCAyLjcgMCAxLjAzMi4yMTggMS45MTcuNjU1IDIuNjU0LjUyNy44OTIgMS4yNjQgMS4zMzcgMi4yMTMgMS4zMzcuOTMgMCAxLjY2LS40NTQgMi4xODgtMS4zNjIuNDUtLjc1LjY3Ni0xLjY0NS42NzYtMi42NzV6bTEwLjQ1MS0zLjM5NmE0LjE3NyA0LjE3NyAwIDAwLS43NjgtLjA3Yy0uODU3IDAtMS41Mi4zMy0xLjk4Ny45OTItLjQwNi41ODItLjYxIDEuMzItLjYxIDIuMjF2NS44NjhoLTIuNDM2bC4wMjMtNy42NjRjMC0xLjI5LS4wMy0yLjQ2NC0uMDkyLTMuNTIyaDIuMTIzbC4wOSAyLjE0aC4wNjdjLjI1OC0uNzM2LjY2NC0xLjMyNyAxLjIyLTEuNzcyLjU0LS40IDEuMTI4LS42IDEuNzYtLjYuMjI2IDAgLjQzLjAxNy42MS4wNDZ2Mi4zNzJ6bTEwLjkgMi44NzljMCAuNDQ1LS4wMy44Mi0uMDkgMS4xMjdoLTcuMzEyYy4wMyAxLjEwNS4zODMgMS45NSAxLjA2MiAyLjUzNC42MTcuNTIgMS40MTMuNzgyIDIuMzkuNzgyIDEuMDg0IDAgMi4wNzItLjE3NyAyLjk2LS41M2wuMzggMS43MjZjLTEuMDM3LjQ2Mi0yLjI2Mi42OTItMy42NzYuNjkyLTEuNyAwLTMuMDM2LS41MS00LjAwOC0xLjUzLS45Ny0xLjAyLTEuNDU1LTIuMzktMS40NTUtNC4xMSAwLTEuNjg2LjQ1LTMuMDkyIDEuMzU1LTQuMjEyLjk0Ny0xLjE5NiAyLjIyNi0xLjc5NCAzLjgzNi0xLjc5NCAxLjU4IDAgMi43NzguNTk4IDMuNTkgMS43OTQuNjQ2Ljk1Ljk3IDIuMTI1Ljk3IDMuNTJ6bS0yLjMyNC0uNjQ1Yy4wMTQtLjczNy0uMTQ0LTEuMzczLS40NzQtMS45MS0uNDIyLS42OTMtMS4wNy0xLjAzNy0xLjk0My0xLjAzNy0uNzk2IDAtMS40NDUuMzM3LTEuOTQgMS4wMTMtLjQwNi41MzgtLjY0NyAxLjE4Mi0uNzIyIDEuOTMzaDUuMDc4di4wMDJ6Ii8+PC9nPjwvZz48L3N2Zz4=')}
+                            </style>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__end">
+                    <div class="footer__data-providers-copyright">Исходные данные: ООО «Яндекс.Пробки»; Росгидромет, ФГБУ «ЦАО»; © 2022 ECMWF; NOAA</div>
+                    <div class="copyright">
+                        © <span class="copyright__dates">2000–2022</span>  ООО «<a class="copyright__link" href="//yandex.ru">ЯНДЕКС</a>»
+                    </div>
+                </div>
+            </footer>
+            <script src="//yastatic.net/jquery/1.9.1/jquery.min.js"></script>
+            <script src="//yastatic.net/s3/weather-frontend/11.98.101/desktop.bundles/index/_index.ru.js" crossorigin="anonymous"></script>
+            <i class="b-statcounter">
+                <i class="b-statcounter__metrika b-statcounter__metrika_type_js i-bem i-bem" data-bem='{"b-statcounter__metrika":{"enableAll":true,"webvisor":true,"params":{"lang":"ru","tld":"ru","los_portal":false,"forecastData":{"days":[{"temp_min":-8,"temp_max":-3,"date":"2022-03-05","date_ts":1646413200000,"icon":"ovc"},{"temp_min":-3,"temp_max":3,"date":"2022-03-06","date_ts":1646499600000,"icon":"ovc_ra_sn"},{"temp_min":-1,"temp_max":2,"date":"2022-03-07","date_ts":1646586000000,"icon":"ovc_ra_sn"},{"temp_min":-15,"temp_max":-2,"date":"2022-03-08","date_ts":1646672400000,"icon":"ovc_-sn"},{"temp_min":-19,"temp_max":-13,"date":"2022-03-09","date_ts":1646758800000,"icon":"bkn_-sn_d"},{"temp_min":-19,"temp_max":-11,"date":"2022-03-10","date_ts":1646845200000,"icon":"ovc"},{"temp_min":-18,"temp_max":-12,"date":"2022-03-11","date_ts":1646931600000,"icon":"ovc_-sn"},{"temp_min":-18,"temp_max":-11,"date":"2022-03-12","date_ts":1647018000000,"icon":"ovc_-sn"},{"temp_min":-19,"temp_max":-8,"date":"2022-03-13","date_ts":1647104400000,"icon":"skc_d"},{"temp_min":-17,"temp_max":-6,"date":"2022-03-14","date_ts":1647190800000,"icon":"ovc"}],"hourly":[{"hour":"23","hour_ts":1646496000,"temp":-5,"icon":"ovc"},{"hour":"0","hour_ts":1646499600,"temp":-5,"icon":"ovc"},{"hour":"1","hour_ts":1646503200,"temp":-5,"icon":"ovc"},{"hour":"2","hour_ts":1646506800,"temp":-5,"icon":"ovc"},{"hour":"3","hour_ts":1646510400,"temp":-4,"icon":"ovc"},{"hour":"4","hour_ts":1646514000,"temp":-4,"icon":"ovc"},{"hour":"5","hour_ts":1646517600,"temp":-3,"icon":"ovc"},{"hour":"6","hour_ts":1646521200,"temp":-3,"icon":"ovc"},{"hour":"7","hour_ts":1646524800,"temp":-1,"icon":"ovc_ra_sn"},{"hour":"8","hour_ts":1646528400,"temp":-1,"icon":"ovc_ra_sn"},{"hour":"9","hour_ts":1646532000,"temp":-1,"icon":"ovc_ra_sn"},{"hour":"10","hour_ts":1646535600,"temp":0,"icon":"ovc_ra_sn"},{"hour":"11","hour_ts":1646539200,"temp":1,"icon":"ovc_ra_sn"},{"hour":"12","hour_ts":1646542800,"temp":1,"icon":"ovc_ra_sn"},{"hour":"13","hour_ts":1646546400,"temp":2,"icon":"ovc"},{"hour":"14","hour_ts":1646550000,"temp":2,"icon":"ovc"},{"hour":"15","hour_ts":1646553600,"temp":3,"icon":"ovc"},{"hour":"16","hour_ts":1646557200,"temp":3,"icon":"ovc"},{"hour":"17","hour_ts":1646560800,"temp":3,"icon":"ovc"},{"hour":"18","hour_ts":1646564400,"temp":3,"icon":"ovc"},{"hour":"19","hour_ts":1646568000,"temp":3,"icon":"ovc"},{"hour":"20","hour_ts":1646571600,"temp":3,"icon":"ovc"},{"hour":"21","hour_ts":1646575200,"temp":3,"icon":"ovc"},{"hour":"22","hour_ts":1646578800,"temp":3,"icon":"ovc_-ra"}],"nowcastAlert":"В ближайшие 2 часа осадков не ожидается","fact":{"obs_time":1646496000000,"uptime":1646496726,"temp":-5,"feels_like":-9,"temp_water":0,"icon":"ovc","condition":"overcast","cloudness":1,"prec_type":0,"prec_prob":0,"prec_strength":0,"is_thunder":false,"wind_speed":1,"wind_dir":"se","pressure_mm":739,"pressure_pa":985,"humidity":85,"daytime":"n","polar":false,"season":"spring","source":"station","accum_prec":{"1":0,"3":0,"7":5.7099524},"soil_moisture":0.08,"soil_temp":-1,"uv_index":0,"wind_gust":4.1}},"test_id":["204303","466407","384799","258984","188861","186872","299079","299098"]},"triggerEvent":true,"experiments":"uIJauVY8G8XzVXK2rKp5X5KRJGC8lCC9-yuKwJIdt7OOBPN57HtYSqtoV8wVt6ThGm4FlNUPbhPFr82MzSufjs-yGYynUsH0ar1zTbYdbH7fKkitUoTHh24Q_0gELIsu","id":115080}}'>
+                    <noscript>
+                        <img alt="" src="//mc.yandex.ru/watch/115080"/>
+                    </noscript>
+                </i>
+            </i>
+            <div class="adv adv_pos_popup">
+                <div id="Y-A-289641-1"></div>
+                <script nonce="1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL">(function(w,d,n,s,t){var initTime = new Date();w[n]=w[n]||[];w[n].push(function(){var params={"blockId":"Y-A-289641-1","renderTo":"Y-A-289641-1","async":true,"extParams":"&temp=-5&icon=ovc&humidity=85&city=65&country=225&reqid=1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL&awaps_section=8939","pos":["popup"],"cspNonce":"1646496726730221-7124429305201611857-vla2-8593-8b6-vla-l7-balancer-8080-BAL"};params.initTime = initTime;params.onRender=function(data){var el = document.getElementById("Y-A-289641-1");var parent = el.parentNode;if (data.product === 'rtb') {parent.classList.add('adv_type_rtb');} else { parent.classList.add('adv_type_direct');};};Ya.Context.AdvManager.render(params);window.insertDebugPanel && window.insertDebugPanel({"blockId":"Y-A-289641-1","renderTo":"Y-A-289641-1","place":""});});}).bind(this, this, this.document, "yandexContextAsyncCallbacks")();</script>
+            </div>
+            <i class="redir i-bem" data-bem='{"redir":{"abt":{"boxes":"204303,0,59;466407,0,-1;384799,0,-1;258984,0,-1;188861,0,-1;186872,0,-1;299079,0,86;299098,0,55"},"events":[{"id":1,"type":"show","path":"weather_web"},{"id":3,"parent_id":1,"type":"show","path":"weather_web.ya-alerts"},{"id":3,"parent_id":1,"type":"show","path":"weather_web.ya-alerts"}]}}'></i>
+        </div>
+    </body>
+</html>
+<script src="//yastatic.net/s3/frontend/yandex-lego/serp-header/_/yXqCiPa7.js" type="text/javascript" async=""></script>
+<script src="//yastatic.net/s3/frontend/yandex-lego/serp-header/_/3MTVuKVx.js" type="text/javascript" async=""></script>
+<div class="i-config i-bem" data-bem='{"i-config":{"params":{"compare":{"limit":8,"cookie-name":"yw_cmpr","cookie-expires-days":365}}}}'></div>
+<div class="webgl-checker i-bem" style="display:none" hidden="" data-bem='{"webgl-checker":{}}'></div>
+<div class="detect-scripts i-bem" data-bem='{"detect-scripts":{"detect-domains":["report-sample","yandex.ru","yandex.ru","cloud-api.yandex.ru","frontend-internal.s3.mds.yandex.net","yastatic.net","api-maps.yandex.ru","suggest-maps.yandex.ru","*.maps.yandex.net","yandex.ru","yastatic.net","s3.yandex.net","s3.mds.yandex.net","an.yandex.ru","yastatic.net","z.moatads.com","storage.mds.yandex.net","*.adfox.ru","*.yandex.ru","yastatic.net","yandex.ru","yandex.com","blob:","an.yandex.ru","yastatic.net","z.moatads.com","storage.mds.yandex.net","strm.yandex.ru","pass.yandex.ru","social.yandex.ru","mc.yandex.ru","yastatic.net","mc.webvisor.com","mc.webvisor.org","mc.yandex.com","mc.yandex.by","mc.yandex.com.tr","mc.yandex.kz","mc.yandex.ru","mc.yandex.ua","mc.yandex.az","mc.yandex.co.il","mc.yandex.com.am","mc.yandex.com.ge","mc.yandex.ee","mc.yandex.fr","mc.yandex.kg","mc.yandex.lt","mc.yandex.lv","mc.yandex.md","mc.yandex.tj","mc.yandex.tm","mc.yandex.uz"]}}'></div>
+<script src="https://yastatic.net/s3/chat/widget.js" async=""></script>

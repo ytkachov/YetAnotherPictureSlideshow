@@ -92,7 +92,7 @@ namespace WeatherCollector
 
 
       NGSFileReader writer = new NGSFileReader(_folder);
-      INGSWeatherReader reader;
+      IWeatherReader reader;
       if (_type == 0)
         reader = new NGSWatinReader();
       else
