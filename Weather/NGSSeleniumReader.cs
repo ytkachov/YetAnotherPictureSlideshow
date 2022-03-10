@@ -12,7 +12,7 @@ namespace weather
 {
   public class NGSSeleniumReader : WeatherSeleniumReader
   {
-    public NGSSeleniumReader(int type) : base(type)
+    public NGSSeleniumReader(WeatherSource type) : base(type)
     {
       _weather_url = "https://pogoda.ngs.ru/academgorodok/";
     }

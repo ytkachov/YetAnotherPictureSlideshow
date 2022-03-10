@@ -5,7 +5,7 @@ namespace weather
 {
   public class YandexSeleniumReader : WeatherSeleniumReader
   {
-    public YandexSeleniumReader(int type) : base(type)
+    public YandexSeleniumReader(WeatherSource type) : base(type)
     {
       _weather_url = "https://yandex.ru/pogoda/?lat=54.85194397&lon=83.10189056";
     }

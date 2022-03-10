@@ -18,6 +18,17 @@ using WatiN.Core;
 
 namespace weather
 {
+  public enum WeatherSource
+  {
+    NW = 0, // NGS Watin 
+    NC = 1, // NGS Chrome
+    NI = 2, // NGS IE
+    NE = 3, // NGS Edge
+    YC = 4, // Yandex Chrome
+    YI = 5, // Yandex IE
+    YE = 6, // Yandex Edge
+  }
+
   public interface IWeatherReader
   {
     void close();
@@ -194,10 +205,10 @@ namespace weather
   public abstract class WeatherSeleniumReader : IWeatherReader
   {
     protected IWebDriver _driver = null;
-    protected int _type = 0;
+    protected WeatherSource _type;
     protected string _weather_url;
 
-    public WeatherSeleniumReader(int type)
+    public WeatherSeleniumReader(WeatherSource type)
     {
       _type = type;
       _driver = create_driver();
@@ -207,8 +218,8 @@ namespace weather
     {
       try
       {
-      _driver.Close();
-      _driver.Quit();
+        _driver.Close();
+        _driver.Quit();
       }
       catch (Exception e)
       {
@@ -256,11 +267,11 @@ namespace weather
     protected virtual IWebDriver create_driver()
     {
       IWebDriver driver = null;
-      if (_type == 2)
+      if (_type == WeatherSource.NI || _type == WeatherSource.YI)
         driver = new InternetExplorerDriver();
-      else if (_type == 3)
+      else if (_type == WeatherSource.NE || _type == WeatherSource.YE)
         driver = new EdgeDriver();
-      else
+      else if (_type == WeatherSource.NC || _type == WeatherSource.YC)
         driver = new ChromeDriver();
 
       driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);

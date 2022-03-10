@@ -12,7 +12,7 @@ namespace WeatherCollector
   class WeatherCollectorApp
   {
     private static string _folder = ".";
-    private static int _type = 1;
+    private static WeatherSource _type = WeatherSource.NC;
 
     [STAThread]
     static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace WeatherCollector
         _folder = args[0];
 
       if (args.Length > 1)
-        _type = int.Parse(args[1]);
+        _type = (WeatherSource)int.Parse(args[1]);
 
       bool nocheck = false;
       if (args.Length > 2)
@@ -54,10 +54,15 @@ namespace WeatherCollector
       {
         string browsername = "chrome";
         string drivername = "chromedriver";
-        if (_type == 2)
+        if (_type == WeatherSource.NI || _type == WeatherSource.YI)
         {
           browsername = "iexplore";
           drivername = "IEDriverServer";
+        }
+        else if (_type == WeatherSource.NE || _type == WeatherSource.YE)
+        {
+          browsername = "edge";
+          drivername = "msedgeDriver";
         }
 
         Process[] pl = Process.GetProcesses();
@@ -91,12 +96,18 @@ namespace WeatherCollector
       }
 
 
-      NGSFileReader writer = new NGSFileReader(_folder);
-      IWeatherReader reader;
-      if (_type == 0)
-        reader = new NGSWatinReader();
-      else
+      IWeatherReader writer = null;
+      IWeatherReader reader = null;
+      if (_type == WeatherSource.NI || _type == WeatherSource.NC || _type == WeatherSource.NE)
+      {
         reader = new NGSSeleniumReader(_type); // 1 - chrome; 2 - IE; 3 - Edge;
+        writer = new NGSFileReader();
+      }
+      else if (_type == WeatherSource.YI || _type == WeatherSource.YC || _type == WeatherSource.YE)
+      {
+        reader = new YandexSeleniumReader(_type); // 1 - chrome; 2 - IE; 3 - Edge;
+        writer = new YandexFileReader();
+      }
 
       string temp = "", current = "", forecast = "", except="";
       try
