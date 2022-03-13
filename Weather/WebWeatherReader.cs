@@ -15,6 +15,7 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
 using WatiN.Core;
+using System.Collections.ObjectModel;
 
 namespace weather
 {
@@ -81,6 +82,23 @@ namespace weather
       }
 
       return el;
+    }
+
+    public static ReadOnlyCollection<IWebElement> findElements(this ISearchContext self, By by)
+    {
+      if (self == null)
+        return null;
+
+      ReadOnlyCollection<IWebElement> els = null;
+      try
+      {
+        els = self.FindElements(by);
+      }
+      catch (Exception e)
+      {
+      }
+
+      return els;
     }
 
     public static string outerHTML(this IWebDriver self, IWebElement el)

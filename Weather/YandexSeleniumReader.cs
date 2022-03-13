@@ -11,40 +11,39 @@ namespace weather
       _weather_url = "https://yandex.ru/pogoda/?lat=54.85194397&lon=83.10189056";
       
       int dayofmonth = DateTime.Now.Day;
-      _weather_forecast_url = $"https://yandex.ru/pogoda/?lat=54.85194397&lon=83.10189056&via=ms#{dayofmonth}";
+      _weather_forecast_url = $"https://yandex.ru/pogoda/details?lat=54.85194397&lon=83.10189056&via=ms#{dayofmonth}";
     }
 
     protected override string get_forecast()
     {
-      // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(22));
-      // var tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']")); });
-      var tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements']"));
-      if (tbl == null)
-      {
-        // wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(24));
-        // tbl = wait.Until((d) => { return d.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']")); });
-        tbl = _driver.findElement(By.XPath("//table[@class='pgd-detailed-cards elements pgd-hidden']"));
-      }
+      var cards = _driver.findElements(By.XPath("//div[@class='card']"));
 
-      if (tbl == null)
+      if (cards == null)
         return null;
 
-      string outerhtml = _driver.outerHTML(tbl).Replace("&nbsp;", " ");
-      return outerhtml;
+      string result = "<forecast>";
+      for (int i = 0; i < cards.Count; i++)
+      {
+        var card = cards[i];
+        result += "\n" + _driver.outerHTML(card).Replace("<br>", " ").Replace("</br>", " ");
+      }
+
+      result += "\n</forecast>";
+      return result;
     }
 
     protected override string get_current()
     {
       string result = "<body>\n";
-      var info = _driver.findElement(By.ClassName("fact__temp-wrap"));
+      var info = _driver.findElement(By.XPath("//div[@class='fact__temp-wrap']"));
       if (info != null)
        result = _driver.outerHTML(info);
 
-      info = _driver.findElement(By.ClassName("fact__props"));
+      info = _driver.findElement(By.XPath("//div[@class='fact__props']"));
       if (info != null)
         result += "\n\n" + _driver.outerHTML(info);
 
-      info = _driver.findElement(By.ClassName("swiper-container fact__hourly-swiper"));
+      info = _driver.findElement(By.XPath("//div[@class='swiper-container fact__hourly-swiper']"));
       if (info != null)
         result += "\n\n" + _driver.outerHTML(info);
 
