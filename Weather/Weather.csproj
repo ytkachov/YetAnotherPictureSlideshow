@@ -69,7 +69,7 @@
   <ItemGroup>
     <Compile Include="NGSSeleniumReader.cs" />
     <Compile Include="WebWeatherReader.cs" />
-    <Compile Include="NGSFileReader.cs" />
+    <Compile Include="WeatherFileReaderWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WeatherProvider.cs" />
     <Compile Include="WeatherProviderBase.cs" />

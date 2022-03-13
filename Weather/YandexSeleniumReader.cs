@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 
 namespace weather
@@ -8,6 +9,9 @@ namespace weather
     public YandexSeleniumReader(WeatherSource type) : base(type)
     {
       _weather_url = "https://yandex.ru/pogoda/?lat=54.85194397&lon=83.10189056";
+      
+      int dayofmonth = DateTime.Now.Day;
+      _weather_forecast_url = $"https://yandex.ru/pogoda/?lat=54.85194397&lon=83.10189056&via=ms#{dayofmonth}";
     }
 
     protected override string get_forecast()
@@ -31,15 +35,21 @@ namespace weather
 
     protected override string get_current()
     {
-      var info = _driver.findElement(By.ClassName("today-panel__info"));
-      if (info == null)
-        return null;
+      string result = "<body>\n";
+      var info = _driver.findElement(By.ClassName("fact__temp-wrap"));
+      if (info != null)
+       result = _driver.outerHTML(info);
 
-      string outerhtml = _driver.outerHTML(info).Replace("&nbsp;", " ");
+      info = _driver.findElement(By.ClassName("fact__props"));
+      if (info != null)
+        result += "\n\n" + _driver.outerHTML(info);
 
-      // remove usually incorrect <img > tags
-      string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
-      return Regex.Replace(outerhtml, img, " ");
+      info = _driver.findElement(By.ClassName("swiper-container fact__hourly-swiper"));
+      if (info != null)
+        result += "\n\n" + _driver.outerHTML(info);
+
+      result += "\n</body>";
+      return result;
     }
 
   }

@@ -96,17 +96,17 @@ namespace WeatherCollector
       }
 
 
-      IWeatherReader writer = null;
+      IWeatherWriter writer = null;
       IWeatherReader reader = null;
       if (_type == WeatherSource.NI || _type == WeatherSource.NC || _type == WeatherSource.NE)
       {
-        reader = new NGSSeleniumReader(_type); // 1 - chrome; 2 - IE; 3 - Edge;
-        writer = new NGSFileReader();
+        reader = new NGSSeleniumReader(_type); 
+        writer = new NGSFileReaderWriter(_type);
       }
       else if (_type == WeatherSource.YI || _type == WeatherSource.YC || _type == WeatherSource.YE)
       {
-        reader = new YandexSeleniumReader(_type); // 1 - chrome; 2 - IE; 3 - Edge;
-        writer = new YandexFileReader();
+        reader = new YandexSeleniumReader(_type);    
+        writer = new YandexFileReaderWriter(_type);
       }
 
       string temp = "", current = "", forecast = "", except="";
@@ -138,8 +138,6 @@ namespace WeatherCollector
       }
 
       writer.writeinfo(temp, current, forecast, except);
-
-      writer.close();
       reader.close();
     }
   }

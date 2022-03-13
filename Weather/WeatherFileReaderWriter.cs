@@ -11,6 +11,11 @@ using TS = Microsoft.Win32.TaskScheduler;
 namespace weather
 {
 
+  public interface IWeatherWriter
+  {
+    void writeinfo(string temperature, string current, string forecast, string except);
+  }
+
   static class TSExtensions
   {
     //public static ElementCollection Children(this Element self)
@@ -29,18 +34,28 @@ namespace weather
     }
   }
 
-  public class NGSFileReader : IWeatherReader
+  public abstract class WeatherFileReaderWriter : IWeatherReader, IWeatherWriter
   {
+    private string _execparams = ". 1";
     private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-    private string _filename = "ngs_weather_info.txt";
-    private bool _checkcollector = true;
+    private string _filename = "weather_info.txt";
+    protected bool _checkcollector = true;
 
     static private string delimiter = "\n###$$$%%%@@@***&&&\n";
 
-    public NGSFileReader(string folder = null)
+    protected abstract string get_execparams();
+    protected abstract string get_foldername();
+    protected abstract string get_filename();
+
+    public WeatherFileReaderWriter(string folder = null)
     {
       if (folder != null)
         _foldername = folder;
+      else
+        _foldername = get_foldername();
+
+      _execparams = get_execparams();
+      _filename = get_filename();
     }
 
     public void close()
@@ -177,7 +192,6 @@ namespace weather
     {
       using (TaskService ts = new TaskService())
       {
-        string execparams = ". 1";
         string execfolder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
         string execname = Path.Combine(execfolder, "WeatherCollector.exe");
 
@@ -198,9 +212,9 @@ namespace weather
 
             if (eaction.Path == execname && eaction.WorkingDirectory == execfolder)
             {
-              if (eaction.Arguments == execparams)
+              if (eaction.Arguments == _execparams)
                 continue;
-              if (string.IsNullOrEmpty(eaction.Arguments) && string.IsNullOrEmpty(execparams))
+              if (string.IsNullOrEmpty(eaction.Arguments) && string.IsNullOrEmpty(_execparams))
                 continue;
             }
 
@@ -230,7 +244,7 @@ namespace weather
           td.Settings.ExecutionTimeLimit = TimeSpan.FromMinutes(5);
           td.Settings.Hidden = false;
 
-          td.Actions.Add(new ExecAction(execname, execparams, execfolder));
+          td.Actions.Add(new ExecAction(execname, _execparams, execfolder));
 
           // Add a trigger that will fire the task at this time every other day
           DailyTrigger dt = (DailyTrigger)td.Triggers.Add(new DailyTrigger());
@@ -253,4 +267,59 @@ namespace weather
       }
     }
   }
+
+  public class NGSFileReaderWriter : WeatherFileReaderWriter
+  {
+    private string _execparams = "";
+    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+    private string _filename = "ngs_weather_info.txt";
+
+    public NGSFileReaderWriter(WeatherSource type, string folder = null) : base(folder)
+    {
+      _execparams = $". {(int)type}";
+    }
+
+    protected override string get_execparams()
+    {
+      return _execparams;
+    }
+
+    protected override string get_filename()
+    {
+      return _filename;
+    }
+
+    protected override string get_foldername()
+    {
+      return _foldername;
+    }
+  }
+
+  public class YandexFileReaderWriter : WeatherFileReaderWriter
+  {
+    private string _execparams = "";
+    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+    private string _filename = "yandex_weather_info.txt";
+
+    public YandexFileReaderWriter(WeatherSource type, string folder = null) : base(folder)
+    {
+      _execparams = $". {(int)type}";
+    }
+
+    protected override string get_execparams()
+    {
+      return _execparams;
+    }
+
+    protected override string get_filename()
+    {
+      return _filename;
+    }
+
+    protected override string get_foldername()
+    {
+      return _foldername;
+    }
+  }
+
 }

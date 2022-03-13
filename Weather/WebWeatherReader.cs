@@ -207,6 +207,7 @@ namespace weather
     protected IWebDriver _driver = null;
     protected WeatherSource _type;
     protected string _weather_url;
+    protected string _weather_forecast_url;
 
     public WeatherSeleniumReader(WeatherSource type)
     {
@@ -229,21 +230,21 @@ namespace weather
       _driver = null;
     }
 
-    public string current()
+    public virtual string current()
     {
       navigate(_weather_url);
       return get_current();
     }
 
-    public string forecast()
+    public virtual string forecast()
     {
-      if (_driver.Url != _weather_url)
-        navigate(_weather_url);
+      if (_driver.Url != _weather_forecast_url)
+        navigate(_weather_forecast_url);
 
       return get_forecast();
     }
 
-    public string temperature()
+    public virtual string temperature()
     {
       navigate();
       Thread.Sleep(1000);
@@ -308,7 +309,6 @@ namespace weather
 
       return null;
     }
-
 
     protected abstract string get_forecast();
     protected abstract string get_current();

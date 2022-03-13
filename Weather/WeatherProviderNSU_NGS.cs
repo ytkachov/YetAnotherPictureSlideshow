@@ -134,7 +134,7 @@ namespace weather
         {
           // _sitereader = new NGSSeleniumReader();
           // _sitereader = new NGSWatinReader();
-          _sitereader = new NGSFileReader();
+          _sitereader = new NGSFileReaderWriter(WeatherSource.NC);
         }
 
         _error_descr = "";

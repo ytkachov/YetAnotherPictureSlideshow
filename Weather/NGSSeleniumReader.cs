@@ -15,6 +15,7 @@ namespace weather
     public NGSSeleniumReader(WeatherSource type) : base(type)
     {
       _weather_url = "https://pogoda.ngs.ru/academgorodok/";
+      _weather_forecast_url = _weather_url;
     }
 
     protected override string get_forecast()
