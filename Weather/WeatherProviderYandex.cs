@@ -43,15 +43,20 @@ namespace weather
 
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
+    private IWeatherReader _sitereader = null;
 
-    private WeatherProviderYandex()
+    private WeatherProviderYandex(IWeatherReader reader)
     {
+      if (reader != null)
+        _sitereader = reader;
+      else 
+        _sitereader = new YandexFileReaderWriter(WeatherSource.NC);
     }
 
-    public static IWeatherProvider get()
+    public static IWeatherProvider get(IWeatherReader reader = null)
     {
       if (_self == null)
-        _self = new WeatherProviderYandex();
+        _self = new WeatherProviderYandex(reader);
 
       _refcounter++;
       return _self;
@@ -65,108 +70,13 @@ namespace weather
       return _refcounter;
     }
 
-    protected override void readdata()
-    {
-      while (true)
-      {
-        try
-        {
-          lock (_locker)
-          {
-            _weather.Clear();
-          }
-
-          XmlDocument forecast = new XmlDocument();
-
-          //список городов здесь: http://weather.yandex.ru/static/cities.xml
-          // для новосибирска ID = 29634
-          forecast.Load("https://export.yandex.ru/weather-ng/forecasts/29634.xml");
-          //forecast.Load("file://d:/1.xml");
-
-          if (_nsmgr == null)
-          {
-            _nsmgr = new XmlNamespaceManager(forecast.NameTable);
-            _nsmgr.AddNamespace("Y", "http://weather.yandex.ru/forecast");
-          }
-
-          XmlElement root = forecast.DocumentElement;
-          XmlNode now = root.SelectSingleNode("/Y:forecast/Y:fact", _nsmgr);
-          extract_weather(WeatherPeriod.Now, now);
-
-          DateTime today = DateTime.Now;
-          for (int i = 0; i < 2; i++)
-          {
-            DateTime day = today.Add(TimeSpan.FromDays(i));
-
-            XmlNodeList nodes = root.SelectNodes(string.Format("//Y:day[@date='{0}-{1:D2}-{2:D2}']/Y:day_part", day.Year, day.Month, day.Day), _nsmgr);
-            foreach (XmlNode node in nodes)
-              extract_weather(i, node);
-          }
-        }
-        catch (Exception ex)
-        {
-          ex.ToString();
-        }
-
-        if (_exit.WaitOne(TimeSpan.FromMinutes(30)))
-        {
-          break;
-        }
-      }
-
+    protected override void read_current_weather() 
+    { 
     }
-
-    private void extract_weather(WeatherPeriod period, XmlNode node)
-    {
-      if (period == WeatherPeriod.Undefined)
-        return;
-
-      weather w = new weather
-      {
-        Pressure = double.Parse(node["pressure"].InnerText),
-        Humidity = double.Parse(node["humidity"].InnerText),
-        WindSpeed = double.Parse(node["wind_speed"].InnerText),
-        WindDirection = wind_direction_encoding.Keys.Contains(node["wind_direction"].InnerText) ? wind_direction_encoding[node["wind_direction"].InnerText] : WindDirection.Undefined,
-        WeatherType = weather_type_encoding.Keys.Contains(node["image-v3"].InnerText) ? weather_type_encoding[node["image-v3"].InnerText] : WeatherType.Undefined
-      };
-
-      XmlNode temp = node.SelectSingleNode("Y:temperature", _nsmgr);
-      if (temp != null)
-      {
-        w.TemperatureLow = w.TemperatureHigh = double.Parse(temp.InnerText);
-      }
-      else
-      {
-        w.TemperatureLow = w.TemperatureHigh = double.Parse(node.SelectSingleNode("descendant::Y:from", _nsmgr).InnerText);
-        w.TemperatureHigh = w.TemperatureHigh = double.Parse(node.SelectSingleNode("descendant::Y:to", _nsmgr).InnerText);
-      }
-
-      lock (_locker)
-      {
-        _weather[period] = w;
-      }
-    }
-
-    private void extract_weather(int day_from_today, XmlNode node)
-    {
-      switch(node.Attributes["type"].Value)
-      {
-        case "morning":
-          extract_weather(day_from_today == 0 ? WeatherPeriod.TodayMorning : (day_from_today == 1 ? WeatherPeriod.TomorrowMorning : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
-          break;
-
-        case "day":
-          extract_weather(day_from_today == 0 ? WeatherPeriod.TodayDay : (day_from_today == 1 ? WeatherPeriod.TomorrowDay : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
-          break;
-
-        case "evening":
-          extract_weather(day_from_today == 0 ? WeatherPeriod.TodayEvening : (day_from_today == 1 ? WeatherPeriod.TomorrowEvening : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
-          break;
-
-        case "night":
-          extract_weather(day_from_today == 0 ? WeatherPeriod.TodayNight : (day_from_today == 1 ? WeatherPeriod.TomorrowNight : (day_from_today == 2 ? WeatherPeriod.DayAfterTomorrowMorning : WeatherPeriod.Undefined)), node);
-          break;
-      }
+    
+    protected override void read_forecast() 
+    { 
     }
   }
+
 }

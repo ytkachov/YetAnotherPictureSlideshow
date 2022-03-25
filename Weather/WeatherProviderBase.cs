@@ -143,6 +143,31 @@ namespace weather
       }
     }
 
-    protected abstract void readdata();
+    protected virtual void readdata()
+    {
+      int counter = 0;
+      while (true)
+      {
+        init_reader();
+
+        _error_descr = "";
+        if (counter++ == 5)
+        {
+          restart_reader();
+          counter = 0;
+        }
+
+        read_current_weather();
+        read_forecast();
+
+        if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
+          break;
+      }
+    }
+
+    protected virtual void init_reader() { }
+    protected virtual void restart_reader() { }
+    protected virtual void read_current_weather() { }
+    protected virtual void read_forecast() { }
   }
 }

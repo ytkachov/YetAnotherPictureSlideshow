@@ -94,10 +94,11 @@ namespace weather
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
     };
-    private IWeatherReader _sitereader = null;
 
+    private IWeatherReader _sitereader = null;
     private WeatherProviderNGS()
     {
+      _sitereader = new NGSFileReaderWriter(WeatherSource.NC);
     }
 
     public static IWeatherProvider get()
@@ -120,47 +121,9 @@ namespace weather
     protected override void close()
     {
       _sitereader.close();
-
       base.close();
     }
 
-    protected override void readdata()
-    {
-
-      int counter = 0;
-      while (true)
-      {
-        if (_sitereader == null)
-        {
-          // _sitereader = new NGSSeleniumReader();
-          // _sitereader = new NGSWatinReader();
-          _sitereader = new NGSFileReaderWriter(WeatherSource.NC);
-        }
-
-        _error_descr = "";
-        if (counter++ == 5)
-        {
-          _sitereader.restart();
-          counter = 0;
-        }
-
-        lock (_locker)
-        {
-          _weather.Clear();
-        }
-
-        weather w = new weather();
-        read_nsu_current_temp(w);
-        read_ngs_current_weather(w);
-
-        _weather[WeatherPeriod.Now] = w;
-
-        read_ngs_forecast();
-
-        if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
-          break;
-      }
-    }
 
     private void read_nsu_current_temp(weather w)
     {
@@ -387,7 +350,11 @@ namespace weather
         hu = hu.Substring(0, hu.IndexOf('%'));
         w.Humidity = int.Parse(hu);
 
-        _weather[wp] = w;
+
+        lock (_locker)
+        {
+          _weather[wp] = w;
+        }
       }
 
       return true;
@@ -496,6 +463,26 @@ namespace weather
           }
         }
       }
+    }
+
+    protected override void read_current_weather()
+    {
+      weather w = new weather();
+
+      read_nsu_current_temp(w);
+      read_ngs_current_weather(w);
+
+      lock (_locker)
+      {
+        _weather.Clear();
+        _weather[WeatherPeriod.Now] = w;
+      }
+
+    }
+
+    protected override void read_forecast()
+    {
+      read_ngs_forecast();
     }
   }
 }

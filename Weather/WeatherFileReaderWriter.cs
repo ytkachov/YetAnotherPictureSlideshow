@@ -36,16 +36,27 @@ namespace weather
 
   public abstract class WeatherFileReaderWriter : IWeatherReader, IWeatherWriter
   {
-    private string _execparams = ". 1";
-    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-    private string _filename = "weather_info.txt";
+    protected string _execparams = ". 1";
+    protected string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+    protected string _filename = "weather_info.txt";
     protected bool _checkcollector = true;
 
     static private string delimiter = "\n###$$$%%%@@@***&&&\n";
 
-    protected abstract string get_execparams();
-    protected abstract string get_foldername();
-    protected abstract string get_filename();
+    protected virtual string get_execparams()
+    {
+      return _execparams;
+    }
+
+    protected virtual string get_filename()
+    {
+      return _filename;
+    }
+
+    protected virtual string get_foldername()
+    {
+      return _foldername;
+    }
 
     public WeatherFileReaderWriter(string folder = null)
     {
@@ -270,56 +281,25 @@ namespace weather
 
   public class NGSFileReaderWriter : WeatherFileReaderWriter
   {
-    private string _execparams = "";
-    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-    private string _filename = "ngs_weather_info.txt";
 
     public NGSFileReaderWriter(WeatherSource type, string folder = null) : base(folder)
     {
+      _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+      _filename = "ngs_weather_info.txt";
       _execparams = $". {(int)type}";
-    }
-
-    protected override string get_execparams()
-    {
-      return _execparams;
-    }
-
-    protected override string get_filename()
-    {
-      return _filename;
-    }
-
-    protected override string get_foldername()
-    {
-      return _foldername;
     }
   }
 
   public class YandexFileReaderWriter : WeatherFileReaderWriter
   {
-    private string _execparams = "";
-    private string _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-    private string _filename = "yandex_weather_info.txt";
 
     public YandexFileReaderWriter(WeatherSource type, string folder = null) : base(folder)
     {
+      _foldername = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+      _filename = "yandex_weather_info.txt";
       _execparams = $". {(int)type}";
     }
 
-    protected override string get_execparams()
-    {
-      return _execparams;
-    }
-
-    protected override string get_filename()
-    {
-      return _filename;
-    }
-
-    protected override string get_foldername()
-    {
-      return _foldername;
-    }
   }
 
 }
