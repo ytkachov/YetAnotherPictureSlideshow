@@ -127,7 +127,7 @@ namespace weather
 
     private void extract_current_weather(XmlNode node)
     {
-      weather w = new weather
+      WeatherInfo w = new WeatherInfo
       {
         TemperatureLow = double.Parse(node["temp_c"].InnerText),
         TemperatureHigh = double.Parse(node["temp_c"].InnerText),

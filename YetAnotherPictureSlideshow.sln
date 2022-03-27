@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PictureSlideshowScreensaver", "PictureSlideshowScreensaver\PictureSlideshowScreensaver.csproj", "{7DAFC32F-B167-417F-BDA0-BE089C6D7BD5}"
 EndProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather", "Weather\Weather.csproj", "{829E8AD4-1702-4353-833D-D592208970CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherCollector", "WeatherCollector\WeatherCollector.csproj", "{AB9E7335-6F8A-4C73-8EAB-79C1A754250A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherCrawler", "WeatherCrawler\WeatherCrawler.csproj", "{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,12 +62,24 @@ Global
 		{AB9E7335-6F8A-4C73-8EAB-79C1A754250A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AB9E7335-6F8A-4C73-8EAB-79C1A754250A}.Release|x86.ActiveCfg = Release|Any CPU
 		{AB9E7335-6F8A-4C73-8EAB-79C1A754250A}.Release|x86.Build.0 = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Debug|x86.Build.0 = Debug|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|x86.ActiveCfg = Release|Any CPU
+		{51A70E1C-22A7-4043-ADAE-F7246CA7ED10}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = .
 		SolutionGuid = {F0A539C7-4CEA-433C-9EE0-E9426D1D2257}
+		VisualSVNWorkingCopyRoot = .
 	EndGlobalSection
 EndGlobal

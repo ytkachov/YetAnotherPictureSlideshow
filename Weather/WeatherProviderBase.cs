@@ -7,7 +7,14 @@ using System.Xml;
 
 namespace weather
 {
-  public class weather
+  public class ShortWeatherInfo
+  {
+    public int Hour;
+    public double Temperature;
+    public WeatherType WeatherType;
+  }
+
+  public class WeatherInfo
   {
     object _lock = new object();
 
@@ -18,6 +25,7 @@ namespace weather
     private double? _wind_speed = null;
     private WindDirection _wind_direction = WindDirection.Undefined;
     private WeatherType _character = WeatherType.Undefined;
+    private List<ShortWeatherInfo> _hourly_weather = new List<ShortWeatherInfo>();
 
     public double? TemperatureLow { get { lock (_lock) { return _temperature_low; } } set { lock (_lock) { _temperature_low = value; } } }
     public double? TemperatureHigh { get { lock (_lock) { return _temperature_high; } } set { lock (_lock) { _temperature_high = value; } } }
@@ -26,6 +34,7 @@ namespace weather
     public double? WindSpeed { get { lock (_lock) { return _wind_speed; } } set { lock (_lock) { _wind_speed = value; } } }
     public WindDirection WindDirection { get { lock (_lock) { return _wind_direction; } } set { lock (_lock) { _wind_direction = value; } } }
     public WeatherType WeatherType { get { lock (_lock) { return _character; } } set { lock (_lock) { _character = value; } } }
+    public List<ShortWeatherInfo> HourlyWeather { get { lock (_lock) { return _hourly_weather; } } set { lock (_lock) { _hourly_weather = value; } } }
   }
 
 
@@ -36,7 +45,7 @@ namespace weather
 
     protected Object _locker = new Object();
     protected XmlNamespaceManager _nsmgr;
-    protected Dictionary<WeatherPeriod, weather> _weather = new Dictionary<WeatherPeriod, weather>();
+    protected Dictionary<WeatherPeriod, WeatherInfo> _weather = new Dictionary<WeatherPeriod, WeatherInfo>();
     protected string _error_descr = "";
     protected bool _succeeded = false;
 

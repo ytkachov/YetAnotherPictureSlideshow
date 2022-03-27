@@ -10,10 +10,13 @@ namespace weather
     // for Novosibirsk by default
     public YandexSeleniumReader(WeatherSource type, double lat = 54.85194397, double lon = 83.10189056) : base(type)
     {
+      SetLocation(lat, lon);
+    }
+
+    public void SetLocation(double lat, double lon)
+    {
       _weather_url = $"https://yandex.ru/pogoda/?lat={lat}&lon={lon}";
-      
-      int dayofmonth = DateTime.Now.Day;
-      _weather_forecast_url = $"https://yandex.ru/pogoda/details?lat={lat}&lon={lon}&via=ms#{dayofmonth}";
+      _weather_forecast_url = $"https://yandex.ru/pogoda/details?lat={lat}&lon={lon}&via=ms#{DateTime.Now.Day}";
     }
 
     protected override string get_forecast()

@@ -125,7 +125,7 @@ namespace weather
     }
 
 
-    private void read_nsu_current_temp(weather w)
+    private void read_nsu_current_temp(WeatherInfo w)
     {
       bool success = false;
       try
@@ -294,7 +294,7 @@ namespace weather
       int pcount = period_divs.Count;
       for (int period = 0; period < pcount; period++)
       {
-        weather w = new weather();
+        WeatherInfo w = new WeatherInfo();
 
         // weather period
         string pname = period_divs[period].InnerText;
@@ -360,7 +360,7 @@ namespace weather
       return true;
     }
 
-    private void read_ngs_current_weather(weather w)
+    private void read_ngs_current_weather(WeatherInfo w)
     {
       bool success = true;
       _succeeded = true;
@@ -467,7 +467,7 @@ namespace weather
 
     protected override void read_current_weather()
     {
-      weather w = new weather();
+      WeatherInfo w = new WeatherInfo();
 
       read_nsu_current_temp(w);
       read_ngs_current_weather(w);
