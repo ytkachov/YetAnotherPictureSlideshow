@@ -27,7 +27,7 @@ public class LocalImageInfo : ImageInfo
   public LocalImageInfo(string nm, string videoname = null)
   {
     _name = nm;
-    _video_name = videoname;
+    // _video_name = videoname;
   }
 
   public RotateFlipType orientation

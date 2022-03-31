@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,6 @@ namespace weather
 {
   public class YandexWeatherExtractor
   {
-
     static WeatherPeriod[] day_periods = new WeatherPeriod[]
     {
       WeatherPeriod.TodayMorning,            WeatherPeriod.TodayDay,            WeatherPeriod.TodayEvening,            WeatherPeriod.TodayNight,            
@@ -83,7 +83,7 @@ namespace weather
       if (reader != null)
         _sitereader = reader;
       else
-        _sitereader = new YandexFileReaderWriter(WeatherSource.NC);
+        _sitereader = new YandexFileReaderWriter(WeatherSource.YC);
     }
 
     public void get_current_weather(WeatherInfo w)
@@ -196,7 +196,7 @@ namespace weather
       }
     }
 
-    public void get_nsu_current_temp(WeatherInfo w)
+    internal void get_nsu_current_temp(WeatherInfo w)
     {
       string st = _sitereader.temperature();
       if (st != null || !st.Contains("°"))
@@ -391,7 +391,10 @@ namespace weather
 
     private WeatherProviderYandex(IWeatherReader reader)
     {
-      _extractor = new YandexWeatherExtractor(reader);
+      lock(_locker)
+      {
+        _extractor = new YandexWeatherExtractor(reader);
+      }
     }
 
     public static IWeatherProvider get(IWeatherReader reader = null)
@@ -413,41 +416,52 @@ namespace weather
 
     protected override void read_current_weather() 
     {
-      WeatherInfo w = new WeatherInfo();
-
-      get_nsu_current_temp(w);
-      get_current_weather(w);
+      //var w = get_nsu_current_temp();
+      var w = get_current_weather();
 
       lock (_locker)
       {
-        _weather.Clear();
-        _weather[WeatherPeriod.Now] = w;
+        if (w != null)
+        {
+          _weather.Clear();
+          _weather[WeatherPeriod.Now] = w;
+        }
       }
-
     }
 
     protected override void read_forecast( )
     {
-      Dictionary<WeatherPeriod, WeatherInfo> weather = new Dictionary<WeatherPeriod, WeatherInfo>();
-
-      get_forecast(weather);
+      var weather = get_forecast();
 
       lock (_locker)
       {
-        foreach (WeatherPeriod w in weather.Keys)
-          _weather[w] = weather[w];
-
+        if (weather != null)
+        {
+          foreach (WeatherPeriod w in weather.Keys)
+            _weather[w] = weather[w];
+        }
       }
     }
 
-    private void get_current_weather(WeatherInfo w)
+    private WeatherInfo get_current_weather()
     {
+      Trace.WriteLine(">>> get_current_weather()");
       bool success = true;
       _succeeded = true;
 
+      lock (_locker)
+      {
+        if (_extractor == null)
+          return null;
+      }
+
       try
       {
-        _extractor.get_current_weather(w);
+        var wi = new WeatherInfo();
+        _extractor.get_current_weather(wi);
+
+        return wi;
+
       }
       catch (Exception e)
       {
@@ -467,16 +481,28 @@ namespace weather
           }
         }
       }
+
+      return null;
     }
 
-    private void get_forecast(Dictionary<WeatherPeriod, WeatherInfo> weather)
+    private Dictionary<WeatherPeriod, WeatherInfo> get_forecast( )
     {
+      Trace.WriteLine(">>> get_forecast()");
       bool success = true;
       _succeeded = true;
 
+      lock (_locker)
+      {
+        if (_extractor == null)
+          return null;
+      }
+
       try
       {
+        Dictionary<WeatherPeriod, WeatherInfo> weather = new Dictionary<WeatherPeriod, WeatherInfo>();
         _extractor.get_forecast(weather);
+
+        return weather;
       }
       catch (Exception e)
       {
@@ -496,14 +522,25 @@ namespace weather
           }
         }
       }
+
+      return null;
     }
 
-    private void get_nsu_current_temp(WeatherInfo w)
+    private WeatherInfo get_nsu_current_temp()
     {
       bool success = true;
+      lock (_locker)
+      {
+        if (_extractor == null)
+          return null;
+      }
+
       try
       {
-        _extractor.get_nsu_current_temp(w);
+        WeatherInfo wi = new WeatherInfo();
+        _extractor.get_nsu_current_temp(wi);
+
+        return wi;
       }
       catch (Exception e)
       {
@@ -520,6 +557,7 @@ namespace weather
           }
         }
       }
+      return null;
     }
   }
 }
