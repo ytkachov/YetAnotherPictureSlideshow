@@ -98,7 +98,7 @@ namespace weather
       XmlNode pgd_current = pg.DocumentElement;
 
       // weather character
-      string wt = get_weather_type(pgd_current, "./div/a/img");
+      string wt = get_weather_type(pgd_current, "./div/a//img");
       w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
 #if STATISTICS
@@ -114,7 +114,7 @@ namespace weather
       }
 #endif
       // air temperature
-      w.TemperatureHigh = w.TemperatureLow = get_air_temperature(pgd_current, "./div/a/div/span[@class = 'temp__value temp__value_with-unit']");
+      w.TemperatureHigh = w.TemperatureLow = get_air_temperature(pgd_current, "./div/a//div/span[@class = 'temp__value temp__value_with-unit']");
 
       // wind 
       w.WindSpeed = null;
@@ -137,7 +137,7 @@ namespace weather
 
       // humidity
       w.Humidity = null;
-      XmlNode humidity = pgd_current.SelectSingleNode($"./div[@class = 'fact__props']//div[@class = 'term term_orient_v fact__humidity']");
+      XmlNode humidity = pgd_current.SelectSingleNode($"./div[@class = 'fact__props']//div[@class = 'term term_orient_v fact__humidity']/div[@class='term__value']");
       if (humidity == null)
         throw new Exception("incorrect current weather structure -- cant find humidity");
 
@@ -157,6 +157,9 @@ namespace weather
 
       // hourly temperature forecast
       var hour_spans = pgd_current.SelectNodes("//span[@class = 'fact__hour-elem']");
+      if (hour_spans.Count == 0)
+        hour_spans = pgd_current.SelectNodes("//div[@class = 'fact__hour-elem']");
+
       foreach (XmlNode hour_span in hour_spans)
       {
         wt = get_weather_type(hour_span, "./img");
@@ -220,12 +223,18 @@ namespace weather
 
       XmlNode pgd_forecast = pg.DocumentElement;
       var day_divs = pgd_forecast.SelectNodes("//div[@class = 'card']");
+      if (day_divs.Count == 0)
+        day_divs = pgd_forecast.SelectNodes("//article[@class = 'card']");
+
       int day_period = 0;
       for (int day = 0; day < day_divs.Count; day++)
       {
         XmlNode day_div = day_divs[day];
 
         var table_rows = day_div.SelectNodes("./dd[@class='forecast-details__day-info']/table[@class = 'weather-table']/tbody[@class = 'weather-table__body']/tr[@class = 'weather-table__row']");
+        if (table_rows.Count == 0)
+          table_rows = day_div.SelectNodes("./div[@class='forecast-details__day-info']/table[@class = 'weather-table']/tbody[@class = 'weather-table__body']/tr[@class = 'weather-table__row']");
+
         for (int period = 0; period < 4; period++) // утро, день, вечер, ночь
         {
           XmlNode row = table_rows[period];
@@ -254,8 +263,8 @@ namespace weather
 #endif
 
       // temperature
-      var air_temps = row.SelectNodes("./td/div/div//span[@class='temp__value temp__value_with-unit']");
-      if (air_temps.Count == 2)
+      var air_temps = row.SelectNodes("./td//div/span[@class='temp__value temp__value_with-unit']");
+      if (air_temps.Count >= 2)
       {
         w.TemperatureLow = get_air_temperature(air_temps[0]);
         w.TemperatureHigh = get_air_temperature(air_temps[1]);
@@ -286,7 +295,7 @@ namespace weather
         w.Humidity = humi;
 
       // wind
-      XmlNode wind_speed = row.SelectSingleNode("./td/div/span/span[@class = 'wind-speed']");
+      XmlNode wind_speed = row.SelectSingleNode("./td//div//span[@class = 'wind-speed']");
       if (wind_speed == null)
         throw new Exception("incorrect forecast structure -- cant find wind speed");
 
@@ -295,7 +304,7 @@ namespace weather
         w.WindSpeed = windspeed;
 
       w.WindDirection = WindDirection.Undefined;
-      XmlNode wind_dir = row.SelectSingleNode($"./td/div/div[@class = 'weather-table__wind-direction']/abbr");
+      XmlNode wind_dir = row.SelectSingleNode($"./td//div[@class = 'weather-table__wind-direction']/abbr");
       if (wind_dir == null)
         throw new Exception("incorrect current weather structure -- cant find wind direction");
 

@@ -19,11 +19,14 @@ namespace weather
       _weather_forecast_url = $"https://yandex.ru/pogoda/details?lat={lat}&lon={lon}&via=ms#{DateTime.Now.Day}";
     }
 
-    protected override string get_forecast()
+    protected override string get_forecast( )
     {
       var cards = _driver.findElements(By.XPath("//div[@class='card']"));
 
-      if (cards == null)
+      if (cards == null || cards.Count == 0)
+        cards = _driver.findElements(By.XPath("//article[@class='card']"));
+
+      if (cards == null || cards.Count == 0)
         return null;
 
       string result = "<forecast>";
@@ -49,6 +52,9 @@ namespace weather
         result += "\n\n" + _driver.correctOuterHTML(info);
 
       var divs = _driver.findElements(By.XPath("//div[@class='content__top']//span[@class='fact__hour-elem']"));
+      if (divs.Count == 0)
+        divs = _driver.findElements(By.XPath("//div[@class='content__top']//div[@class='fact__hour-elem']"));
+
       foreach (var div in divs)
         result += "\n" + _driver.correctOuterHTML(div);
 
