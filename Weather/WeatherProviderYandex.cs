@@ -295,15 +295,15 @@ namespace weather
         w.Humidity = humi;
 
       // wind
+      w.WindDirection = WindDirection.Undefined;
+      w.WindSpeed = 0.0;
       XmlNode wind_speed = row.SelectSingleNode("./td//div//span[@class = 'wind-speed']");
-      if (wind_speed == null)
-        throw new Exception("incorrect forecast structure -- cant find wind speed");
-
+      if (wind_speed != null)
+      {
       if (double.TryParse(wind_speed.InnerText.Replace(',', '.').Replace('−', '-').Trim(),
           NumberStyles.Number, new CultureInfo("en"), out double windspeed))
         w.WindSpeed = windspeed;
 
-      w.WindDirection = WindDirection.Undefined;
       XmlNode wind_dir = row.SelectSingleNode($"./td//div[@class = 'weather-table__wind-direction']/abbr");
       if (wind_dir == null)
         throw new Exception("incorrect current weather structure -- cant find wind direction");
@@ -311,6 +311,14 @@ namespace weather
       string wind_dir_name = wind_dir.InnerText;
       if (wind_direction_encoding.Keys.Contains(wind_dir_name))
         w.WindDirection = wind_direction_encoding[wind_dir_name];
+      }
+      else
+      {
+        // may be it is штиль?
+        wind_speed = row.SelectSingleNode("./td//div//span[@class = 'weather-table__wind']");
+        if (wind_speed == null || !wind_speed.InnerText.Equals("Штиль"))
+          throw new Exception("incorrect forecast structure -- cant find wind speed");
+      }
     }
 
     private static string get_weather_type(XmlNode pgd_current, string node_selector, string class_name = "icon icon_color_")
