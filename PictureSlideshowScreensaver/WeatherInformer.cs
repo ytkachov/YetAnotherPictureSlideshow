@@ -279,8 +279,6 @@ namespace informers
       {
         Weather_Status_Weather = false;
       }
-
-
     }
 
     private void update_Temperature(IWeatherProvider provider, WeatherPeriod period)

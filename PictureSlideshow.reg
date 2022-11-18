@@ -4,9 +4,9 @@ Windows Registry Editor Version 5.00
 "Interval"="10"
 "FadeTime"="2500"
 "WriteStat"="1"
-"WriteStatFolder"="D:\\PH\\LOG"
+"WriteStatFolder"="G:\\PH\\LOG"
 "DependOnBattery"="0"
-"ImageFolder"="D:\\PH\\iCloud Photos\\*"
+"ImageFolder"="G:\\ARCHIVE\\PHOTO_RESIZED_PHFRAME\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
 

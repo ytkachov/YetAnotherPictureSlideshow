@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <CommonOutputPath>$(SolutionDir)bin</CommonOutputPath>
+    <CommonIntermediateOutputPath>$(SolutionDir)obj</CommonIntermediateOutputPath>
+  </PropertyGroup>
+
+  <!-- each user is able to overwrite the settings in a user-defined configuration file -->
+  <Import Condition="Exists('$(SolutionName).$(USERDOMAIN).$(USERNAME).props')" Project="$(SolutionName).$(USERDOMAIN).$(USERNAME).props"/>
+
+  <PropertyGroup>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <_PropertySheetDisplayName>TactileMaps CSharp</_PropertySheetDisplayName>
+
+    <OutputPath>$(CommonOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(CommonIntermediateOutputPath)\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <Optimize>false</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <Optimize>true</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>pdbonly</DebugType>
+    <DefineConstants>TRACE;</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)\$(SolutionName).snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+</Project>

@@ -153,7 +153,6 @@ namespace weather
       string fname = Path.Combine(_foldername, _filename);
       string info = "";
 
-
       if (File.Exists(fname))
       {
         DateTime wt = File.GetLastWriteTime(fname);

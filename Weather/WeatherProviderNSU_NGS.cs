@@ -177,7 +177,7 @@ namespace weather
       try
       {
         string forecast = _sitereader.forecast();
-        if (forecast == null)
+        if (string.IsNullOrEmpty(forecast))
           throw new Exception("NGS forecast: can't find 3 day forecast table");
 
         XmlDocument pg = new XmlDocument();
@@ -368,7 +368,7 @@ namespace weather
       try
       {
         string current = _sitereader.current();
-        if (current == null)
+        if (string.IsNullOrEmpty(current))
           throw new Exception("incorrect current weather structure ");
 
         XmlDocument pg = new XmlDocument();

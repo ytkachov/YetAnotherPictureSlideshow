@@ -89,7 +89,7 @@ namespace weather
     public void get_current_weather(WeatherInfo w)
     {
       string current = _sitereader.current();
-      if (current == null)
+      if (string.IsNullOrEmpty(current))
         throw new Exception("incorrect current weather structure ");
 
       XmlDocument pg = new XmlDocument();
@@ -215,7 +215,7 @@ namespace weather
     public void get_forecast(Dictionary<WeatherPeriod, WeatherInfo> weather)
     {
       string forecast = _sitereader.forecast();
-      if (forecast == null)
+      if (string.IsNullOrEmpty(forecast))
         throw new Exception("incorrect current weather structure ");
 
       XmlDocument pg = new XmlDocument();
@@ -438,9 +438,9 @@ namespace weather
 
       lock (_locker)
       {
+        _weather.Clear();
         if (w != null)
         {
-          _weather.Clear();
           _weather[WeatherPeriod.Now] = w;
         }
       }
