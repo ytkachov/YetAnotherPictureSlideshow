@@ -243,7 +243,7 @@ namespace informers
     public WeatherInformer()
     {
       _weatherTick.Tick += new EventHandler(weather_Tick);
-      _weatherTick.Interval = TimeSpan.FromSeconds(15.0);
+      _weatherTick.Interval = TimeSpan.FromSeconds(60.0);
       _weatherTick.Start();
     }
 
