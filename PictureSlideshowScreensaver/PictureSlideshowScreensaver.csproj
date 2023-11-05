@@ -126,6 +126,10 @@
       <DependentUpon>FrameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImagesInfo.cs" />
+    <Compile Include="LeapMotionView.xaml.cs">
+      <DependentUpon>LeapMotionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LeapMotionListener.cs" />
     <Compile Include="ViewModels\converters.cs" />
     <Compile Include="ViewModels\FrameViewModel.cs" />
     <Compile Include="ViewModels\Informers.cs" />
@@ -135,6 +139,7 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\LeapMotionViewModel.cs" />
     <Compile Include="ViewModels\ScreensaverViewModel.cs" />
     <Compile Include="WeatherForecast.xaml.cs">
       <DependentUpon>WeatherForecast.xaml</DependentUpon>
@@ -148,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FrameView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LeapMotionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
