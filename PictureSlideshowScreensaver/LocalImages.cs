@@ -140,17 +140,29 @@ class LocalImages : ImagesProvider
   {
     if (Directory.Exists(p))
     {
-      foreach (string s in Directory.GetFiles(p))
+      try
       {
-        string ss = s.ToLower();
-        if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
-          Add(ss);
+         foreach (string s in Directory.GetFiles(p))
+        {
+          string ss = s.ToLower();
+          if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
+            Add(ss);
+        }
+      }
+      catch (Exception e)
+      {
+
       }
     }
 
-    if (subdir)
-      foreach (string d in Directory.GetDirectories(p))
-        addImages(d, subdir);
+    try
+    {
+      if (subdir)
+        foreach (string d in Directory.GetDirectories(p))
+          addImages(d, subdir);
+    }
+    catch (Exception e)
+    { }
   }
 
   private void Add(string name)
