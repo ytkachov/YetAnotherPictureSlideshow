@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using informers;
 using PictureSlideshowScreensaver.Models;
 using presenters;
+using Serilog;
 using weather;
 
 namespace PictureSlideshowScreensaver.ViewModels
@@ -98,7 +99,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         }
         catch (Exception ex)
         {
-          Console.WriteLine("ERROR: " + ex.Message);
+          Log.Error(ex, "ERROR");
         }
       }
     }

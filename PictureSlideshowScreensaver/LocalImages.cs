@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using ExifLib;
 using System.Threading;
-
+using Serilog;
+using ExifLibrary;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 class LocalImages : ImagesProvider
 {
@@ -142,16 +144,16 @@ class LocalImages : ImagesProvider
     {
       try
       {
-         foreach (string s in Directory.GetFiles(p))
+        foreach (string s in Directory.GetFiles(p))
         {
           string ss = s.ToLower();
           if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
             Add(ss);
         }
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-
+        Log.Error(ex, "ex:1");
       }
     }
 
@@ -161,8 +163,10 @@ class LocalImages : ImagesProvider
         foreach (string d in Directory.GetDirectories(p))
           addImages(d, subdir);
     }
-    catch (Exception e)
-    { }
+    catch (Exception ex)
+    {
+      Log.Error(ex, "ex:2");
+    }
   }
 
   private void Add(string name)
@@ -175,19 +179,26 @@ class LocalImages : ImagesProvider
 
       try
       {
-        using (var reader = new ExifReader(name))
-        {
-          UInt16 orientation;
-          if (reader.GetTagValue(ExifTags.Orientation, out orientation))
-            ii._orientation = orientation;
+        var reader = ImageFile.FromFile(name);
 
-          DateTime datePictureTaken;
-          if (reader.GetTagValue(ExifTags.DateTimeOriginal, out datePictureTaken))
-            ii._dateTaken = datePictureTaken;
+        var orientation = reader.Properties.Get<ExifUShort>(ExifTag.Orientation);
+        if (orientation != null)
+          ii._orientation = orientation;
+
+        ExifDateTime eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTime);
+        if (eDatePicture != null)
+          ii._dateTaken = eDatePicture;
+        else
+        {
+          eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTimeOriginal);
+          if (eDatePicture != null)
+            ii._dateTaken = eDatePicture;
         }
       }
       catch (Exception ex)
       {
+        Log.Error(ex, $"Image: {name}");
+
         ii._messages.Add("Exeption " + ex.ToString());
       }
 

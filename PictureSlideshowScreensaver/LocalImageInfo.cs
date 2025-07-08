@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using ExifLib;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
 using Emgu.CV;
 using Newtonsoft.Json;
+using Serilog;
 
 public class LocalImageInfo : ImageInfo
 {
@@ -184,9 +184,9 @@ public class LocalImageInfo : ImageInfo
 
           _processed = true;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-          string err = e.Message;
+          Log.Error(ex, "");
         }
       }
     }

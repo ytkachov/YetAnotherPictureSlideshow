@@ -16,6 +16,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
 using WatiN.Core;
 using System.Collections.ObjectModel;
+using Serilog;
 
 namespace weather
 {
@@ -105,8 +106,9 @@ namespace weather
       {
         el = self.FindElement(by);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
       }
 
       return el;
@@ -122,8 +124,9 @@ namespace weather
       {
         els = self.FindElements(by);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
       }
 
       return els;
@@ -268,9 +271,9 @@ namespace weather
         _driver.Close();
         _driver.Quit();
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-
+        Log.Error(ex, "");
       }
 
       _driver = null;
@@ -339,8 +342,9 @@ namespace weather
         else
           _driver.Navigate().GoToUrl(url);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
       }
     }
 

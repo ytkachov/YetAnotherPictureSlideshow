@@ -4,6 +4,7 @@ using System.Linq;
 
 using System.Threading;
 using System.Xml;
+using Serilog;
 
 namespace weather
 {
@@ -114,7 +115,7 @@ namespace weather
         }
         catch (Exception ex)
         {
-          ex.ToString();
+          Log.Error(ex, "");
         }
 
         if (_exit.WaitOne(TimeSpan.FromMinutes(30)))

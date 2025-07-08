@@ -7,6 +7,7 @@ using System.Linq;
 
 using System.Xml;
 using System.Xml.Serialization;
+using Serilog;
 
 namespace weather
 {
@@ -433,16 +434,17 @@ namespace weather
 
     protected override void read_current_weather() 
     {
-      //var w = get_nsu_current_temp();
+      var ct = get_nsu_current_temp();
       var w = get_current_weather();
 
       lock (_locker)
       {
         _weather.Clear();
+        if (ct != null)
+          _weather[WeatherPeriod.Now] = ct;
+
         if (w != null)
-        {
           _weather[WeatherPeriod.Now] = w;
-        }
       }
     }
 
@@ -480,12 +482,14 @@ namespace weather
         return wi;
 
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-        success = false;
-        _error_descr = e.Message;
+        Log.Error(ex, "");
 
-        string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        success = false;
+        _error_descr = ex.Message;
+
+        // string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
       }
 
       finally
@@ -521,12 +525,14 @@ namespace weather
 
         return weather;
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-        success = false;
-        _error_descr = e.Message;
+        Log.Error(ex, "");
 
-        string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
+        success = false;
+        _error_descr = ex.Message;
+
+        // string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
       }
 
       finally
@@ -559,10 +565,12 @@ namespace weather
 
         return wi;
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
+
         success = false;
-        _error_descr = e.Message;
+        _error_descr = ex.Message;
       }
       finally
       {

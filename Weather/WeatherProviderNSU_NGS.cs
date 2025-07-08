@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Serilog;
 
 namespace weather
 {
@@ -143,10 +144,12 @@ namespace weather
           }
         }
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
+
         success = false;
-        _error_descr = e.Message;
+        _error_descr = ex.Message;
       }
       finally
       {
@@ -163,9 +166,9 @@ namespace weather
       {
         _sitereader.getrest();
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-
+        Log.Error(ex, "");
       }
     }
 
@@ -186,10 +189,12 @@ namespace weather
         XmlNode pgd_detailed = pg.DocumentElement;
         extract_3days_forecast(pgd_detailed);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
+
         success = false;
-        _error_descr = e.Message;
+        _error_descr = ex.Message;
 
         string fname = string.Format("{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
         //File.WriteAllText(fname, browser_.Html);
@@ -210,9 +215,9 @@ namespace weather
       {
         _sitereader.getrest();
       }
-      catch (Exception e)
-      {
-
+      catch (Exception ex) 
+      { 
+        Log.Error(ex, ""); 
       }
     }
 
@@ -445,10 +450,12 @@ namespace weather
         if (double.TryParse(humidity.Substring(0, humidity.IndexOf('%')), NumberStyles.Number, new CultureInfo("ru"), out h))
           w.Humidity = h;
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
+        Log.Error(ex, "");
+
         success = false;
-        _error_descr = e.Message;
+        _error_descr = ex.Message;
 
         string fname = string.Format(@"d:\LOG\{0} -- {1}", DateTime.Now.ToString("yyyy_MM_dd HH-mm-ss"), _error_descr);
       }

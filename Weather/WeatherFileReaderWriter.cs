@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32.TaskScheduler;
+using Serilog;
 using TS = Microsoft.Win32.TaskScheduler;
 
 namespace weather
@@ -140,9 +141,9 @@ namespace weather
 
           break;
         }
-        catch
+        catch (Exception ex)
         {
-
+          Log.Error(ex, "");
         }
         Thread.Sleep(500);
       }
@@ -172,9 +173,9 @@ namespace weather
 
               break;
             }
-            catch
+            catch (Exception ex)
             {
-
+              Log.Error(ex, "");
             }
             Thread.Sleep(500);
           }
@@ -237,9 +238,9 @@ namespace weather
               recreate = true;
               break;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-              string em = e.Message;
+              Log.Error(ex, "");
             }
           }
         }

@@ -69,10 +69,7 @@ namespace PictureSlideshowScreensaver
     private void LaunchScreensaver()
     {
 
-      RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
-      int interval = int.Parse((string)key.GetValue("Interval"));
       System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-
       for (int i = 0; i < screens.Length; i++)
       {
         System.Windows.Forms.Screen s = screens[i];
