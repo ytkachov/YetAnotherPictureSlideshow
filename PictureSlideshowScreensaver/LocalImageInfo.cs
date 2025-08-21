@@ -169,7 +169,8 @@ public class LocalImageInfo : ImageInfo
           Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
 
           long detectionTime;
-          FaceDetection.DetectFace.Detect(cvmat, "haarcascade_frontalface_alt2.xml", faces, out detectionTime);
+          string face_detection_file = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "haarcascade_frontalface_alt2.xml");
+          FaceDetection.DetectFace.Detect(cvmat, face_detection_file, faces, out detectionTime);
 
           string json = JsonConvert.SerializeObject(faces.ToArray(), Formatting.Indented);
           File.WriteAllText(finfoname, json);
