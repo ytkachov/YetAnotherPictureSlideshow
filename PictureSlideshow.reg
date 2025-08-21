@@ -9,4 +9,5 @@ Windows Registry Editor Version 5.00
 "ImageFolder"="G:\\ARCHIVE\\PHOTO_RESIZED_PHFRAME\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
+"YandexApiKey"="get_from_bitwarden"
 

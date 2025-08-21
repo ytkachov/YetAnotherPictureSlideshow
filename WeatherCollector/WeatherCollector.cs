@@ -106,7 +106,6 @@ namespace WeatherCollector
         }
       }
 
-
       IWeatherWriter writer = null;
       IWeatherReader reader = null;
       if (_type == WeatherSource.NI || _type == WeatherSource.NC || _type == WeatherSource.NE)
@@ -123,43 +122,73 @@ namespace WeatherCollector
         reader = new YandexSeleniumReader(_type);    
         writer = new YandexFileReaderWriter(_type);
       }
+      else if (_type == WeatherSource.YAC)
+      {
+        Log.Information("Yandex API reader/writer");
 
-      string temp = "", current = "", forecast = "", except="";
-      try
-      {
-        temp = reader.temperature();
-      }
-      catch (Exception ex)
-      {
-        Log.Error(ex, "");
-
-        except += "\n\n\n ======================= \n" + ex.Message;
-      }
-
-      try
-      {
-        current = reader.current();
-      }
-      catch (Exception ex)
-      {
-        Log.Error(ex, "");
-        except += "\n\n\n ======================= \n" + ex.Message;
+        string yak = GetYandexWeatherApiKey();
+        if (string.IsNullOrEmpty(yak))
+          Log.Error("Yandex API key not found");
+        else
+        {
+          var rw = new YandexApiReaderWriter(yak);
+          reader = rw;
+          writer = rw;
+        }
       }
 
-      try
+      if (writer != null && reader != null)
       {
-        forecast = reader.forecast();
-      }
-      catch (Exception ex)
-      {
-        Log.Error(ex, "");
-        except += "\n\n\n ======================= \n" + ex.Message;
-      }
 
-      writer.writeinfo(temp, current, forecast, except);
-      reader.close();
+        string temp = "", current = "", forecast = "", except = "";
+        try
+        {
+          temp = reader.temperature();
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "");
+
+          except += "\n\n\n ======================= \n" + ex.Message;
+        }
+
+        try
+        {
+          current = reader.current();
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "");
+          except += "\n\n\n ======================= \n" + ex.Message;
+        }
+
+        try
+        {
+          forecast = reader.forecast();
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "");
+          except += "\n\n\n ======================= \n" + ex.Message;
+        }
+
+        writer.writeinfo(temp, current, forecast, except);
+        reader.close();
+      }
 
       FinitLOG();
+    }
+
+    public static string GetYandexWeatherApiKey()
+    {
+      string yandexApiKey = "";
+      RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
+      if (key != null)
+      {
+        yandexApiKey = (string)key.GetValue("YandexApiKey", "");
+      }
+
+      return yandexApiKey;
     }
 
     public static void InitLOG()

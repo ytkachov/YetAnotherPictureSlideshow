@@ -29,6 +29,7 @@ namespace weather
     YC = 4, // Yandex Chrome
     YI = 5, // Yandex IE
     YE = 6, // Yandex Edge
+    YAC = 100  // Yandex API Chrome
   }
 
   public interface IWeatherReader
@@ -225,7 +226,7 @@ namespace weather
         _browser = new IE();
 
       if (url == null)
-        _browser.GoTo("http://weather.nsu.ru/");
+        _browser.GoTo("http://weather.nsu.ru/old");
       else
         _browser.GoToNoWait(url);
     }
@@ -338,7 +339,7 @@ namespace weather
       try
       {
         if (url == null)
-          _driver.Navigate().GoToUrl("http://weather.nsu.ru/");
+          _driver.Navigate().GoToUrl("http://weather.nsu.ru/old");
         else
           _driver.Navigate().GoToUrl(url);
       }

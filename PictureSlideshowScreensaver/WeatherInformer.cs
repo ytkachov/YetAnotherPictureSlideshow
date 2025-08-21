@@ -158,8 +158,8 @@ namespace informers
   {
     private DispatcherTimer _weatherTick = new DispatcherTimer();
 
-    private IWeatherProvider _curr_temp_provider = WeatherProviderYandex.get();
-    private IWeatherProvider _forecast_provider = WeatherProviderYandex.get();
+    private IWeatherProvider _curr_temp_provider = WeatherProviderYandexApi.get();
+    private IWeatherProvider _forecast_provider = WeatherProviderYandexApi.get();
 
     private string _dbg_info = "";
     private bool _weather_status_temperature = false;

@@ -70,11 +70,11 @@ namespace weather
       _filename = get_filename();
     }
 
-    public void close()
+    public virtual void close()
     {
     }
 
-    public string temperature()
+    public virtual string temperature()
     {
       string[] parts = splitinfo();
 
@@ -84,7 +84,7 @@ namespace weather
       return "";
     }
 
-    public string current()
+    public virtual string current()
     {
       string[] parts = splitinfo();
 
@@ -94,7 +94,7 @@ namespace weather
       return "";
     }
 
-    public string forecast()
+    public virtual string forecast()
     {
       string[] parts = splitinfo();
 
@@ -149,7 +149,7 @@ namespace weather
       }
     }
 
-    private string readfile()
+    protected string readfile()
     {
       string fname = Path.Combine(_foldername, _filename);
       string info = "";
