@@ -297,8 +297,10 @@
     <Compile Include="ViewModels\FrameViewModel.cs" />
     <Compile Include="ViewModels\Informers.cs" />
     <Compile Include="FaceDetection.cs" />
+    <Compile Include="Services\GeocodingService.cs" />
     <Compile Include="LocalImageInfo.cs" />
     <Compile Include="LocalImages.cs" />
+    <Compile Include="Models\FinfoData.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="OutlinedTextBlock.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

@@ -194,6 +194,41 @@ class LocalImages : ImagesProvider
           if (eDatePicture != null)
             ii._dateTaken = eDatePicture;
         }
+
+        try
+        {
+          var latProp = reader.Properties[ExifTag.GPSLatitude];
+          var latRefProp = reader.Properties[ExifTag.GPSLatitudeRef];
+          var lonProp = reader.Properties[ExifTag.GPSLongitude];
+          var lonRefProp = reader.Properties[ExifTag.GPSLongitudeRef];
+
+          if (latProp != null && lonProp != null)
+          {
+            var latValues = latProp.Value as ExifURational[];
+            var lonValues = lonProp.Value as ExifURational[];
+
+            if (latValues != null && latValues.Length == 3 &&
+                lonValues != null && lonValues.Length == 3)
+            {
+              double lat = (double)latValues[0] +
+                           (double)latValues[1] / 60.0 +
+                           (double)latValues[2] / 3600.0;
+              double lon = (double)lonValues[0] +
+                           (double)lonValues[1] / 60.0 +
+                           (double)lonValues[2] / 3600.0;
+
+              if (latRefProp != null && latRefProp.Value != null && latRefProp.Value.ToString() == "S") lat = -lat;
+              if (lonRefProp != null && lonRefProp.Value != null && lonRefProp.Value.ToString() == "W") lon = -lon;
+
+              ii._latitude = lat;
+              ii._longitude = lon;
+            }
+          }
+        }
+        catch (Exception ex2)
+        {
+          Log.Error(ex2, $"GPS EXIF failed for {name}");
+        }
       }
       catch (Exception ex)
       {
