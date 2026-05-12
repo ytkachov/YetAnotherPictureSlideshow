@@ -202,27 +202,26 @@ class LocalImages : ImagesProvider
           var lonProp = reader.Properties[ExifTag.GPSLongitude];
           var lonRefProp = reader.Properties[ExifTag.GPSLongitudeRef];
 
-          if (latProp != null && lonProp != null)
+          if (latProp?.Value is Array latArr && latArr.Length == 3 &&
+              lonProp?.Value is Array lonArr && lonArr.Length == 3)
           {
-            var latValues = latProp.Value as ExifURational[];
-            var lonValues = lonProp.Value as ExifURational[];
+            dynamic latD = latArr.GetValue(0), latM = latArr.GetValue(1), latS = latArr.GetValue(2);
+            double lat = (double)latD.Numerator / (double)latD.Denominator +
+                         (double)latM.Numerator / (double)latM.Denominator / 60.0 +
+                         (double)latS.Numerator / (double)latS.Denominator / 3600.0;
 
-            if (latValues != null && latValues.Length == 3 &&
-                lonValues != null && lonValues.Length == 3)
-            {
-              double lat = (double)latValues[0] +
-                           (double)latValues[1] / 60.0 +
-                           (double)latValues[2] / 3600.0;
-              double lon = (double)lonValues[0] +
-                           (double)lonValues[1] / 60.0 +
-                           (double)lonValues[2] / 3600.0;
+            dynamic lonD = lonArr.GetValue(0), lonM = lonArr.GetValue(1), lonS = lonArr.GetValue(2);
+            double lon = (double)lonD.Numerator / (double)lonD.Denominator +
+                         (double)lonM.Numerator / (double)lonM.Denominator / 60.0 +
+                         (double)lonS.Numerator / (double)lonS.Denominator / 3600.0;
 
-              if (latRefProp != null && latRefProp.Value != null && latRefProp.Value.ToString() == "S") lat = -lat;
-              if (lonRefProp != null && lonRefProp.Value != null && lonRefProp.Value.ToString() == "W") lon = -lon;
+            var latRef = latRefProp?.Value?.ToString();
+            var lonRef = lonRefProp?.Value?.ToString();
+            if (latRef == "S" || latRef == "South") lat = -lat;
+            if (lonRef == "W" || lonRef == "West") lon = -lon;
 
-              ii._latitude = lat;
-              ii._longitude = lon;
-            }
+            ii._latitude = lat;
+            ii._longitude = lon;
           }
         }
         catch (Exception ex2)
