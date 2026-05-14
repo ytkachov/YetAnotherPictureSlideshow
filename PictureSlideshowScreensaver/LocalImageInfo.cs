@@ -231,19 +231,20 @@ public class LocalImageInfo : ImageInfo
               try
               {
                 var result = await GeocodingService.ReverseGeocodeAsync(lat, lon);
-                if (result != null && !string.IsNullOrEmpty(result.PlaceName))
-                {
-                  _placeName = result.PlaceName;
 
-                  string fname = Path.ChangeExtension(imgName, "finfo");
-                  string existingJson = File.ReadAllText(fname);
-                  var data = JsonConvert.DeserializeObject<FinfoData>(existingJson);
-                  if (data != null)
+                string fname = Path.ChangeExtension(imgName, "finfo");
+                string existingJson = File.ReadAllText(fname);
+                var data = JsonConvert.DeserializeObject<FinfoData>(existingJson);
+                if (data != null)
+                {
+                  data.GeocodingAttempted = true;
+                  if (result != null && !string.IsNullOrEmpty(result.PlaceName))
                   {
+                    _placeName = result.PlaceName;
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
-                    File.WriteAllText(fname, JsonConvert.SerializeObject(data, Formatting.Indented));
                   }
+                  File.WriteAllText(fname, JsonConvert.SerializeObject(data, Formatting.Indented));
                 }
               }
               catch (Exception ex)

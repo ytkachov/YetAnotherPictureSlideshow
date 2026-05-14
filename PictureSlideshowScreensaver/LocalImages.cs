@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using Newtonsoft.Json;
 using Serilog;
 using ExifLibrary;
 using static System.Net.WebRequestMethods;
@@ -177,6 +178,22 @@ class LocalImages : ImagesProvider
       string movfile = Path.ChangeExtension(name, "mov");
       LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null);
 
+      // If a previous run flagged this image as having unreadable EXIF, skip the read.
+      string finfoPath = Path.ChangeExtension(name, "finfo");
+      if (File.Exists(finfoPath))
+      {
+        try
+        {
+          var existing = JsonConvert.DeserializeObject<FinfoData>(File.ReadAllText(finfoPath));
+          if (existing != null && existing.ExifReadFailed)
+          {
+            _imagesTmp.Add(ii);
+            return;
+          }
+        }
+        catch { }
+      }
+
       try
       {
         var reader = ImageFile.FromFile(name);
@@ -220,8 +237,11 @@ class LocalImages : ImagesProvider
             if (latRef == "S" || latRef == "South") lat = -lat;
             if (lonRef == "W" || lonRef == "West") lon = -lon;
 
-            ii._latitude = lat;
-            ii._longitude = lon;
+            if (!double.IsNaN(lat) && !double.IsNaN(lon) && !double.IsInfinity(lat) && !double.IsInfinity(lon))
+            {
+              ii._latitude = lat;
+              ii._longitude = lon;
+            }
           }
         }
         catch (Exception ex2)

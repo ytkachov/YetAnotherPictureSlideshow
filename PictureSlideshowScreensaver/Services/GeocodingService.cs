@@ -31,9 +31,9 @@ public static class GeocodingService
         lock (_lock)
         {
             var elapsed = DateTime.Now - _lastRequestTime;
-            if (elapsed.TotalMilliseconds < 1100)
+            if (elapsed.TotalMilliseconds < 10000)
             {
-                int delay = 1100 - (int)elapsed.TotalMilliseconds;
+                int delay = 10000 - (int)elapsed.TotalMilliseconds;
                 System.Threading.Thread.Sleep(delay);
             }
         }
