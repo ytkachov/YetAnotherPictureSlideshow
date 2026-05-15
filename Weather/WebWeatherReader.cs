@@ -1,33 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
+using System;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Support.UI;
-using WatiN.Core;
-using System.Collections.ObjectModel;
 using Serilog;
 
 namespace weather
 {
   public enum WeatherSource
   {
-    NW = 0, // NGS Watin 
+    NW = 0, // NGS Watin (removed; kept in enum for backward-compat with stored values)
     NC = 1, // NGS Chrome
-    NI = 2, // NGS IE
+    NI = 2, // NGS IE (removed; kept in enum for backward-compat with stored values)
     NE = 3, // NGS Edge
     YC = 4, // Yandex Chrome
-    YI = 5, // Yandex IE
+    YI = 5, // Yandex IE (removed; kept in enum for backward-compat with stored values)
     YE = 6, // Yandex Edge
     YAC = 100  // Yandex API Chrome
   }
@@ -41,19 +32,6 @@ namespace weather
     string current();
     void getrest();
   }
-
-  static class WatinExtensions
-  {
-    public static DivCollection ChildDivs(this Element self)
-    {
-      return self.DomContainer.Divs.Filter(e => self.Equals(e.Parent));
-    }
-    public static ElementCollection EChildDivs(this Element self)
-    {
-      return self.DomContainer.Elements.Filter(e => (self.Equals(e.Parent) && e.TagName.ToLower() == "div"));
-    }
-  }
-
 
   public static class XmlExtensions
   {
@@ -69,10 +47,6 @@ namespace weather
 
   public static class SeleniumExtensions
   {
-    //// str - the source string
-    //// index- the start location to replace at (0-based)
-    //// length - the number of characters to be removed before inserting
-    //// replace - the string that is replacing characters
     public static string ReplaceAt(this string str, int index, int length, string replace)
     {
       return str.Remove(index, Math.Min(length, str.Length - index))
@@ -83,7 +57,6 @@ namespace weather
     {
       string outerhtml = driver.outerHTML(element);
 
-      // correct incorrect <img > tags
       string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
       var matches = Regex.Matches(outerhtml, img);
       for (int i = matches.Count - 1; i >= 0; i--)
@@ -152,106 +125,6 @@ namespace weather
     }
   }
 
-  public class NGSWatinReader : IWeatherReader
-  {
-    private IE _browser;
-    private static string _weather_url = "https://pogoda.ngs.ru/academgorodok/";
-
-    public NGSWatinReader()
-    {
-      Settings.AutoMoveMousePointerToTopLeft = false;
-      //Settings.MakeNewIeInstanceVisible = false;
-
-      if (_browser == null)
-        _browser = new IE();
-    }
-
-    public void close()
-    {
-      if (_browser != null)
-        _browser.Close();
-
-      _browser = null;
-    }
-
-    public string current()
-    {
-      navigate(_weather_url);
-      Thread.Sleep(10000);
-
-      string outerhtml;
-      Div info = _browser.Div(Find.ByClass("today-panel__info"));
-      if (!info.Exists)
-      {
-        outerhtml = _browser.Html;
-
-        File.WriteAllText(@"D:\outerhtml.htm", outerhtml);
-
-        throw new Exception("incorrect current weather structure ");
-      }
-
-      outerhtml = info.OuterHtml.Replace("&nbsp;", " ");
-
-      // remove usually incorrect <img > tags
-      string img = "<img\\s[^>]*?src\\s*=\\s*['\\\"]([^ '\\\"]*?)['\\\"][^>]*?>";
-
-      return Regex.Replace(outerhtml, img, " ");
-    }
-
-    public string forecast()
-    {
-      // navigate(_weather_url);
-      //Thread.Sleep(10000);
-
-      Table tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements"));
-      if (!tbl.Exists)
-        tbl = _browser.Table(Find.ByClass("pgd-detailed-cards elements pgd-hidden"));
-
-      if (!tbl.Exists)
-        throw new Exception("NGS forecast: can't find 3 day forecast table");
-
-      string outerhtml = tbl.OuterHtml.Replace("&nbsp;", " ");
-
-      return outerhtml;
-    }
-
-    public void getrest()
-    {
-      _browser.GoTo("http://google.com/");
-    }
-
-    private void navigate(string url = null)
-    {
-      if (_browser == null)
-        _browser = new IE();
-
-      if (url == null)
-        _browser.GoTo("http://weather.nsu.ru/old");
-      else
-        _browser.GoToNoWait(url);
-    }
-
-    public void restart()
-    {
-      close();
-    }
-
-    public string temperature()
-    {
-      navigate();
-      Thread.Sleep(1000);
-
-      Span temp = _browser.Span(Find.ById("temp"));
-      if (temp.Exists)
-      {
-        Thread.Sleep(500);
-        return temp.Text;
-      }
-
-      return null;
-    }
-  }
-
   public abstract class WeatherSeleniumReader : IWeatherReader
   {
     protected IWebDriver _driver = null;
@@ -317,13 +190,13 @@ namespace weather
 
     protected virtual IWebDriver create_driver()
     {
-      IWebDriver driver = null;
-      if (_type == WeatherSource.NI || _type == WeatherSource.YI)
-        driver = new InternetExplorerDriver();
-      else if (_type == WeatherSource.NE || _type == WeatherSource.YE)
+      IWebDriver driver;
+      if (_type == WeatherSource.NE || _type == WeatherSource.YE)
         driver = new EdgeDriver();
       else if (_type == WeatherSource.NC || _type == WeatherSource.YC)
         driver = new ChromeDriver();
+      else
+        throw new NotSupportedException($"WeatherSource {_type} is no longer supported (IE/WatiN removed)");
 
       driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
 
@@ -332,7 +205,6 @@ namespace weather
 
     protected virtual void navigate(string url = null)
     {
-
       if (_driver == null)
         _driver = create_driver();
 
