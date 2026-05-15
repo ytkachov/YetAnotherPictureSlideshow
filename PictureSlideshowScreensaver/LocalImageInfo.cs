@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
-using Emgu.CV;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -194,8 +195,7 @@ public class LocalImageInfo : ImageInfo
 
         try
         {
-          Image<Emgu.CV.Structure.Bgr, byte> cvimg = new Image<Emgu.CV.Structure.Bgr, byte>(b);
-          Mat cvmat = new Mat(cvimg.Mat, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), cvimg.Size));
+          using Mat cvmat = BitmapConverter.ToMat(b);
 
           long detectionTime;
           string face_detection_file = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "haarcascade_frontalface_alt2.xml");

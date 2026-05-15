@@ -1,12 +1,10 @@
-﻿//----------------------------------------------------------------------------
-//  Copyright (C) 2004-2016 by EMGU Corporation. All rights reserved.       
-//----------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using Emgu.CV;
+using OpenCvSharp;
+using CvRect = OpenCvSharp.Rect;
+using DrawingRectangle = System.Drawing.Rectangle;
 
 namespace FaceDetection
 {
@@ -14,28 +12,23 @@ namespace FaceDetection
   {
     public static void Detect(
       Mat image, String faceFileName,
-      List<Rectangle> faces,
+      List<DrawingRectangle> faces,
       out long detectionTime)
     {
       Stopwatch watch;
 
-      //Read the HaarCascade objects
       using (CascadeClassifier face = new CascadeClassifier(faceFileName))
       {
         watch = Stopwatch.StartNew();
-        using (UMat ugray = new UMat())
+        using (Mat gray = new Mat())
         {
-          CvInvoke.CvtColor(image, ugray, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
+          Cv2.CvtColor(image, gray, ColorConversionCodes.BGR2GRAY);
+          Cv2.EqualizeHist(gray, gray);
 
-          //normalizes brightness and increases contrast of the image
-          CvInvoke.EqualizeHist(ugray, ugray);
+          CvRect[] facesDetected = face.DetectMultiScale(gray, 1.1, 10, (HaarDetectionTypes)0, new OpenCvSharp.Size(20, 20));
 
-          //Detect the faces  from the gray scale image and store the locations as rectangle
-          //The first dimensional is the channel
-          //The second dimension is the index of the rectangle in the specific channel
-          Rectangle[] facesDetected = face.DetectMultiScale(ugray, 1.1, 10, new Size(20, 20));
-
-          faces.AddRange(facesDetected);
+          foreach (var r in facesDetected)
+            faces.Add(new DrawingRectangle(r.X, r.Y, r.Width, r.Height));
         }
         watch.Stop();
       }
@@ -44,4 +37,3 @@ namespace FaceDetection
     }
   }
 }
- 
