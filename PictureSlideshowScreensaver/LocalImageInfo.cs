@@ -23,11 +23,10 @@ public class LocalImageInfo : ImageInfo
   internal List<string> _messages = new List<string>();
 
   private List<PointF> _faces = null;
-  private bool _processed = false;
+  private volatile bool _processed = false;
   internal double? _latitude = null;
   internal double? _longitude = null;
   internal string _placeName = null;
-  private static Random _rand = new Random(DateTime.Now.Millisecond);
 
   public LocalImageInfo(string nm, string videoname = null)
   {
@@ -76,12 +75,16 @@ public class LocalImageInfo : ImageInfo
   {
     get
     {
+      // _placeName may be written by the fire-and-forget geocoding Task in
+      // FindFaces; Volatile.Read pairs with the Volatile.Write there to
+      // guarantee the UI thread sees the latest value once it lands.
+      string place = Volatile.Read(ref _placeName);
       string d = (_dateTaken == null ? "" : _dateTaken.Value.ToString("dd/MM/yyyy"));
-      if (!string.IsNullOrEmpty(_placeName))
+      if (!string.IsNullOrEmpty(place))
       {
         if (!string.IsNullOrEmpty(d))
           d += " :: ";
-        d += _placeName;
+        d += place;
       }
       return d;
     }
@@ -93,15 +96,23 @@ public class LocalImageInfo : ImageInfo
     {
       BitmapImage bmp_img = new BitmapImage(new Uri(_name));
 
-      if (orientation != RotateFlipType.RotateNoneFlipNone || !_processed)
+      // Fast path: no rotation needed and face detection already cached.
+      if (orientation == RotateFlipType.RotateNoneFlipNone && _processed)
       {
-        using (MemoryStream outStream = new MemoryStream())
-        {
-          BitmapEncoder enc = new BmpBitmapEncoder();
-          enc.Frames.Add(BitmapFrame.Create(bmp_img));
-          enc.Save(outStream);
-          Bitmap bitmap = new Bitmap(outStream);
+        bmp_img.Freeze();
+        return bmp_img;
+      }
 
+      using (MemoryStream outStream = new MemoryStream())
+      {
+        BitmapEncoder enc = new BmpBitmapEncoder();
+        enc.Frames.Add(BitmapFrame.Create(bmp_img));
+        enc.Save(outStream);
+
+        // System.Drawing.Bitmap was previously leaked — wrap in using so the
+        // unmanaged GDI handle is freed even if FindFaces throws.
+        using (Bitmap bitmap = new Bitmap(outStream))
+        {
           bitmap.RotateFlip(orientation);
 
           bmp_img = Bitmap2BitmapImage(bitmap);
@@ -127,11 +138,14 @@ public class LocalImageInfo : ImageInfo
     get
     {
       PointF pt = new PointF(-1.0F, -1.0F);
-      if (_faces != null && _faces.Count != 0)
+      // Snapshot the reference so a concurrent FindFaces assignment cannot
+      // shrink the list under our feet.
+      var faces = _faces;
+      if (faces != null && faces.Count != 0)
       {
-        int acc = _rand.Next(_faces.Count);
-        if (acc >= 0 && acc < _faces.Count)
-          pt = _faces[acc];
+        int acc = Random.Shared.Next(faces.Count);
+        if (acc >= 0 && acc < faces.Count)
+          pt = faces[acc];
       }
 
       return pt;
@@ -240,7 +254,10 @@ public class LocalImageInfo : ImageInfo
                   data.GeocodingAttempted = true;
                   if (result != null && !string.IsNullOrEmpty(result.PlaceName))
                   {
-                    _placeName = result.PlaceName;
+                    // Volatile.Write pairs with Volatile.Read in the description
+                    // getter so the UI thread observes the new place name
+                    // without needing a lock.
+                    Volatile.Write(ref _placeName, result.PlaceName);
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
                   }
@@ -277,7 +294,11 @@ public class LocalImageInfo : ImageInfo
       bitmapImage.EndInit();
     }
 
-    return (BitmapImage)bitmapImage;
+    // Freeze for cross-thread safety: animation/property updates may touch
+    // the BitmapImage from the dispatcher while it's also referenced by
+    // background tasks. A frozen Freezable is allowed on any thread.
+    bitmapImage.Freeze();
+    return bitmapImage;
   }
 
 }
