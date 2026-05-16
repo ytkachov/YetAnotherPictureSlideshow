@@ -32,11 +32,7 @@ namespace WeatherCollector
       if (args.Length > 2)
         nocheck = true;
 
-      bool nokill = false;
-      if (args.Length > 3)
-        nokill = true;
-
-      Log.Information($"Args: {args.Length} Folder: [{_folder}] Type: [{_type}] Nocheck: [{nocheck}] Nokill: [{nokill}]");
+      Log.Information("Args: {ArgCount} Folder: [{Folder}] Type: [{Type}] Nocheck: [{Nocheck}]", args.Length, _folder, _type, nocheck);
       if (!nocheck)
       {
         // check if mother app is running
@@ -60,51 +56,12 @@ namespace WeatherCollector
         }
       }
 
-      // nokill = true;
-      if (!nokill)
-      {
-        string browsername = "chrome";
-        string drivername = "chromedriver";
-        if (_type == WeatherSource.NI || _type == WeatherSource.YI)
-        {
-          browsername = "iexplore";
-          drivername = "IEDriverServer";
-        }
-        else if (_type == WeatherSource.NE || _type == WeatherSource.YE)
-        {
-          browsername = "edge";
-          drivername = "msedgeDriver";
-        }
-
-        Process[] pl = Process.GetProcesses();
-
-        foreach (var p in pl)
-        {
-          string mwt = p.MainWindowTitle;
-          string pn = p.ProcessName;
-          if (p.ProcessName.Equals(browsername, StringComparison.OrdinalIgnoreCase))
-          {
-            //p.CloseMainWindow();
-            try
-            {
-              p.Kill();
-            }
-            catch (Exception)
-            {
-            }
-          }
-        }
-
-        foreach (var p in pl)
-        {
-          string mwt = p.MainWindowTitle;
-          string pn = p.ProcessName;
-          if (p.ProcessName.Equals(drivername, StringComparison.OrdinalIgnoreCase))
-          {
-            p.Kill();
-          }
-        }
-      }
+      // Note: WeatherCollector used to Process.Kill stray chrome/edge and
+      // driver executables before starting because WeatherSeleniumReader
+      // would leak them on exceptions. WeatherSeleniumReader now implements
+      // IDisposable and is consumed via using below, so that workaround was
+      // removed; killing the user's running browsers as a side effect of
+      // collecting weather was hostile.
 
       IWeatherWriter writer = null;
       IWeatherReader reader = null;
@@ -139,41 +96,52 @@ namespace WeatherCollector
 
       if (writer != null && reader != null)
       {
-
-        string temp = "", current = "", forecast = "", except = "";
         try
         {
-          temp = reader.temperature();
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex, "");
+          string temp = "", current = "", forecast = "", except = "";
+          try
+          {
+            temp = reader.temperature();
+          }
+          catch (Exception ex)
+          {
+            Log.Error(ex, "");
 
-          except += "\n\n\n ======================= \n" + ex.Message;
-        }
+            except += "\n\n\n ======================= \n" + ex.Message;
+          }
 
-        try
-        {
-          current = reader.current();
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex, "");
-          except += "\n\n\n ======================= \n" + ex.Message;
-        }
+          try
+          {
+            current = reader.current();
+          }
+          catch (Exception ex)
+          {
+            Log.Error(ex, "");
+            except += "\n\n\n ======================= \n" + ex.Message;
+          }
 
-        try
-        {
-          forecast = reader.forecast();
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex, "");
-          except += "\n\n\n ======================= \n" + ex.Message;
-        }
+          try
+          {
+            forecast = reader.forecast();
+          }
+          catch (Exception ex)
+          {
+            Log.Error(ex, "");
+            except += "\n\n\n ======================= \n" + ex.Message;
+          }
 
-        writer.writeinfo(temp, current, forecast, except);
-        reader.close();
+          writer.writeinfo(temp, current, forecast, except);
+        }
+        finally
+        {
+          // Ensure the Selenium WebDriver / HttpClient / NSU temperature
+          // reader inside the reader+writer are released even if writeinfo
+          // throws. Without this any exception above left the chromedriver
+          // process running until the user manually killed it.
+          (reader as IDisposable)?.Dispose();
+          if (writer is IDisposable wd && !ReferenceEquals(writer, reader))
+            wd.Dispose();
+        }
       }
 
       FinitLOG();

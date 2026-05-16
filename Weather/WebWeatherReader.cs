@@ -125,32 +125,73 @@ namespace weather
     }
   }
 
-  public abstract class WeatherSeleniumReader : IWeatherReader
+  public abstract class WeatherSeleniumReader : IWeatherReader, IDisposable
   {
     protected IWebDriver _driver = null;
     protected WeatherSource _type;
     protected string _weather_url;
     protected string _weather_forecast_url;
+    private bool _disposed;
 
     public WeatherSeleniumReader(WeatherSource type)
     {
       _type = type;
-      _driver = create_driver();
+      // If create_driver throws (e.g. browser binary missing) we'd otherwise
+      // leak whatever the driver process already started; catch and rethrow
+      // so the partial state is visible.
+      try
+      {
+        _driver = create_driver();
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "Failed to create WebDriver for {Type}", type);
+        throw;
+      }
     }
 
     public void close()
     {
+      var driver = _driver;
+      _driver = null;
+      if (driver == null)
+        return;
+
       try
       {
-        _driver.Close();
-        _driver.Quit();
+        driver.Close();
       }
       catch (Exception ex)
       {
-        Log.Error(ex, "");
+        Log.Warning(ex, "WebDriver.Close threw");
       }
 
-      _driver = null;
+      try
+      {
+        driver.Quit();
+      }
+      catch (Exception ex)
+      {
+        Log.Warning(ex, "WebDriver.Quit threw");
+      }
+
+      try
+      {
+        driver.Dispose();
+      }
+      catch (Exception ex)
+      {
+        Log.Warning(ex, "WebDriver.Dispose threw");
+      }
+    }
+
+    public void Dispose()
+    {
+      if (_disposed)
+        return;
+      _disposed = true;
+      close();
+      GC.SuppressFinalize(this);
     }
 
     public virtual string current()
@@ -177,10 +218,11 @@ namespace weather
 
     public void restart()
     {
-      _driver.Close();
-      _driver.Quit();
-
-      _driver = null;
+      // Reuse close()'s defensive teardown rather than calling Close/Quit
+      // directly: if either method throws (which selenium 4 does on a
+      // crashed browser) we still want the driver disposed and _driver
+      // nulled so the next navigate() recreates it.
+      close();
     }
 
     public void getrest()

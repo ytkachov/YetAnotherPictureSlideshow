@@ -319,10 +319,11 @@ namespace weather
     }
   }
 
-  public class YandexApiReaderWriter : WeatherFileReaderWriter
+  public class YandexApiReaderWriter : WeatherFileReaderWriter, IDisposable
   {
     private WeatherSeleniumReader _nsu_temperature_reader = null;
     private YandexApiReader _yandex_api_reader = null;
+    private bool _disposed;
 
     public YandexApiReaderWriter(string key = "", double lat = 54.85194397, double lon = 83.10189056) : base()
     {
@@ -339,10 +340,19 @@ namespace weather
 
     public override void close( )
     {
-      if (_nsu_temperature_reader != null)
-        _nsu_temperature_reader.close();
-        
+      _nsu_temperature_reader?.Dispose();
+      _nsu_temperature_reader = null;
+
       base.close();
+    }
+
+    public void Dispose()
+    {
+      if (_disposed)
+        return;
+      _disposed = true;
+      close();
+      GC.SuppressFinalize(this);
     }
 
     public override string temperature( )
