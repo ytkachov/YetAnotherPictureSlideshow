@@ -41,7 +41,7 @@ namespace weather
   public abstract class WeatherProviderBase : IWeatherProvider
   {
     protected Thread _reader;
-    protected AutoResetEvent _exit = new AutoResetEvent(false);
+    protected CancellationTokenSource _cts = new CancellationTokenSource();
 
     protected Object _locker = new Object();
     protected XmlNamespaceManager _nsmgr;
@@ -52,8 +52,9 @@ namespace weather
 
     public WeatherProviderBase()
     {
+      // STA was a .NET Framework artefact for COM interop; Selenium WebDriver
+      // doesn't require it under .NET 8, so the default MTA thread is fine.
       _reader = new Thread(new ThreadStart(readdata)) { IsBackground = true };
-      _reader.SetApartmentState(ApartmentState.STA);
       _reader.Start();
     }
 
@@ -61,7 +62,10 @@ namespace weather
 
     protected virtual void close()
     {
-      _exit.Set();
+      // Replaces the previous AutoResetEvent: cancellation is now visible
+      // both as IsCancellationRequested (so readdata can short-circuit
+      // between phases) and as a WaitHandle that wakes the 10-minute pause.
+      try { _cts.Cancel(); } catch (ObjectDisposedException) { }
     }
 
     public virtual string get_error_description()
@@ -155,9 +159,11 @@ namespace weather
     protected virtual void readdata()
     {
       int counter = 0;
-      while (true)
+      var token = _cts.Token;
+      while (!token.IsCancellationRequested)
       {
         init_reader();
+        if (token.IsCancellationRequested) break;
 
         _error_descr = "";
         if (counter++ == 5)
@@ -166,10 +172,15 @@ namespace weather
           counter = 0;
         }
 
+        if (token.IsCancellationRequested) break;
         read_current_weather();
+        if (token.IsCancellationRequested) break;
         read_forecast();
 
-        if (_exit.WaitOne(TimeSpan.FromMinutes(10)))
+        // WaitOne returns true when the handle is signaled (cancellation),
+        // false on timeout. Either way we re-check the token at the top of
+        // the loop.
+        if (token.WaitHandle.WaitOne(TimeSpan.FromMinutes(10)))
           break;
       }
     }

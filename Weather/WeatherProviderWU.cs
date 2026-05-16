@@ -127,7 +127,7 @@ namespace weather
           Log.Error(ex, "");
         }
 
-        if (_exit.WaitOne(TimeSpan.FromMinutes(30)))
+        if (_cts.Token.WaitHandle.WaitOne(TimeSpan.FromMinutes(30)))
         {
           break;
         }
