@@ -10,6 +10,7 @@ using PictureSlideshowScreensaver.Models;
 using presenters;
 using Serilog;
 using weather;
+using Yaps.Core.Abstractions;
 
 namespace PictureSlideshowScreensaver.ViewModels
 {
@@ -18,6 +19,7 @@ namespace PictureSlideshowScreensaver.ViewModels
   {
     private readonly Settings _settings;
     private readonly ImagesProvider _images;
+    private readonly IClock _clock;
     private DispatcherTimer _switchImage;
 
     private PhotoProperties _photo_properties;
@@ -32,10 +34,11 @@ namespace PictureSlideshowScreensaver.ViewModels
     public FrameViewModel FirstImage { get { return _firstImage; } set { _firstImage = value; RaisePropertyChanged(); } }
     public FrameViewModel SecondImage { get { return _secondImage; } set { _secondImage = value; RaisePropertyChanged(); } }
 
-    public ScreensaverViewModel(Settings settings, ImagesProvider images)
+    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock)
     {
       _settings = settings;
       _images = images;
+      _clock = clock;
       _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
       FirstImage = new FrameViewModel("one") { IsActive = true };
       SecondImage = new FrameViewModel("two") { IsActive = false };
@@ -69,7 +72,8 @@ namespace PictureSlideshowScreensaver.ViewModels
     {
       _switchImage.Interval = TimeSpan.FromSeconds(_settings._updateInterval);
 
-      _isNightTime = DateTime.Now.Hour < 7 || DateTime.Now.Hour >= 23;
+      var hour = _clock.Now.Hour;
+      _isNightTime = hour < 7 || hour >= 23;
       //_isNightTime = true;
       if ((!_settings._workAtNight) && _isNightTime)
         return;        // фотографии не меняются ночью.
@@ -79,11 +83,12 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private void NextImage()
     {
+      var hour = _clock.Now.Hour;
       // write stat every day at 8PM
-      if (_settings._writeStat && _prevTime == 20 && DateTime.Now.Hour == _prevTime + 1)
+      if (_settings._writeStat && _prevTime == 20 && hour == _prevTime + 1)
         _images.WriteStat(_settings._writeStatPath);
 
-      _prevTime = DateTime.Now.Hour;
+      _prevTime = hour;
 
       ImageInfo nextphoto = _images.GetNext();
       if (nextphoto != null)

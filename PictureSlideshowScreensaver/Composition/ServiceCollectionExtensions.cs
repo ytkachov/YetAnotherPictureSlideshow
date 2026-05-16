@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PictureSlideshowScreensaver.Models;
 using PictureSlideshowScreensaver.ViewModels;
+using Yaps.Core.Abstractions;
 
 namespace PictureSlideshowScreensaver.Composition
 {
@@ -14,6 +15,7 @@ namespace PictureSlideshowScreensaver.Composition
         /// </summary>
         public static IServiceCollection AddScreensaver(this IServiceCollection services)
         {
+            services.AddSingleton<IClock, SystemClock>();
             services.AddSingleton<Settings>();
             services.AddSingleton<ImagesProvider, LocalImages>();
 
