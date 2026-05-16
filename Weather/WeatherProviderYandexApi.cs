@@ -95,7 +95,9 @@ namespace weather
       if (string.IsNullOrEmpty(current))
         throw new Exception("incorrect current weather structure ");
 
-      YandexWeatherFact fact = JsonConvert.DeserializeObject<YandexWeatherFact>(current, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+      // No $type allowed: the JSON shape is fixed by YandexWeatherFact's
+      // DataContract attributes.
+      YandexWeatherFact fact = JsonConvert.DeserializeObject<YandexWeatherFact>(current);
 
       // weather character
       string wt = fact.Icon;

@@ -315,7 +315,11 @@ namespace weather
       using var stream = response.Content.ReadAsStream();
       using var reader = new StreamReader(stream);
       string line = reader.ReadToEnd();
-      _yandex_weather = JsonConvert.DeserializeObject<YandexWeather>(line, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+      // TypeNameHandling.Auto was a deserialization vulnerability: a hostile
+      // payload could specify $type and instantiate arbitrary CLR types.
+      // The response is a fixed schema described by YandexWeather and its
+      // DataContract children, so default (None) handling is correct.
+      _yandex_weather = JsonConvert.DeserializeObject<YandexWeather>(line);
     }
   }
 
@@ -395,7 +399,7 @@ namespace weather
 
       try
       {
-        long obs_time = (long)(JsonConvert.DeserializeObject<YandexWeatherFact>(base.current(), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }).ObsTime);
+        long obs_time = (long)(JsonConvert.DeserializeObject<YandexWeatherFact>(base.current()).ObsTime);
         long cur_time = DateTimeOffset.Now.ToUnixTimeSeconds();
 
         if (cur_time - obs_time > span_minutes * 60)
