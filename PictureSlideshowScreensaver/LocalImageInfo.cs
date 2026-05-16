@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Windows.Interop;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using Newtonsoft.Json;
 using Serilog;
 
 public class LocalImageInfo : ImageInfo
@@ -163,25 +162,9 @@ public class LocalImageInfo : ImageInfo
       string finfoname = Path.ChangeExtension(_name, "finfo");
       if (File.Exists(finfoname))
       {
-        string json = File.ReadAllText(finfoname);
-        FinfoData finfo = null;
-
-        try
-        {
-          finfo = JsonConvert.DeserializeObject<FinfoData>(json);
-        }
-        catch { }
-
-        if (finfo == null || finfo.Faces == null || finfo.Faces.Length == 0)
-        {
-          try
-          {
-            var oldFaces = JsonConvert.DeserializeObject<System.Drawing.Rectangle[]>(json);
-            if (oldFaces != null)
-              finfo = new FinfoData { Faces = oldFaces };
-          }
-          catch { }
-        }
+        // ReadFromFile transparently handles legacy Rectangle[] files; we
+        // no longer need the manual fallback that lived here.
+        FinfoData finfo = FinfoData.ReadFromFile(finfoname);
 
         if (finfo?.Faces != null && finfo.Faces.Length != 0)
         {
@@ -223,8 +206,7 @@ public class LocalImageInfo : ImageInfo
             PlaceName = _placeName
           };
 
-          string json = JsonConvert.SerializeObject(finfo, Formatting.Indented);
-          File.WriteAllText(finfoname, json);
+          FinfoData.WriteToFile(finfoname, finfo);
 
           if (faces.Count != 0)
           {
@@ -247,8 +229,7 @@ public class LocalImageInfo : ImageInfo
                 var result = await GeocodingService.ReverseGeocodeAsync(lat, lon);
 
                 string fname = Path.ChangeExtension(imgName, "finfo");
-                string existingJson = File.ReadAllText(fname);
-                var data = JsonConvert.DeserializeObject<FinfoData>(existingJson);
+                var data = FinfoData.ReadFromFile(fname);
                 if (data != null)
                 {
                   data.GeocodingAttempted = true;
@@ -261,7 +242,7 @@ public class LocalImageInfo : ImageInfo
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
                   }
-                  File.WriteAllText(fname, JsonConvert.SerializeObject(data, Formatting.Indented));
+                  FinfoData.WriteToFile(fname, data);
                 }
               }
               catch (Exception ex)

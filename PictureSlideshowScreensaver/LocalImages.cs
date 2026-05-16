@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
-using Newtonsoft.Json;
 using Serilog;
 using ExifLibrary;
 using static System.Net.WebRequestMethods;
@@ -180,18 +179,11 @@ class LocalImages : ImagesProvider
 
       // If a previous run flagged this image as having unreadable EXIF, skip the read.
       string finfoPath = Path.ChangeExtension(name, "finfo");
-      if (File.Exists(finfoPath))
+      var existing = FinfoData.ReadFromFile(finfoPath);
+      if (existing != null && existing.ExifReadFailed)
       {
-        try
-        {
-          var existing = JsonConvert.DeserializeObject<FinfoData>(File.ReadAllText(finfoPath));
-          if (existing != null && existing.ExifReadFailed)
-          {
-            _imagesTmp.Add(ii);
-            return;
-          }
-        }
-        catch { }
+        _imagesTmp.Add(ii);
+        return;
       }
 
       try

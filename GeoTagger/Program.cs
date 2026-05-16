@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ExifLibrary;
 using Serilog;
 
@@ -142,16 +141,7 @@ class Program
 
             // Read existing finfo first so we can short-circuit on stable terminal states
             // (has place, geocoding already attempted, EXIF previously unreadable).
-            FinfoData existingData = null;
-            if (File.Exists(finfoPath))
-            {
-                try
-                {
-                    var json = File.ReadAllText(finfoPath);
-                    existingData = JsonConvert.DeserializeObject<FinfoData>(json);
-                }
-                catch { }
-            }
+            FinfoData existingData = FinfoData.ReadFromFile(finfoPath);
 
             if (existingData != null && !string.IsNullOrEmpty(existingData.PlaceName))
             {
@@ -201,7 +191,7 @@ class Program
                 {
                     var data = existingData ?? new FinfoData();
                     data.ExifReadFailed = true;
-                    File.WriteAllText(finfoPath, JsonConvert.SerializeObject(data, Formatting.Indented));
+                    FinfoData.WriteToFile(finfoPath, data);
                 }
                 catch (Exception writeEx)
                 {
@@ -261,7 +251,7 @@ class Program
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
 
-                    File.WriteAllText(finfoPath, JsonConvert.SerializeObject(data, Formatting.Indented));
+                    FinfoData.WriteToFile(finfoPath, data);
 
                     if (!fromCache)
                         Log.Information("  -> {PlaceName}", result.PlaceName);
@@ -269,7 +259,7 @@ class Program
                 }
                 else
                 {
-                    File.WriteAllText(finfoPath, JsonConvert.SerializeObject(data, Formatting.Indented));
+                    FinfoData.WriteToFile(finfoPath, data);
 
                     if (!fromCache)
                         Log.Warning("  -> No place name resolved (marked attempted)");
