@@ -16,9 +16,8 @@ namespace PictureSlideshowScreensaver.ViewModels
 
   public class ScreensaverViewModel : BaseViewModel, IDisposable
   {
-    private Settings _settings = new Settings();
-
-    private ImagesProvider _images = new LocalImages();
+    private readonly Settings _settings;
+    private readonly ImagesProvider _images;
     private DispatcherTimer _switchImage;
 
     private PhotoProperties _photo_properties;
@@ -33,8 +32,10 @@ namespace PictureSlideshowScreensaver.ViewModels
     public FrameViewModel FirstImage { get { return _firstImage; } set { _firstImage = value; RaisePropertyChanged(); } }
     public FrameViewModel SecondImage { get { return _secondImage; } set { _secondImage = value; RaisePropertyChanged(); } }
 
-    public ScreensaverViewModel()
+    public ScreensaverViewModel(Settings settings, ImagesProvider images)
     {
+      _settings = settings;
+      _images = images;
       _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
       FirstImage = new FrameViewModel("one") { IsActive = true };
       SecondImage = new FrameViewModel("two") { IsActive = false };

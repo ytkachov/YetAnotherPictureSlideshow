@@ -7,7 +7,7 @@ using System.IO;
 
 namespace PictureSlideshowScreensaver.Models
 {
-  class Settings
+  public class Settings
   {
     public string _path = null;
     public double _updateInterval = 5; // seconds

@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="CalcBinding6" />
     <PackageReference Include="ExifLibNet" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="OpenCvSharp4" />
