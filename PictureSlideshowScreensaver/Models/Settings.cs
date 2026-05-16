@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Globalization;
 using Microsoft.Win32;
 using Serilog.Events;
 using Serilog;
@@ -29,6 +26,8 @@ namespace PictureSlideshowScreensaver.Models
     public bool _noNightImageScaling = true;
     public bool _noNightImageAccents = true;
 
+    private const string RegistryPath = "SOFTWARE\\PictureSlideshowScreensaver";
+
     enum PerfOptions
     {
       work_at_night = 0x0001,
@@ -42,57 +41,92 @@ namespace PictureSlideshowScreensaver.Models
 
     public Settings()
     {
-      RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
-      if (key != null)
+      using RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath);
+      if (key == null)
+        return;
+
+      _path = (string)key.GetValue("ImageFolder");
+      _updateInterval = ReadDouble(key, "Interval", _updateInterval);
+      _fadeSpeed = ReadInt(key, "FadeTime", _fadeSpeed);
+      _writeStat = ReadInt(key, "WriteStat", 0) == 1;
+      _writeStatPath = (string)key.GetValue("WriteStatFolder");
+      _writeLog = ReadInt(key, "WriteLog", 0) == 1;
+      _writeLogPath = (string)key.GetValue("WriteLogFolder");
+      _dependOnBattery = ReadInt(key, "DependOnBattery", 0) == 1;
+
+      int dflt = (int)(PerfOptions.work_at_night | PerfOptions.no_night_image_accents | PerfOptions.no_night_image_fading | PerfOptions.no_night_image_scaling);
+      int po = (int?)key.GetValue("PerformanceOptions") ?? dflt;
+      _workAtNight = (po & (int)PerfOptions.work_at_night) != 0;
+      _noImageFading = (po & (int)PerfOptions.no_image_fading) != 0;
+      _noImageScaling = (po & (int)PerfOptions.no_image_scaling) != 0;
+      _noImageAccents = (po & (int)PerfOptions.no_image_accents) != 0;
+      _noNightImageFading = (po & (int)PerfOptions.no_night_image_fading) != 0;
+      _noNightImageScaling = (po & (int)PerfOptions.no_night_image_scaling) != 0;
+      _noNightImageAccents = (po & (int)PerfOptions.no_night_image_accents) != 0;
+
+      EnsureDirectoryExists(_writeStat, _writeStatPath);
+      EnsureDirectoryExists(_writeLog, _writeLogPath);
+
+      if (_writeLog && !string.IsNullOrEmpty(_writeLogPath) && Directory.Exists(_writeLogPath))
+        ConfigureFileLogger(_writeLogPath);
+    }
+
+    private static int ReadInt(RegistryKey key, string name, int fallback)
+    {
+      var raw = (string)key.GetValue(name);
+      if (raw == null)
+        return fallback;
+      if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
+        return parsed;
+
+      Log.Warning("Registry value {Name}={Raw} is not a valid integer; falling back to {Fallback}", name, raw, fallback);
+      return fallback;
+    }
+
+    private static double ReadDouble(RegistryKey key, string name, double fallback)
+    {
+      var raw = (string)key.GetValue(name);
+      if (raw == null)
+        return fallback;
+      if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double parsed))
+        return parsed;
+
+      Log.Warning("Registry value {Name}={Raw} is not a valid number; falling back to {Fallback}", name, raw, fallback);
+      return fallback;
+    }
+
+    private static void EnsureDirectoryExists(bool enabled, string path)
+    {
+      if (!enabled || string.IsNullOrEmpty(path))
+        return;
+
+      try
       {
-        _path = (string)key.GetValue("ImageFolder");
-        _updateInterval = double.Parse((string)key.GetValue("Interval") ?? "10.0");
-        _fadeSpeed = int.Parse((string)key.GetValue("FadeTime") ?? "1000");
-        _writeStat = int.Parse((string)key.GetValue("WriteStat") ?? "0") == 1;
-        _writeStatPath = (string)key.GetValue("WriteStatFolder");
-        _writeLog = int.Parse((string)key.GetValue("WriteLog") ?? "0") == 1;
-        _writeLogPath = (string)key.GetValue("WriteLogFolder");
-        _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
-
-        int dflt = (int)(PerfOptions.work_at_night | PerfOptions.no_night_image_accents | PerfOptions.no_night_image_fading | PerfOptions.no_night_image_scaling);
-        int po = (int?)key.GetValue("PerformanceOptions") ?? dflt;
-        _workAtNight = (po & (int)PerfOptions.work_at_night) != 0;
-        _noImageFading = (po & (int)PerfOptions.no_image_fading) != 0;
-        _noImageScaling = (po & (int)PerfOptions.no_image_scaling) != 0;
-        _noImageAccents = (po & (int)PerfOptions.no_image_accents) != 0;
-        _noNightImageFading = (po & (int)PerfOptions.no_night_image_fading) != 0;
-        _noNightImageScaling = (po & (int)PerfOptions.no_night_image_scaling) != 0;
-        _noNightImageAccents = (po & (int)PerfOptions.no_night_image_accents) != 0;
-
-        if (_writeStat)
-          if (!Directory.Exists(_writeStatPath))
-            Directory.CreateDirectory(_writeStatPath);
-
-        if (_writeLog)
-        {
-          if (!Directory.Exists(_writeLogPath))
-            Directory.CreateDirectory(_writeLogPath);
-
-          if (Directory.Exists(_writeLogPath))
-          {
-            var info_log_file = Path.Combine(_writeLogPath, "information_log-.txt");
-            var verbose_log_file = Path.Combine(_writeLogPath, "verbose_log-.txt");
-            var warning_log_file = Path.Combine(_writeLogPath, "warning_log-.txt");
-            var error_log_file = Path.Combine(_writeLogPath, "error_log-.txt");
-
-            string output_template = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {SourceContext} (at {ClassName} class in {MethodName} method): {Message}{NewLine}{Exception}";
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose() // Set minimum log level
-                .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day)) // Log to file
-                .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day)) // Log to file
-                .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day)) // Log to file
-                .WriteTo.Async(a => a.File(error_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Error, flushToDiskInterval: TimeSpan.FromSeconds(1), rollingInterval: RollingInterval.Day)) // Log to file
-                .CreateLogger()
-                .ForContext<App>();
-          }
-        }
-
+        if (!Directory.Exists(path))
+          Directory.CreateDirectory(path);
       }
+      catch (Exception ex)
+      {
+        Log.Warning(ex, "Could not create directory {Path}", path);
+      }
+    }
+
+    private static void ConfigureFileLogger(string folder)
+    {
+      var info_log_file = Path.Combine(folder, "information_log-.txt");
+      var verbose_log_file = Path.Combine(folder, "verbose_log-.txt");
+      var warning_log_file = Path.Combine(folder, "warning_log-.txt");
+      var error_log_file = Path.Combine(folder, "error_log-.txt");
+
+      const string output_template = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {SourceContext} (at {ClassName} class in {MethodName} method): {Message}{NewLine}{Exception}";
+      Log.Logger = new LoggerConfiguration()
+          .MinimumLevel.Verbose()
+          .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
+          .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
+          .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
+          .WriteTo.Async(a => a.File(error_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Error, flushToDiskInterval: TimeSpan.FromSeconds(1), rollingInterval: RollingInterval.Day))
+          .CreateLogger()
+          .ForContext<App>();
     }
   }
 }
