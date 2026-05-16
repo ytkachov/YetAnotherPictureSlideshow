@@ -66,6 +66,20 @@ namespace informers
       _clockTick.Tick += new EventHandler(clock_Tick);
       _clockTick.Interval = TimeSpan.FromSeconds(1.0);
       _clockTick.Start();
+
+      // The Informer is instantiated from XAML, so we have no caller that
+      // could call Dispose explicitly. Hook the dispatcher shutdown to
+      // stop the timer and unhook the event handler before the process
+      // tears down — otherwise the closure would keep this VM alive
+      // until the AppDomain unloads.
+      Dispatcher.CurrentDispatcher.ShutdownStarted += OnDispatcherShutdown;
+    }
+
+    private void OnDispatcherShutdown(object sender, EventArgs e)
+    {
+      _clockTick.Stop();
+      _clockTick.Tick -= clock_Tick;
+      Dispatcher.CurrentDispatcher.ShutdownStarted -= OnDispatcherShutdown;
     }
 
     public string Time_Hours { get { return _time_Hours; } set { if (_time_Hours != value) { _time_Hours = value; RaisePropertyChanged(); } } }

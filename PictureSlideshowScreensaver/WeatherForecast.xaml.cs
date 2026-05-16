@@ -36,6 +36,20 @@ namespace presenters
       _checkComponentWidth.Start();
 
       W_Invisible.LayoutUpdated += W_Invisible_LayoutUpdated;
+
+      // Stop the timer and detach the LayoutUpdated handler when the
+      // hosting dispatcher tears down. Without this both the timer
+      // closure and the LayoutUpdated subscription keep this control
+      // alive past window close.
+      Dispatcher.ShutdownStarted += OnShutdownStarted;
+    }
+
+    private void OnShutdownStarted(object sender, EventArgs e)
+    {
+      _checkComponentWidth.Stop();
+      _checkComponentWidth.Tick -= checkWidthTick;
+      W_Invisible.LayoutUpdated -= W_Invisible_LayoutUpdated;
+      Dispatcher.ShutdownStarted -= OnShutdownStarted;
     }
 
     private void W_Invisible_LayoutUpdated(object sender, EventArgs e)

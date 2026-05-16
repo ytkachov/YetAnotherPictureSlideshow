@@ -14,7 +14,7 @@ using weather;
 namespace PictureSlideshowScreensaver.ViewModels
 {
 
-  public class ScreensaverViewModel : BaseViewModel
+  public class ScreensaverViewModel : BaseViewModel, IDisposable
   {
     private Settings _settings = new Settings();
 
@@ -27,6 +27,7 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private int _prevTime = 0;
     private bool _isNightTime = false;
+    private bool _disposed;
 
     public PhotoProperties PhotoProperties { get { return _photo_properties; } set { _photo_properties = value; RaisePropertyChanged(); } }
     public FrameViewModel FirstImage { get { return _firstImage; } set { _firstImage = value; RaisePropertyChanged(); } }
@@ -45,6 +46,22 @@ namespace PictureSlideshowScreensaver.ViewModels
       _switchImage.Tick += new EventHandler(fade_Tick);
 
       _switchImage.Start();
+    }
+
+    public void Dispose()
+    {
+      if (_disposed)
+        return;
+      _disposed = true;
+
+      // Stop the timer and unsubscribe so the closure capturing 'this'
+      // doesn't keep the VM alive after the window closes.
+      if (_switchImage != null)
+      {
+        _switchImage.Stop();
+        _switchImage.Tick -= fade_Tick;
+        _switchImage = null;
+      }
     }
 
     void fade_Tick(object sender, EventArgs e)

@@ -240,6 +240,8 @@ namespace informers
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    private bool _closed;
+
     public WeatherInformer()
     {
       _weatherTick.Tick += new EventHandler(weather_Tick);
@@ -343,8 +345,21 @@ namespace informers
 
     public void Close()
     {
-      _curr_temp_provider.release();
-      _forecast_provider.release();
+      if (_closed)
+        return;
+      _closed = true;
+
+      // The DispatcherTimer keeps a strong reference to weather_Tick and
+      // therefore to this WeatherInformer. Without an explicit Stop + Tick
+      // unsubscribe the timer would survive window teardown and keep
+      // calling update_Weather against released providers.
+      _weatherTick.Stop();
+      _weatherTick.Tick -= weather_Tick;
+
+      _curr_temp_provider?.release();
+      _curr_temp_provider = null;
+      _forecast_provider?.release();
+      _forecast_provider = null;
     }
 
     // INotifyPropertyChanged

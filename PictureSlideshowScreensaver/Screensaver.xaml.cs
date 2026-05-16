@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PictureSlideshowScreensaver
@@ -11,7 +12,7 @@ namespace PictureSlideshowScreensaver
   {
     public Screensaver(object datacontext)
     {
-      DataContext = datacontext;  
+      DataContext = datacontext;
       InitializeComponent();
     }
 
@@ -26,6 +27,14 @@ namespace PictureSlideshowScreensaver
 #endif
     }
 
+    protected override void OnClosed(EventArgs e)
+    {
+      base.OnClosed(e);
+      // Tear down the VM (and any DispatcherTimers / event subscriptions
+      // it owns) so we don't lean on the process exit to clean up. In
+      // debug builds the window can be closed without shutting down WPF.
+      (DataContext as IDisposable)?.Dispose();
+    }
 
     private void Shutdown()
     {
@@ -35,7 +44,7 @@ namespace PictureSlideshowScreensaver
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Key == Key.Escape)
-        Shutdown();            
+        Shutdown();
       else if (e.Key == Key.F)
       {
         // show weather forecast

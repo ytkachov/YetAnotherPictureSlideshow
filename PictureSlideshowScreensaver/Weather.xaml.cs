@@ -94,6 +94,9 @@ namespace presenters
     private void OnShutdownStarted(object sender, EventArgs e)
     {
       _weatherInformer.Close();
+      // Unhook to make sure the handler isn't called twice if a future
+      // refactor uses a non-disposing dispatcher lifecycle.
+      Dispatcher.ShutdownStarted -= OnShutdownStarted;
     }
 
     public static readonly DependencyProperty ShowProperty = DependencyProperty.Register("Show", typeof(ShowWhat), typeof(Weather), new UIPropertyMetadata(ShowWhat.TemperatureRange));
