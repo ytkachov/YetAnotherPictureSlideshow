@@ -15,6 +15,7 @@ namespace weather
   {
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
+    private static readonly object _initLock = new object();
 
     static Dictionary<string, WeatherPeriod>[] _day_periods = new Dictionary<string, WeatherPeriod>[3]
     {
@@ -104,19 +105,27 @@ namespace weather
 
     public static IWeatherProvider get()
     {
-      if (_self == null)
-        _self = new WeatherProviderNGS();
+      // Lock-around-create avoids two concurrent get() callers each producing
+      // their own NGS provider and overwriting _self.
+      lock (_initLock)
+      {
+        if (_self == null)
+          _self = new WeatherProviderNGS();
 
-      _refcounter++;
-      return _self;
+        _refcounter++;
+        return _self;
+      }
     }
 
     public override int release()
     {
-      if (--_refcounter == 0)
-        close();
+      lock (_initLock)
+      {
+        if (--_refcounter == 0)
+          close();
 
-      return _refcounter;
+        return _refcounter;
+      }
     }
 
     protected override void close()
@@ -132,7 +141,9 @@ namespace weather
       try
       {
         string st = _sitereader.temperature();
-        if (st != null || !st.Contains("°"))
+        // Was || which dereferenced st when null; need && so we only parse a
+        // non-null string that actually contains the degree sign.
+        if (st != null && st.Contains("°"))
         {
           success = true;
           CultureInfo culture = new CultureInfo("en");

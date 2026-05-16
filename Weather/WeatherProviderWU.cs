@@ -56,6 +56,7 @@ namespace weather
 
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
+    private static readonly object _initLock = new object();
 
     private WeatherProviderWU()
     {
@@ -63,19 +64,27 @@ namespace weather
 
     public static IWeatherProvider get()
     {
-      if (_self == null)
-        _self = new WeatherProviderWU();
+      // Lock-around-create avoids two concurrent get() callers each producing
+      // their own WU provider and overwriting _self.
+      lock (_initLock)
+      {
+        if (_self == null)
+          _self = new WeatherProviderWU();
 
-      _refcounter++;
-      return _self;
+        _refcounter++;
+        return _self;
+      }
     }
 
     public override int release()
     {
-      if (--_refcounter == 0)
-        close();
+      lock (_initLock)
+      {
+        if (--_refcounter == 0)
+          close();
 
-      return _refcounter;
+        return _refcounter;
+      }
     }
 
     protected override void readdata()

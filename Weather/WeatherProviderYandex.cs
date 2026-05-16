@@ -203,7 +203,9 @@ namespace weather
     internal void get_nsu_current_temp(WeatherInfo w)
     {
       string st = _sitereader.temperature();
-      if (st != null || !st.Contains("°"))
+      // Was || which dereferenced st when null; need && so we only parse a
+      // non-null string that actually contains the degree sign.
+      if (st != null && st.Contains("°"))
       {
         CultureInfo culture = new CultureInfo("en");
         double t = double.Parse(st.Substring(0, st.IndexOf("°")), culture);
@@ -406,6 +408,7 @@ namespace weather
     private static YandexWeatherExtractor _extractor;
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;
+    private static readonly object _initLock = new object();
 
     private WeatherProviderYandex(IWeatherReader reader)
     {
@@ -417,19 +420,27 @@ namespace weather
 
     public static IWeatherProvider get(IWeatherReader reader = null)
     {
-      if (_self == null)
-        _self = new WeatherProviderYandex(reader);
+      // Lock-around-create avoids two concurrent get() callers each producing
+      // their own Yandex provider and overwriting _self.
+      lock (_initLock)
+      {
+        if (_self == null)
+          _self = new WeatherProviderYandex(reader);
 
-      _refcounter++;
-      return _self;
+        _refcounter++;
+        return _self;
+      }
     }
 
     public override int release()
     {
-      if (--_refcounter == 0)
-        close();
+      lock (_initLock)
+      {
+        if (--_refcounter == 0)
+          close();
 
-      return _refcounter;
+        return _refcounter;
+      }
     }
 
     protected override void read_current_weather() 
