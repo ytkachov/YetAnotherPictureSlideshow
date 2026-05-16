@@ -15,18 +15,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CalcBinding6" Version="1.1.0" />
-    <PackageReference Include="ExifLibNet" Version="2.1.4" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
-    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.10.0.20240616" />
-    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20240616" />
-    <PackageReference Include="Serilog" Version="4.3.0" />
-    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
+    <PackageReference Include="CalcBinding6" />
+    <PackageReference Include="ExifLibNet" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="OpenCvSharp4" />
+    <PackageReference Include="OpenCvSharp4.Extensions" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.Async" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 
   <ItemGroup>
