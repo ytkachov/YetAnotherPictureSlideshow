@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -20,19 +21,21 @@ namespace weather
       WeatherPeriod.DayAfterTomorrowMorning, WeatherPeriod.DayAfterTomorrowDay, WeatherPeriod.DayAfterTomorrowEvening, WeatherPeriod.DayAfterTomorrowNight
     };
 
-    static Dictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
-      { 
-        { "С", WindDirection.N }, 
-        { "В", WindDirection.E }, 
-        { "Ю", WindDirection.S }, 
-        { "З", WindDirection.W }, 
-        { "СВ", WindDirection.NE }, 
-        { "СЗ", WindDirection.NW }, 
+    // FrozenDictionary trades a slower build for faster .NET 8 reads and
+    // signals immutability to readers and the JIT.
+    static readonly FrozenDictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
+      {
+        { "С", WindDirection.N },
+        { "В", WindDirection.E },
+        { "Ю", WindDirection.S },
+        { "З", WindDirection.W },
+        { "СВ", WindDirection.NE },
+        { "СЗ", WindDirection.NW },
         { "ЮВ", WindDirection.SE },
-        { "ЮЗ", WindDirection.SW } 
-    };
+        { "ЮЗ", WindDirection.SW }
+    }.ToFrozenDictionary();
 
-    static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
+    static readonly FrozenDictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "bkn-d",      WeatherType.Cloudy }, // - облачно с прояснениями
       { "bkn-n",      WeatherType.Cloudy }, // - облачно с прояснениями
@@ -72,7 +75,7 @@ namespace weather
 
       { "skc-n",      WeatherType.Clear }, // - Малооблачно
       { "skc-d",      WeatherType.Clear }, // - Ясно
-    };
+    }.ToFrozenDictionary();
 
     private IWeatherReader _sitereader = null;
 

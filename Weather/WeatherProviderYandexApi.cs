@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -20,7 +21,7 @@ namespace weather
       WeatherPeriod.TomorrowMorning,         WeatherPeriod.TomorrowDay,         WeatherPeriod.TomorrowEvening,         WeatherPeriod.TomorrowNight
     };
 
-    static Dictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
+    static readonly FrozenDictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
       {
         { "n", WindDirection.N },
         { "e", WindDirection.E },
@@ -30,9 +31,9 @@ namespace weather
         { "nw", WindDirection.NW },
         { "se", WindDirection.SE },
         { "sw", WindDirection.SW }
-    };
+    }.ToFrozenDictionary();
 
-    static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
+    static readonly FrozenDictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "skc_n",        WeatherType.Clear }, // - Малооблачно
       { "skc_d",        WeatherType.Clear }, // - Ясно
@@ -77,7 +78,7 @@ namespace weather
       { "ovc_ts_ra",    WeatherType.OvercastLightningRainy }, //  — облачно, дождь, гроза
       { "ovc_ts_ha",    WeatherType.OvercastLightningRainy }  //  — облачно, град, гроза
 
-    };
+    }.ToFrozenDictionary();
 
     private IWeatherReader _sitereader = null;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,24 +15,24 @@ namespace weather
   {
     static string _wu_key = "22051dd96a426176";
 
-    static Dictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
+    static readonly FrozenDictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
     {
       { "N",   WindDirection.N }, { "NNE", WindDirection.NNE }, { "NE",  WindDirection.NE }, { "ENE", WindDirection.ENE },
       { "E",   WindDirection.E }, { "ESE", WindDirection.ESE }, { "SE",  WindDirection.SE }, { "SSE", WindDirection.SSE },
       { "S",   WindDirection.S }, { "SSW", WindDirection.SSW }, { "SW",  WindDirection.SW }, { "WSW", WindDirection.WSW },
       { "W",   WindDirection.W }, { "WNW", WindDirection.WNW }, { "NW",  WindDirection.NW }, { "NNW", WindDirection.NNW }
-    };
+    }.ToFrozenDictionary();
 
-    static Dictionary<double, WindDirection> wind_direction_degrees = new Dictionary<double, WindDirection>()
+    static readonly FrozenDictionary<double, WindDirection> wind_direction_degrees = new Dictionary<double, WindDirection>()
     {
       { 0.0      , WindDirection.N }, { 22.5 * 1 , WindDirection.NNE }, { 22.5 * 2 , WindDirection.NE }, { 22.5 * 3 , WindDirection.ENE },
       { 22.5 * 4 , WindDirection.E }, { 22.5 * 5 , WindDirection.ESE }, { 22.5 * 6 , WindDirection.SE }, { 22.5 * 7 , WindDirection.SSE },
       { 22.5 * 8 , WindDirection.S }, { 22.5 * 9 , WindDirection.SSW }, { 22.5 * 10, WindDirection.SW }, { 22.5 * 11, WindDirection.WSW },
       { 22.5 * 12, WindDirection.W }, { 22.5 * 13, WindDirection.WNW }, { 22.5 * 14, WindDirection.NW }, { 22.5 * 15, WindDirection.NNW },
       { 22.5 * 16, WindDirection.N }
-    };
+    }.ToFrozenDictionary();
 
-    static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
+    static readonly FrozenDictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "chanceflurries", WeatherType.Cloudy },
       { "chancerain",     WeatherType.CloudyPartlyRainy },
@@ -52,7 +53,7 @@ namespace weather
       { "snow",           WeatherType.OvercastSnowy },
       { "sunny",          WeatherType.Clear },
       { "tstorms",        WeatherType.OvercastLightningRainy }
-    };
+    }.ToFrozenDictionary();
 
     private static IWeatherProvider _self = null;
     private static int _refcounter = 0;

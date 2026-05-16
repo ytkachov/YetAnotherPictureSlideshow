@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -16,7 +17,7 @@ namespace informers
 
   class WeatherFormatter
   {
-    static public Dictionary<WeatherType, string[]> weather_types_to_picture = new Dictionary<WeatherType, string[]>()
+    static public readonly FrozenDictionary<WeatherType, string[]> weather_types_to_picture = new Dictionary<WeatherType, string[]>()
     {
       { WeatherType.Clear,                  new string [] { "wt_clear_d", "wt_clear_n" } },
       { WeatherType.PartlyCloudy,           new string [] { "wt_partly_cloudy_d", "wt_partly_cloudy_n" } },
@@ -36,9 +37,9 @@ namespace informers
       { WeatherType.OvercastRainyStorm,     new string [] { "wt_overcast_rainy_storm", "wt_overcast_rainy_storm" } },
       { WeatherType.OvercastSnowyStorm,     new string [] { "wt_overcast_snowy_storm", "wt_overcast_snowy_storm" } },
       { WeatherType.Undefined,              new string [] { "undefined", "undefined" } }
-    };
+    }.ToFrozenDictionary();
 
-    static public Dictionary<WindDirection, string> wind_direction_to_picture = new Dictionary<WindDirection, string>()
+    static public readonly FrozenDictionary<WindDirection, string> wind_direction_to_picture = new Dictionary<WindDirection, string>()
     {
       { WindDirection.Undefined,    "wd_udefined" },
       { WindDirection.N,            "wd_N"    },
@@ -57,7 +58,7 @@ namespace informers
       { WindDirection.WNW,          "wd_WNW"  },
       { WindDirection.NW,           "wd_NW"   },
       { WindDirection.NNW,          "wd_NNW"  }
-    };
+    }.ToFrozenDictionary();
 
   }
 

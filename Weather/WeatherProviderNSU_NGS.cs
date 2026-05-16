@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -17,23 +18,23 @@ namespace weather
     private static int _refcounter = 0;
     private static readonly object _initLock = new object();
 
-    static Dictionary<string, WeatherPeriod>[] _day_periods = new Dictionary<string, WeatherPeriod>[3]
+    static readonly FrozenDictionary<string, WeatherPeriod>[] _day_periods = new FrozenDictionary<string, WeatherPeriod>[3]
     {
-      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TodayNight },            { "утро", WeatherPeriod.TodayMorning },            { "день", WeatherPeriod.TodayDay },            { "вечер", WeatherPeriod.TodayEvening } },
-      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TomorrowNight },         { "утро", WeatherPeriod.TomorrowMorning },         { "день", WeatherPeriod.TomorrowDay },         { "вечер", WeatherPeriod.TomorrowEvening } },
-      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.DayAfterTomorrowNight }, { "утро", WeatherPeriod.DayAfterTomorrowMorning }, { "день", WeatherPeriod.DayAfterTomorrowDay }, { "вечер", WeatherPeriod.DayAfterTomorrowEvening } }
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TodayNight },            { "утро", WeatherPeriod.TodayMorning },            { "день", WeatherPeriod.TodayDay },            { "вечер", WeatherPeriod.TodayEvening } }.ToFrozenDictionary(),
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.TomorrowNight },         { "утро", WeatherPeriod.TomorrowMorning },         { "день", WeatherPeriod.TomorrowDay },         { "вечер", WeatherPeriod.TomorrowEvening } }.ToFrozenDictionary(),
+      new Dictionary<string, WeatherPeriod>() { { "ночь", WeatherPeriod.DayAfterTomorrowNight }, { "утро", WeatherPeriod.DayAfterTomorrowMorning }, { "день", WeatherPeriod.DayAfterTomorrowDay }, { "вечер", WeatherPeriod.DayAfterTomorrowEvening } }.ToFrozenDictionary()
     };
 
-    static Dictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
+    static readonly FrozenDictionary<string, WindDirection> wind_direction_encoding = new Dictionary<string, WindDirection>()
     {
       { "north",   WindDirection.N }, { "north_east",  WindDirection.NE },
       { "east", WindDirection.E }, { "south_east",   WindDirection.SE },
       { "south", WindDirection.S }, { "south_west",   WindDirection.SW },
       { "west", WindDirection.W }, { "north_west",   WindDirection.NW }
-    };
+    }.ToFrozenDictionary();
 
-    
-    static Dictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
+
+    static readonly FrozenDictionary<string, WeatherType> weather_type_encoding = new Dictionary<string, WeatherType>()
     {
       { "sunshine_light_rain_day",            WeatherType.ClearPartlyRainy },
       { "sunshine_light_snow_day",            WeatherType.ClearPartlySnowy },
@@ -95,7 +96,7 @@ namespace weather
       { "cloudy_heavy_snow_night",            WeatherType.OvercastSnowyStorm },
       { "cloudy_thunderstorm_night",          WeatherType.OvercastLightningRainy },
       { "cloudy_none_night",                  WeatherType.Overcast }
-    };
+    }.ToFrozenDictionary();
 
     private IWeatherReader _sitereader = null;
     private WeatherProviderNGS()
