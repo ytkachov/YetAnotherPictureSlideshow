@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Weather\Weather.csproj" />
+    <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

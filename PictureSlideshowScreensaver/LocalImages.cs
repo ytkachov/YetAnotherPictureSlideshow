@@ -7,6 +7,7 @@ using Serilog;
 using ExifLibrary;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
+using Yaps.Core.Models;
 
 class LocalImages : ImagesProvider
 {

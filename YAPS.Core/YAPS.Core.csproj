@@ -8,4 +8,12 @@
     <AssemblyName>Yaps.Core</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- FinfoData logs via Serilog and stores Rectangles. Rectangle lives in
+         System.Drawing.Primitives (cross-platform, part of base .NET), so
+         no need for System.Drawing.Common here — that package is the
+         Windows-only superset and would force net8.0-windows. -->
+    <PackageReference Include="Serilog" />
+  </ItemGroup>
+
 </Project>

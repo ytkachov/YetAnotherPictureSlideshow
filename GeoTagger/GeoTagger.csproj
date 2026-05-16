@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\PictureSlideshowScreensaver\Models\FinfoData.cs" Link="Models\FinfoData.cs" />
+    <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
     <Compile Include="..\PictureSlideshowScreensaver\Services\GeocodingService.cs" Link="Services\GeocodingService.cs" />
   </ItemGroup>
 

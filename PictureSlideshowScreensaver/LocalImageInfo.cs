@@ -10,6 +10,7 @@ using System.Windows.Interop;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Serilog;
+using Yaps.Core.Models;
 
 public class LocalImageInfo : ImageInfo
 {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExifLibrary;
 using Serilog;
+using Yaps.Core.Models;
 
 class Program
 {

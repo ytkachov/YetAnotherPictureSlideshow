@@ -5,14 +5,16 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Serilog;
 
+namespace Yaps.Core.Models;
+
 public class FinfoData
 {
     public int? SchemaVersion { get; set; }
-    public Rectangle[] Faces { get; set; }
+    public Rectangle[]? Faces { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
-    public string PlaceName { get; set; }
-    public string NominatimData { get; set; }
+    public string? PlaceName { get; set; }
+    public string? NominatimData { get; set; }
     public bool GeocodingAttempted { get; set; }
     public bool ExifReadFailed { get; set; }
 
@@ -33,7 +35,7 @@ public class FinfoData
     /// FinfoData JSON object and the legacy Rectangle[] array. Returns
     /// null if the file is missing, unreadable, or unparseable.
     /// </summary>
-    public static FinfoData ReadFromFile(string path)
+    public static FinfoData? ReadFromFile(string path)
     {
         if (string.IsNullOrEmpty(path) || !File.Exists(path))
             return null;
@@ -58,7 +60,7 @@ public class FinfoData
     /// callers always receive the modern type. Returns null on malformed
     /// or empty input — every caller already handles null.
     /// </summary>
-    public static FinfoData TryDeserialize(string json)
+    public static FinfoData? TryDeserialize(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
             return null;
@@ -91,7 +93,7 @@ public class FinfoData
     /// </summary>
     public static void WriteToFile(string path, FinfoData data)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(data);
         data.SchemaVersion ??= CurrentSchemaVersion;
         var json = JsonSerializer.Serialize(data, _options);
         File.WriteAllText(path, json);
