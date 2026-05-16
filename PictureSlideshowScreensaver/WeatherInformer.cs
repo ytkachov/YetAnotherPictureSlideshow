@@ -14,7 +14,7 @@ using weather;
 namespace informers
 {
 
-  class weatherformatter
+  class WeatherFormatter
   {
     static public Dictionary<WeatherType, string[]> weather_types_to_picture = new Dictionary<WeatherType, string[]>()
     {
@@ -77,7 +77,7 @@ namespace informers
          (wp == WeatherPeriod.Now && (DateTime.Now.Hour >= 18 || DateTime.Now.Hour < 6)))
         n = 1;
 
-      return Application.Current.TryFindResource(weatherformatter.weather_types_to_picture[wt][n]) as Canvas;
+      return Application.Current.TryFindResource(WeatherFormatter.weather_types_to_picture[wt][n]) as Canvas;
     }
 
     public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
@@ -100,7 +100,7 @@ namespace informers
         return null;
 
       WindDirection wd = (WindDirection)value;
-      return Application.Current.TryFindResource(weatherformatter.wind_direction_to_picture[wd]) as Canvas;
+      return Application.Current.TryFindResource(WeatherFormatter.wind_direction_to_picture[wd]) as Canvas;
       //return Application.Current.TryFindResource("wd_E") as Canvas;
     }
 
@@ -265,11 +265,6 @@ namespace informers
     private void update_Weather(IWeatherProvider provider, WeatherPeriod period)
     {
       WeatherType w;
-      if (period == WeatherPeriod.TomorrowNight || period == WeatherPeriod.TomorrowMorning)
-      {
-        int i = 0;
-      }
-
       if (provider.get_character(period, out w))
       {
         Weather = w;

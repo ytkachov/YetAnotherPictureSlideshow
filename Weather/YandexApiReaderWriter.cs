@@ -299,20 +299,23 @@ namespace weather
       return "88.8";
     }
 
+    private static readonly System.Net.Http.HttpClient _httpClient = new System.Net.Http.HttpClient();
+
     protected void make_request()
     {
       _last_request_time = DateTime.Now;
-      WebRequest request = WebRequest.Create(_url);
-      request.Headers.Add(_header_key);
-      WebResponse response = request.GetResponse();
-      using (Stream stream = response.GetResponseStream())
-      {
-        using (StreamReader reader = new StreamReader(stream))
-        {
-          string line = reader.ReadToEnd();
-          _yandex_weather = JsonConvert.DeserializeObject<YandexWeather>(line, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-        }
-      }
+
+      using var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, _url);
+      var sep = _header_key.IndexOf(':');
+      if (sep > 0)
+        request.Headers.TryAddWithoutValidation(_header_key.Substring(0, sep).Trim(), _header_key.Substring(sep + 1).Trim());
+
+      using var response = _httpClient.Send(request);
+      response.EnsureSuccessStatusCode();
+      using var stream = response.Content.ReadAsStream();
+      using var reader = new StreamReader(stream);
+      string line = reader.ReadToEnd();
+      _yandex_weather = JsonConvert.DeserializeObject<YandexWeather>(line, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
     }
   }
 

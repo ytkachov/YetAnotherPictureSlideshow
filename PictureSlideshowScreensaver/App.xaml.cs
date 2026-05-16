@@ -70,10 +70,10 @@ namespace PictureSlideshowScreensaver
     {
 
       System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-      for (int i = 0; i < screens.Length; i++)
+      if (screens.Length > 0)
       {
-        System.Windows.Forms.Screen s = screens[i];
-        Screensaver scr = new Screensaver(new ScreensaverViewModel()) ;
+        System.Windows.Forms.Screen s = screens[0];
+        Screensaver scr = new Screensaver(new ScreensaverViewModel());
 
         scr.WindowStartupLocation = WindowStartupLocation.Manual;
         scr.Left = s.Bounds.X;
@@ -82,20 +82,6 @@ namespace PictureSlideshowScreensaver
         scr.Height = s.Bounds.Height;
 
         scr.Show();
-
-        break;
-      }
-
-      foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
-      {
-        //#if !DEBUG
-        //                if (screen.Bounds.X > 0) {
-        //#endif
-
-
-        //#if !DEBUG
-        //                }
-        //#endif
       }
     }
   }

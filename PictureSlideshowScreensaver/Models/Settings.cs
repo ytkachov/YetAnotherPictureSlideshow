@@ -29,7 +29,7 @@ namespace PictureSlideshowScreensaver.Models
     public bool _noNightImageScaling = true;
     public bool _noNightImageAccents = true;
 
-    enum perfoptions
+    enum PerfOptions
     {
       work_at_night = 0x0001,
       no_image_fading = 0x0002,
@@ -54,15 +54,15 @@ namespace PictureSlideshowScreensaver.Models
         _writeLogPath = (string)key.GetValue("WriteLogFolder");
         _dependOnBattery = int.Parse((string)key.GetValue("DependOnBattery") ?? "0") == 1;
 
-        int dflt = (int)(perfoptions.work_at_night | perfoptions.no_night_image_accents | perfoptions.no_night_image_fading | perfoptions.no_night_image_scaling);
+        int dflt = (int)(PerfOptions.work_at_night | PerfOptions.no_night_image_accents | PerfOptions.no_night_image_fading | PerfOptions.no_night_image_scaling);
         int po = (int?)key.GetValue("PerformanceOptions") ?? dflt;
-        _workAtNight = (po & (int)perfoptions.work_at_night) != 0;
-        _noImageFading = (po & (int)perfoptions.no_image_fading) != 0;
-        _noImageScaling = (po & (int)perfoptions.no_image_scaling) != 0;
-        _noImageAccents = (po & (int)perfoptions.no_image_accents) != 0;
-        _noNightImageFading = (po & (int)perfoptions.no_night_image_fading) != 0;
-        _noNightImageScaling = (po & (int)perfoptions.no_night_image_scaling) != 0;
-        _noNightImageAccents = (po & (int)perfoptions.no_night_image_accents) != 0;
+        _workAtNight = (po & (int)PerfOptions.work_at_night) != 0;
+        _noImageFading = (po & (int)PerfOptions.no_image_fading) != 0;
+        _noImageScaling = (po & (int)PerfOptions.no_image_scaling) != 0;
+        _noImageAccents = (po & (int)PerfOptions.no_image_accents) != 0;
+        _noNightImageFading = (po & (int)PerfOptions.no_night_image_fading) != 0;
+        _noNightImageScaling = (po & (int)PerfOptions.no_night_image_scaling) != 0;
+        _noNightImageAccents = (po & (int)PerfOptions.no_night_image_accents) != 0;
 
         if (_writeStat)
           if (!Directory.Exists(_writeStatPath))

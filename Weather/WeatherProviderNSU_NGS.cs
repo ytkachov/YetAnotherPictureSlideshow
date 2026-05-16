@@ -324,11 +324,6 @@ namespace weather
 
         w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
-        if (w.WeatherType == WeatherType.Undefined)
-        {
-          int i = 0;
-        }
-
         // wind
         cn = "icon-small icon-wind-";
         e = wind_divs[period].SelectSingleNode("./i");

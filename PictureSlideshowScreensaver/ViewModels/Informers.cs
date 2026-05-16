@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Threading;
 using PictureSlideshowScreensaver.ViewModels;
 
-class dateformatter
+class DateFormatter
 {
   public static   string[] weekdays = { "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
   internal static string[] weekdays_short = { "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб" };
@@ -84,10 +84,10 @@ namespace informers
       Time_Minutes = DateTime.Now.Minute.ToString("D2");
       Time_Seconds = DateTime.Now.Second.ToString("D2");
 
-      Date_Full = dateformatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.Month - 1];
-      Date_DayMon = dateformatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.Month - 1];
-      Date_DayMonTomorrow = dateformatter.weekdays_short[(int)DateTime.Now.AddDays(1).DayOfWeek] + ", " + (DateTime.Now.AddDays(1).Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.AddDays(1).Month - 1];
-      Date_DayMonAfterTomorrow = dateformatter.weekdays_short[(int)DateTime.Now.AddDays(2).DayOfWeek] + ", " + (DateTime.Now.AddDays(2).Day).ToString() + " " + dateformatter.monthes_short[DateTime.Now.AddDays(2).Month - 1];
+      Date_Full = DateFormatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.Month - 1];
+      Date_DayMon = DateFormatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.Month - 1];
+      Date_DayMonTomorrow = DateFormatter.weekdays_short[(int)DateTime.Now.AddDays(1).DayOfWeek] + ", " + (DateTime.Now.AddDays(1).Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.AddDays(1).Month - 1];
+      Date_DayMonAfterTomorrow = DateFormatter.weekdays_short[(int)DateTime.Now.AddDays(2).DayOfWeek] + ", " + (DateTime.Now.AddDays(2).Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.AddDays(2).Month - 1];
     }
   }
 }
