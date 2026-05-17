@@ -21,6 +21,8 @@ namespace PictureSlideshowScreensaver.Composition
         {
             services.AddInfrastructure();
 
+            // IFinfoStore is registered by AddInfrastructure(); IClock and
+            // Settings are screensaver-level concerns.
             services.AddSingleton<IClock, SystemClock>();
             services.AddSingleton<Settings>();
             services.AddSingleton<ImagesProvider, LocalImages>();

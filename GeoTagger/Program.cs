@@ -125,10 +125,11 @@ class Program
         await host.StartAsync();
 
         var geocoder = host.Services.GetRequiredService<IGeocoder>();
+        var finfoStore = host.Services.GetRequiredService<IFinfoStore>();
 
         try
         {
-            return await RunAsync(folderPath, geocoder);
+            return await RunAsync(folderPath, geocoder, finfoStore);
         }
         finally
         {
@@ -136,7 +137,7 @@ class Program
         }
     }
 
-    static async Task<int> RunAsync(string folderPath, IGeocoder geocoder)
+    static async Task<int> RunAsync(string folderPath, IGeocoder geocoder, IFinfoStore finfoStore)
     {
         var imageFiles = SafeGetImages(folderPath).ToArray();
 
@@ -168,7 +169,7 @@ class Program
 
             // Read existing finfo first so we can short-circuit on stable terminal states
             // (has place, geocoding already attempted, EXIF previously unreadable).
-            FinfoData existingData = FinfoData.ReadFromFile(finfoPath);
+            FinfoData existingData = finfoStore.Read(finfoPath);
 
             if (existingData != null && !string.IsNullOrEmpty(existingData.PlaceName))
             {
@@ -218,7 +219,7 @@ class Program
                 {
                     var data = existingData ?? new FinfoData();
                     data.ExifReadFailed = true;
-                    FinfoData.WriteToFile(finfoPath, data);
+                    finfoStore.Write(finfoPath, data);
                 }
                 catch (Exception writeEx)
                 {
@@ -278,7 +279,7 @@ class Program
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
 
-                    FinfoData.WriteToFile(finfoPath, data);
+                    finfoStore.Write(finfoPath, data);
 
                     if (!fromCache)
                         Log.Information("  -> {PlaceName}", result.PlaceName);
@@ -286,7 +287,7 @@ class Program
                 }
                 else
                 {
-                    FinfoData.WriteToFile(finfoPath, data);
+                    finfoStore.Write(finfoPath, data);
 
                     if (!fromCache)
                         Log.Warning("  -> No place name resolved (marked attempted)");

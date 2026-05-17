@@ -29,13 +29,15 @@ public class LocalImageInfo : ImageInfo
   internal string _placeName = null;
   private readonly IGeocoder _geocoder;
   private readonly IFaceDetector _faceDetector;
+  private readonly IFinfoStore _finfoStore;
 
-  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null, IFaceDetector faceDetector = null)
+  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null, IFaceDetector faceDetector = null, IFinfoStore finfoStore = null)
   {
     _name = nm;
     _video_name = videoname;
     _geocoder = geocoder;
     _faceDetector = faceDetector;
+    _finfoStore = finfoStore ?? new FileFinfoStore();
   }
 
   public RotateFlipType orientation
@@ -167,9 +169,9 @@ public class LocalImageInfo : ImageInfo
       string finfoname = Path.ChangeExtension(_name, "finfo");
       if (File.Exists(finfoname))
       {
-        // ReadFromFile transparently handles legacy Rectangle[] files; we
+        // IFinfoStore transparently handles legacy Rectangle[] files; we
         // no longer need the manual fallback that lived here.
-        FinfoData finfo = FinfoData.ReadFromFile(finfoname);
+        FinfoData finfo = _finfoStore.Read(finfoname);
 
         if (finfo?.Faces != null && finfo.Faces.Length != 0)
         {
@@ -210,7 +212,7 @@ public class LocalImageInfo : ImageInfo
             PlaceName = _placeName
           };
 
-          FinfoData.WriteToFile(finfoname, finfo);
+          _finfoStore.Write(finfoname, finfo);
 
           if (faces.Count != 0)
           {
@@ -226,6 +228,7 @@ public class LocalImageInfo : ImageInfo
             double lon = _longitude.Value;
             string imgName = _name;
             var geocoder = _geocoder;
+            var finfoStore = _finfoStore;
 
             Task.Run(async () =>
             {
@@ -234,7 +237,7 @@ public class LocalImageInfo : ImageInfo
                 var result = await geocoder.ReverseGeocodeAsync(lat, lon);
 
                 string fname = Path.ChangeExtension(imgName, "finfo");
-                var data = FinfoData.ReadFromFile(fname);
+                var data = finfoStore.Read(fname);
                 if (data != null)
                 {
                   data.GeocodingAttempted = true;
@@ -247,7 +250,7 @@ public class LocalImageInfo : ImageInfo
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
                   }
-                  FinfoData.WriteToFile(fname, data);
+                  finfoStore.Write(fname, data);
                 }
               }
               catch (Exception ex)

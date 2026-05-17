@@ -15,6 +15,7 @@ class LocalImages : ImagesProvider
 {
   private readonly IGeocoder _geocoder;
   private readonly IFaceDetector _faceDetector;
+  private readonly IFinfoStore _finfoStore;
   private object _locker = new object();
   private int _currentSecCount;
   private IEnumerator<int> _currentSecEnum;
@@ -30,10 +31,11 @@ class LocalImages : ImagesProvider
   private int _shownImages = 0;
   private List<string> _messages = new List<string>();
 
-  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector)
+  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector, IFinfoStore finfoStore)
   {
     _geocoder = geocoder;
     _faceDetector = faceDetector;
+    _finfoStore = finfoStore;
   }
 
   public void init(string[] parameters)
@@ -186,11 +188,11 @@ class LocalImages : ImagesProvider
     {
       // special treatment for iPhone photo-video pair
       string movfile = Path.ChangeExtension(name, "mov");
-      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _faceDetector);
+      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _faceDetector, _finfoStore);
 
       // If a previous run flagged this image as having unreadable EXIF, skip the read.
       string finfoPath = Path.ChangeExtension(name, "finfo");
-      var existing = FinfoData.ReadFromFile(finfoPath);
+      var existing = _finfoStore.Read(finfoPath);
       if (existing != null && existing.ExifReadFailed)
       {
         _imagesTmp.Add(ii);

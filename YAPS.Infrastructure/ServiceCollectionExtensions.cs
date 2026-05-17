@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
+        services.AddSingleton<IFinfoStore, FileFinfoStore>();
+
         services.AddHttpClient<IGeocoder, NominatimGeocoder>(client =>
         {
             client.Timeout = TimeSpan.FromSeconds(30);
