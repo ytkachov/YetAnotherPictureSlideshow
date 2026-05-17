@@ -10,6 +10,7 @@ using System.Windows.Interop;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Serilog;
+using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
 
 public class LocalImageInfo : ImageInfo
@@ -27,11 +28,13 @@ public class LocalImageInfo : ImageInfo
   internal double? _latitude = null;
   internal double? _longitude = null;
   internal string _placeName = null;
+  private readonly IGeocoder _geocoder;
 
-  public LocalImageInfo(string nm, string videoname = null)
+  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null)
   {
     _name = nm;
     _video_name = videoname;
+    _geocoder = geocoder;
   }
 
   public RotateFlipType orientation
@@ -217,17 +220,18 @@ public class LocalImageInfo : ImageInfo
                                     (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
           }
 
-          if (_latitude != null && _longitude != null && string.IsNullOrEmpty(_placeName))
+          if (_latitude != null && _longitude != null && string.IsNullOrEmpty(_placeName) && _geocoder != null)
           {
             double lat = _latitude.Value;
             double lon = _longitude.Value;
             string imgName = _name;
+            var geocoder = _geocoder;
 
             Task.Run(async () =>
             {
               try
               {
-                var result = await GeocodingService.ReverseGeocodeAsync(lat, lon);
+                var result = await geocoder.ReverseGeocodeAsync(lat, lon);
 
                 string fname = Path.ChangeExtension(imgName, "finfo");
                 var data = FinfoData.ReadFromFile(fname);

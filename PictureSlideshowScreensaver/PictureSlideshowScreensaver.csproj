@@ -33,6 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Weather\Weather.csproj" />
     <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
+    <ProjectReference Include="..\YAPS.Infrastructure\YAPS.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
