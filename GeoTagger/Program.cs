@@ -4,8 +4,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExifLibrary;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
+using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Infrastructure;
 
 class Program
 {
@@ -112,6 +116,28 @@ class Program
             return 1;
         }
 
+        // GeoTagger uses the same Infrastructure registrations the
+        // screensaver does so the Nominatim rate-limit / User-Agent /
+        // HttpClient pooling all match.
+        var builder = Host.CreateApplicationBuilder();
+        builder.Services.AddInfrastructure();
+        using var host = builder.Build();
+        await host.StartAsync();
+
+        var geocoder = host.Services.GetRequiredService<IGeocoder>();
+
+        try
+        {
+            return await RunAsync(folderPath, geocoder);
+        }
+        finally
+        {
+            await host.StopAsync();
+        }
+    }
+
+    static async Task<int> RunAsync(string folderPath, IGeocoder geocoder)
+    {
         var imageFiles = SafeGetImages(folderPath).ToArray();
 
         Log.Information("Found {Count} JPEG files in {Folder} (including subfolders)", imageFiles.Length, folderPath);
@@ -233,7 +259,7 @@ class Program
                     Log.Information("[{Processed}/{Total}] Geocoding {File} (lat={Lat}, lon={Lon})...",
                         processed, total, Path.GetFileName(imagePath), lat.Value, lon.Value);
 
-                    result = await GeocodingService.ReverseGeocodeAsync(lat.Value, lon.Value);
+                    result = await geocoder.ReverseGeocodeAsync(lat.Value, lon.Value);
                     if (result != null && !string.IsNullOrEmpty(result.PlaceName))
                         geoCache[coordKey] = result;
                     else

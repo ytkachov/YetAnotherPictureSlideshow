@@ -2,7 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <!-- Bumped from net8.0 to net8.0-windows because GeoTagger now consumes
+         YAPS.Infrastructure (Windows-targeted). Practically GeoTagger has
+         always been a Windows-only tool, so this is a tightening, not a
+         loss. -->
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>GeoTagger</RootNamespace>
     <AssemblyName>GeoTagger</AssemblyName>
     <Nullable>disable</Nullable>
@@ -16,14 +20,14 @@
 
   <ItemGroup>
     <PackageReference Include="ExifLibNet" />
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Sinks.Console" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
-    <Compile Include="..\PictureSlideshowScreensaver\Services\GeocodingService.cs" Link="Services\GeocodingService.cs" />
+    <ProjectReference Include="..\YAPS.Infrastructure\YAPS.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
