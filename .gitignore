@@ -249,5 +249,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# Claude Code local settings
+# Claude Code local settings and instructions
 .claude/
+CLAUDE.md
