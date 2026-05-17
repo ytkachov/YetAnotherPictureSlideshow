@@ -81,9 +81,6 @@ namespace weather
 
     public YandexWeatherExtractor(IWeatherReader reader)
     {
-#if STATISTICS
-      read_statistics();
-#endif
       if (reader != null)
         _sitereader = reader;
       else
@@ -105,18 +102,6 @@ namespace weather
       string wt = get_weather_type(pgd_current, "./div/a//img");
       w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
 
-#if STATISTICS
-      if (!stat_weather_type.Keys.Contains(wt))
-      {
-        class_name = "link__condition";
-        XmlNode weather_type = pgd_current.SelectSingleNode($"./div/a/div/div[starts-with(@class, '{class_name}')]");
-        if (weather_type == null)
-          throw new Exception("incorrect current weather structure-- cant find weather type string");
-
-        string wts = weather_type.InnerText;
-        write_statistics(wt, wts);
-      }
-#endif
       // air temperature
       w.TemperatureHigh = w.TemperatureLow = get_air_temperature(pgd_current, "./div/a//div/span[@class = 'temp__value temp__value_with-unit']");
 
@@ -187,19 +172,6 @@ namespace weather
             }
           }
         }
-
-#if STATISTICS
-        if (!wt.Equals("sunset") && !wt.Equals("sunrise") && !stat_weather_type.Keys.Contains(wt))
-        {
-          string wts = hour_span.SelectSingleNode("@aria-label").Value;
-          wts = wts.Substring(0, wts.IndexOf(','));
-          for (int i = 0; i < 3; i++)
-            wts = wts.Substring(wts.IndexOf(' ') + 1);
-
-          write_statistics(wt, wts);
-        }
-#endif
-
       }
     }
 
@@ -260,13 +232,6 @@ namespace weather
       // type
       string wt = get_weather_type(row, "./td/img", "icon icon_thumb_");
       w.WeatherType = weather_type_encoding.Keys.Contains(wt) ? weather_type_encoding[wt] : WeatherType.Undefined;
-#if STATISTICS
-      if (!wt.Equals("sunset") && !wt.Equals("sunrise") && !stat_weather_type.Keys.Contains(wt))
-      {
-        string wts = row.SelectSingleNode("./td[@class = 'weather-table__body-cell weather-table__body-cell_type_condition']").InnerText;
-        write_statistics(wt, wts);
-      }
-#endif
 
       // temperature
       var air_temps = row.SelectNodes("./td//div/span[@class='temp__value temp__value_with-unit']");
@@ -365,44 +330,6 @@ namespace weather
 
       return null;
     }
-
-
-#if STATISTICS
-    static string stat_file_name = "yandex_weather_types.xml";
-    public static Dictionary<string, string> stat_weather_type = new Dictionary<string, string>();
-    public class WeatherTypeDescription
-    {
-      [XmlAttribute]
-      public string WeatherType;
-      [XmlAttribute]
-      public string WeatherDescription;
-    }
-
-    private static void read_statistics( )
-    {
-      XmlSerializer serializer = new XmlSerializer(typeof(WeatherTypeDescription[]), new XmlRootAttribute() { ElementName = "WeatherTypes" });
-
-      if (File.Exists(stat_file_name))
-      {
-        FileStream readstream = new FileStream(stat_file_name, FileMode.Open);
-        YandexWeatherExtractor.stat_weather_type = ((WeatherTypeDescription[])serializer.Deserialize(readstream)).ToDictionary(i => i.WeatherType, i => i.WeatherDescription);
-
-        readstream.Close();
-      }
-    }
-
-    private static void write_statistics(string wt, string wtd)
-    {
-      stat_weather_type[wt] = wtd;
-      XmlSerializer serializer = new XmlSerializer(typeof(WeatherTypeDescription[]), new XmlRootAttribute() { ElementName = "WeatherTypes" });
-
-      FileStream writestream = new FileStream(stat_file_name, FileMode.OpenOrCreate);
-      serializer.Serialize(writestream, stat_weather_type.Select(kv => new WeatherTypeDescription() { WeatherType = kv.Key, WeatherDescription = kv.Value }).ToArray());
-
-      writestream.Close();
-
-    }
-#endif
 
   }
 
