@@ -15,7 +15,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="OpenCvSharp4" />
+    <PackageReference Include="OpenCvSharp4.Extensions" />
     <PackageReference Include="Serilog" />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 
 </Project>

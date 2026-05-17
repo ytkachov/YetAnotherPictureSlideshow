@@ -9,10 +9,12 @@ using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Infrastructure.Faces;
 
 class LocalImages : ImagesProvider
 {
   private readonly IGeocoder _geocoder;
+  private readonly IFaceDetector _faceDetector;
   private object _locker = new object();
   private int _currentSecCount;
   private IEnumerator<int> _currentSecEnum;
@@ -28,9 +30,10 @@ class LocalImages : ImagesProvider
   private int _shownImages = 0;
   private List<string> _messages = new List<string>();
 
-  public LocalImages(IGeocoder geocoder)
+  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector)
   {
     _geocoder = geocoder;
+    _faceDetector = faceDetector;
   }
 
   public void init(string[] parameters)
@@ -183,7 +186,7 @@ class LocalImages : ImagesProvider
     {
       // special treatment for iPhone photo-video pair
       string movfile = Path.ChangeExtension(name, "mov");
-      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder);
+      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _faceDetector);
 
       // If a previous run flagged this image as having unreadable EXIF, skip the read.
       string finfoPath = Path.ChangeExtension(name, "finfo");

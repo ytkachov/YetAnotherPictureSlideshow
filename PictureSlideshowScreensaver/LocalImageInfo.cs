@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using Serilog;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Infrastructure.Faces;
 
 public class LocalImageInfo : ImageInfo
 {
@@ -29,12 +28,14 @@ public class LocalImageInfo : ImageInfo
   internal double? _longitude = null;
   internal string _placeName = null;
   private readonly IGeocoder _geocoder;
+  private readonly IFaceDetector _faceDetector;
 
-  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null)
+  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null, IFaceDetector faceDetector = null)
   {
     _name = nm;
     _video_name = videoname;
     _geocoder = geocoder;
+    _faceDetector = faceDetector;
   }
 
   public RotateFlipType orientation
@@ -186,8 +187,6 @@ public class LocalImageInfo : ImageInfo
         return;
       }
 
-      List<System.Drawing.Rectangle> faces = new List<System.Drawing.Rectangle>();
-
       System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(pixel_width / dmult), (int)(pixel_height / dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
       using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage((System.Drawing.Image)b))
       {
@@ -196,11 +195,12 @@ public class LocalImageInfo : ImageInfo
 
         try
         {
-          using Mat cvmat = BitmapConverter.ToMat(b);
-
-          long detectionTime;
-          string face_detection_file = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "haarcascade_frontalface_alt2.xml");
-          FaceDetection.DetectFace.Detect(cvmat, face_detection_file, faces, out detectionTime);
+          // OpenCV / cascade classifier loading is encapsulated by
+          // IFaceDetector; the classifier is reused across photos
+          // instead of being re-parsed from the XML on every call.
+          IReadOnlyList<System.Drawing.Rectangle> faces = _faceDetector != null
+            ? _faceDetector.Detect(b)
+            : Array.Empty<System.Drawing.Rectangle>();
 
           FinfoData finfo = new FinfoData
           {
