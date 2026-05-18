@@ -37,9 +37,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="recognition\*.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <!-- Haar cascade XMLs are loaded from disk by OpenCvFaceDetector
+         (CascadeClassifier takes a file path). They must land in the
+         output directory; <Resource> would embed them in the assembly
+         as a resource stream instead, which is not what we want.
+         PreserveNewest keeps incremental builds fast. -->
+    <Content Include="recognition\*.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

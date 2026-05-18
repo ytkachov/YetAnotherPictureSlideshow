@@ -27,15 +27,13 @@ namespace PictureSlideshowScreensaver.Composition
             services.AddSingleton<Settings>();
             services.AddSingleton<ImagesProvider, LocalImages>();
 
-            // Haar cascade XML ships next to the .exe via the Resource
-            // entry in PictureSlideshowScreensaver.csproj. AppContext is
-            // preferred over Assembly.GetEntryAssembly().Location because
+            // Haar cascade XML is copied to output by the <Content> entry
+            // in PictureSlideshowScreensaver.csproj. AppContext.BaseDirectory
+            // is preferred over Assembly.GetEntryAssembly().Location because
             // the latter is empty under single-file publish.
             services.AddSingleton<IFaceDetector>(_ =>
             {
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, "recognition", "haarcascade_frontalface_alt2.xml");
-                if (!File.Exists(xmlPath))
-                    xmlPath = Path.Combine(AppContext.BaseDirectory, "haarcascade_frontalface_alt2.xml");
                 return new OpenCvFaceDetector(xmlPath);
             });
 
