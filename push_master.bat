@@ -1,1 +1,0 @@
-git push https://ytkachov@github.com/ytkachov/YetAnotherPictureSlideshow.git master

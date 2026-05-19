@@ -7,7 +7,7 @@ Windows Registry Editor Version 5.00
 "WriteStat"="1"
 "WriteStatFolder"="D:\\PH\\LOG"
 "DependOnBattery"="0"
-"ImageFolder"="Z:\\PHOTO_FRAME_STORE\\1-? ????????\\*"
+"ImageFolder"="Z:\\PHOTO_FRAME_STORE\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
 "YandexApiKey"="get_from_bitwarden"
