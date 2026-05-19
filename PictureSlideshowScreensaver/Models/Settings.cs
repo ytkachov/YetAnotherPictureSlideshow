@@ -27,6 +27,13 @@ namespace PictureSlideshowScreensaver.Models
     public bool _noNightImageScaling = true;
     public bool _noNightImageAccents = true;
 
+    // Stage 5: provider id and API key are read from Registry here and
+    // passed into WeatherOptions at composition time. WeatherProvider
+    // matches one of the IWeatherProvider.Name values registered by
+    // AddWeatherProviders.
+    public string WeatherProvider = "yandex-api";
+    public string YandexApiKey = null;
+
     private const string RegistryPath = "SOFTWARE\\PictureSlideshowScreensaver";
 
     enum PerfOptions
@@ -65,6 +72,14 @@ namespace PictureSlideshowScreensaver.Models
       _noNightImageFading = (po & (int)PerfOptions.no_night_image_fading) != 0;
       _noNightImageScaling = (po & (int)PerfOptions.no_night_image_scaling) != 0;
       _noNightImageAccents = (po & (int)PerfOptions.no_night_image_accents) != 0;
+
+      // Stage 5 wiring: optional provider override + API key. Both fall
+      // back to defaults; an empty/missing string keeps the default and
+      // a bad key surfaces as a logged 401/403 from YandexApiWeatherProvider.
+      var providerRaw = (string)key.GetValue("WeatherProvider");
+      if (!string.IsNullOrWhiteSpace(providerRaw))
+        WeatherProvider = providerRaw.Trim();
+      YandexApiKey = (string)key.GetValue("YandexApiKey");
 
       EnsureDirectoryExists(_writeStat, _writeStatPath);
       EnsureDirectoryExists(_writeLog, _writeLogPath);

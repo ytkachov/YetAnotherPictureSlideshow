@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using informers;
 using Microsoft.Extensions.DependencyInjection;
 using PictureSlideshowScreensaver.Models;
 using PictureSlideshowScreensaver.ViewModels;
 using Yaps.Core.Abstractions;
 using Yaps.Infrastructure;
 using Yaps.Infrastructure.Faces;
+using Yaps.Infrastructure.Weather;
 
 namespace PictureSlideshowScreensaver.Composition
 {
@@ -36,6 +38,19 @@ namespace PictureSlideshowScreensaver.Composition
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, "recognition", "haarcascade_frontalface_alt2.xml");
                 return new OpenCvFaceDetector(xmlPath);
             });
+
+            // Weather subsystem. Options are populated from Settings using
+            // the post-configure overload so both reads happen against a
+            // single resolved Settings singleton.
+            services.AddWeatherProviders();
+            services.AddOptions<WeatherOptions>().Configure<Settings>((opts, settings) =>
+            {
+                opts.SelectedProvider = string.IsNullOrWhiteSpace(settings.WeatherProvider) ? "yandex-api" : settings.WeatherProvider;
+                opts.YandexApiKey = settings.YandexApiKey;
+                opts.PollingInterval = TimeSpan.FromMinutes(10);
+            });
+            services.AddHostedService<WeatherPollingService>();
+            services.AddTransient<WeatherInformer>();
 
             services.AddTransient<ScreensaverViewModel>();
             services.AddTransient<Screensaver>();

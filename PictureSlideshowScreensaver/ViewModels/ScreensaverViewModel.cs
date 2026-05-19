@@ -9,7 +9,6 @@ using informers;
 using PictureSlideshowScreensaver.Models;
 using presenters;
 using Serilog;
-using weather;
 using Yaps.Core.Abstractions;
 
 namespace PictureSlideshowScreensaver.ViewModels

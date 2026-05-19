@@ -9,7 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Weather\Weather.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
+    <ProjectReference Include="..\YAPS.Infrastructure\YAPS.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

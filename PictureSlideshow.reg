@@ -11,4 +11,5 @@ Windows Registry Editor Version 5.00
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
 "YandexApiKey"="get_from_bitwarden"
+"WeatherProvider"="yandex-api"
 

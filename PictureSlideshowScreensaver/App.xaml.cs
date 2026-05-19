@@ -15,6 +15,11 @@ namespace PictureSlideshowScreensaver
   {
     private IHost _host;
 
+    // Exposed for the few UserControls that can't go through constructor
+    // injection yet (Weather.xaml.cs in Stage 5 — Stage 6 will replace
+    // this with a DataContext-bound WeatherViewModel).
+    public IServiceProvider Services => _host?.Services;
+
     private void Application_Startup(object sender, StartupEventArgs e)
     {
       // Default error-only logger writes to %TEMP%\PictureSlideshow before

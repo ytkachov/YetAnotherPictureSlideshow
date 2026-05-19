@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Threading;
-using weather;
+using Yaps.Core.Abstractions;
+using Yaps.Core.Models.Weather;
 
 namespace informers
 {
@@ -102,7 +101,6 @@ namespace informers
 
       WindDirection wd = (WindDirection)value;
       return Application.Current.TryFindResource(WeatherFormatter.wind_direction_to_picture[wd]) as Canvas;
-      //return Application.Current.TryFindResource("wd_E") as Canvas;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -121,7 +119,6 @@ namespace informers
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       bool ws = (bool)value;
-      // return 1;
       return ws ? 1 : 0;
     }
 
@@ -155,12 +152,18 @@ namespace informers
     }
   }
 
+  /// <summary>
+  /// View-model layer over <see cref="IWeatherSnapshotStore"/>: maps the
+  /// currently selected <see cref="WeatherPeriod"/> to the right slice
+  /// of the cached snapshot (Now → current; future periods → forecast)
+  /// and surfaces those values as INotifyPropertyChanged properties for
+  /// XAML binding. Stage 5 keeps the property layout from the legacy
+  /// class so Weather.xaml binding paths don't need to change.
+  /// </summary>
   public class WeatherInformer : INotifyPropertyChanged
   {
-    private DispatcherTimer _weatherTick = new DispatcherTimer();
-
-    private IWeatherProvider _curr_temp_provider = WeatherProviderYandexApi.get();
-    private IWeatherProvider _forecast_provider = WeatherProviderYandexApi.get();
+    private readonly IWeatherSnapshotStore _store;
+    private readonly DispatcherTimer _weatherTick = new DispatcherTimer();
 
     private string _dbg_info = "";
     private bool _weather_status_temperature = false;
@@ -177,11 +180,24 @@ namespace informers
     private double _pressure = 0.0;
 
     private WeatherPeriod _weather_period = WeatherPeriod.Undefined;
+    private bool _closed;
+
+    public WeatherInformer(IWeatherSnapshotStore store)
+    {
+      _store = store;
+      _weatherTick.Tick += weather_Tick;
+      _weatherTick.Interval = TimeSpan.FromSeconds(60.0);
+      _weatherTick.Start();
+
+      // Push updates as soon as the polling service writes a new snapshot
+      // rather than waiting up to a minute for the next dispatcher tick.
+      _store.Updated += OnSnapshotUpdated;
+    }
 
     public string Temperature
     {
       get { return (_temperature >= 0 ? "+" : "") + _temperature.ToString(); }
-      set { _temperature = double.Parse(value); RaisePropertyChanged("Temperature"); }
+      set { _temperature = double.Parse(value, CultureInfo.InvariantCulture); RaisePropertyChanged("Temperature"); }
     }
 
     public string DbgInfo
@@ -203,8 +219,8 @@ namespace informers
       set
       {
         string [] temps = value.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        _temperature_low = double.Parse(temps[0]);
-        _temperature_high = double.Parse(temps[1]);
+        _temperature_low = double.Parse(temps[0], CultureInfo.InvariantCulture);
+        _temperature_high = double.Parse(temps[1], CultureInfo.InvariantCulture);
         RaisePropertyChanged("TemperatureRange");
       }
     }
@@ -214,19 +230,16 @@ namespace informers
     public double WindSpeed { get { return _wind_speed; } set { _wind_speed = value; RaisePropertyChanged("WindSpeed"); } }
     public WindDirection WindDirection { get { return _wind_direction; } set { _wind_direction = value; RaisePropertyChanged("WindDirection"); } }
 
-    public WeatherType Weather { get { return _weather_type; }
-      set {
-        _weather_type = value;
-        RaisePropertyChanged("Weather"); }
-    }
+    public WeatherType Weather { get { return _weather_type; } set { _weather_type = value; RaisePropertyChanged("Weather"); } }
 
     public WeatherPeriod Weather_Period
     {
       get { return _weather_period; }
       set
       {
-        _weather_period = value; 
-        update_Weather(); RaisePropertyChanged("Weather_Period");
+        _weather_period = value;
+        Refresh();
+        RaisePropertyChanged("Weather_Period");
       }
     }
     public bool Weather_Status_Temperature { get { return _weather_status_temperature; } set { _weather_status_temperature = value; RaisePropertyChanged("Weather_Status_Temperature"); } }
@@ -241,107 +254,109 @@ namespace informers
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private bool _closed;
-
-    public WeatherInformer()
+    private void weather_Tick(object sender, EventArgs e)
     {
-      _weatherTick.Tick += new EventHandler(weather_Tick);
-      _weatherTick.Interval = TimeSpan.FromSeconds(60.0);
-      _weatherTick.Start();
+      Refresh();
     }
 
-    void weather_Tick(object sender, EventArgs e)
+    private void OnSnapshotUpdated()
     {
-      update_Weather();
-    }
-
-    private void update_Weather()
-    {
-      update_Temperature(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_Pressure(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_Wind(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_Humidity(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_Weather(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider, Weather_Period);
-      update_DbgInfo(Weather_Period == WeatherPeriod.Now ? _curr_temp_provider : _forecast_provider);
-    }
-
-    private void update_Weather(IWeatherProvider provider, WeatherPeriod period)
-    {
-      WeatherType w;
-      if (provider.get_character(period, out w))
-      {
-        Weather = w;
-        Weather_Status_Weather = true;
-      }
+      // IWeatherSnapshotStore fires from a background thread; marshal to
+      // the dispatcher so PropertyChanged subscribers (XAML bindings)
+      // see updates on the UI thread.
+      if (Application.Current?.Dispatcher is Dispatcher dispatcher)
+        dispatcher.BeginInvoke(new Action(Refresh));
       else
-      {
-        Weather_Status_Weather = false;
-      }
+        Refresh();
     }
 
-    private void update_Temperature(IWeatherProvider provider, WeatherPeriod period)
+    private void Refresh()
     {
-      double temp_l, temp_h;
-      if (provider.get_temperature(period, out temp_l, out temp_h))
-      {
-        Temperature = ((temp_l + temp_h) / 2.0).ToString();
-        TemperatureRange = temp_l + "|" + temp_h;
+      if (_weather_period == WeatherPeriod.Now || _weather_period == WeatherPeriod.Undefined)
+        ApplyCurrent(_store.Current);
+      else
+        ApplyForecast(_store.Forecast, _weather_period);
+    }
 
+    private void ApplyCurrent(WeatherSnapshot snap)
+    {
+      if (snap == null)
+      {
+        ClearAll();
+        return;
+      }
+
+      if (snap.TemperatureCelsius.HasValue)
+      {
+        var t = snap.TemperatureCelsius.Value;
+        Temperature = t.ToString(CultureInfo.InvariantCulture);
+        TemperatureRange = t.ToString(CultureInfo.InvariantCulture) + "|" + t.ToString(CultureInfo.InvariantCulture);
         Weather_Status_Temperature = true;
       }
-      else
-      {
-        Weather_Status_Temperature = false;
-      }
+      else Weather_Status_Temperature = false;
+
+      ApplyShared(snap.WeatherType, snap.WindDirection, snap.WindSpeedMs, snap.Pressure, snap.Humidity);
     }
 
-    private void update_Pressure(IWeatherProvider provider, WeatherPeriod period)
+    private void ApplyForecast(WeatherForecast forecast, WeatherPeriod period)
     {
-      double press;
-      if (provider.get_pressure(period, out press))
+      if (forecast == null || !forecast.Periods.TryGetValue(period, out var p))
       {
-        Pressure = press;
-        Weather_Status_Pressure = true;
+        ClearAll();
+        return;
       }
-      else
+
+      if (p.Low.HasValue && p.High.HasValue)
       {
-        Weather_Status_Pressure = false;
+        double low = p.Low.Value, high = p.High.Value;
+        Temperature = ((low + high) / 2.0).ToString(CultureInfo.InvariantCulture);
+        TemperatureRange = low.ToString(CultureInfo.InvariantCulture) + "|" + high.ToString(CultureInfo.InvariantCulture);
+        Weather_Status_Temperature = true;
       }
+      else Weather_Status_Temperature = false;
+
+      ApplyShared(p.WeatherType, p.WindDirection, p.WindSpeedMs, p.Pressure, p.Humidity);
     }
 
-    private void update_DbgInfo(IWeatherProvider provider)
+    private void ApplyShared(WeatherType wt, WindDirection wd, double? wind, double? pressure, double? humidity)
     {
-      DbgInfo = "this is dbg_info"; // provider.get_error_description();
-    }
-
-    private void update_Humidity(IWeatherProvider provider, WeatherPeriod period)
-    {
-      double hum;
-      if (provider.get_humidity(period, out hum))
+      if (wt != WeatherType.Undefined)
       {
-        Humidity = hum;
-        Weather_Status_Humidity = true;
+        Weather = wt;
+        Weather_Status_Weather = true;
       }
-      else
-      {
-        Weather_Status_Humidity = false;
-      }
-    }
+      else Weather_Status_Weather = false;
 
-    private void update_Wind(IWeatherProvider provider, WeatherPeriod period)
-    {
-      double ws;
-      WindDirection wd;
-      if (provider.get_wind(period, out wd, out ws))
+      if (wind.HasValue)
       {
         WindDirection = wd;
-        WindSpeed = ws;
+        WindSpeed = wind.Value;
         Weather_Status_Wind = true;
       }
-      else
+      else Weather_Status_Wind = false;
+
+      if (pressure.HasValue)
       {
-        Weather_Status_Wind = false;
+        Pressure = pressure.Value;
+        Weather_Status_Pressure = true;
       }
+      else Weather_Status_Pressure = false;
+
+      if (humidity.HasValue)
+      {
+        Humidity = humidity.Value;
+        Weather_Status_Humidity = true;
+      }
+      else Weather_Status_Humidity = false;
+    }
+
+    private void ClearAll()
+    {
+      Weather_Status_Temperature = false;
+      Weather_Status_Weather = false;
+      Weather_Status_Wind = false;
+      Weather_Status_Pressure = false;
+      Weather_Status_Humidity = false;
     }
 
     public void Close()
@@ -350,17 +365,13 @@ namespace informers
         return;
       _closed = true;
 
-      // The DispatcherTimer keeps a strong reference to weather_Tick and
-      // therefore to this WeatherInformer. Without an explicit Stop + Tick
-      // unsubscribe the timer would survive window teardown and keep
-      // calling update_Weather against released providers.
+      // DispatcherTimer keeps a strong reference to weather_Tick and
+      // therefore to this WeatherInformer. Without Stop + unsubscribe
+      // the timer would survive window teardown.
       _weatherTick.Stop();
       _weatherTick.Tick -= weather_Tick;
 
-      _curr_temp_provider?.release();
-      _curr_temp_provider = null;
-      _forecast_provider?.release();
-      _forecast_provider = null;
+      _store.Updated -= OnSnapshotUpdated;
     }
 
     // INotifyPropertyChanged

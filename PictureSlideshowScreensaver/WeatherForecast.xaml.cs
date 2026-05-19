@@ -12,7 +12,7 @@ namespace presenters
   {
     private DispatcherTimer _checkComponentWidth;
 
-    static weather.WeatherPeriod[] _weather_periods = (weather.WeatherPeriod[])Enum.GetValues(typeof(weather.WeatherPeriod));
+    static Yaps.Core.Models.Weather.WeatherPeriod[] _weather_periods = (Yaps.Core.Models.Weather.WeatherPeriod[])Enum.GetValues(typeof(Yaps.Core.Models.Weather.WeatherPeriod));
     Weather[] _components;
 
     int[] _components_width = { 0, 0, 0, 0, 0 };
@@ -54,7 +54,7 @@ namespace presenters
 
     private void W_Invisible_LayoutUpdated(object sender, EventArgs e)
     {
-      if (W_Invisible.WeatherPeriod == weather.WeatherPeriod.Undefined)
+      if (W_Invisible.WeatherPeriod == Yaps.Core.Models.Weather.WeatherPeriod.Undefined)
         return;
 
       if (W_Invisible.ComponentWidths == null)

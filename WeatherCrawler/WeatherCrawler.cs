@@ -1,43 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml.Serialization;
-using weather;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Yaps.Core.Abstractions;
+using Yaps.Infrastructure;
 
 namespace WeatherCrawler
 {
-
+  /// <summary>
+  /// Manual debug harness: fetch current + forecast from the named
+  /// provider once and dump them to stdout. Useful when fiddling with
+  /// new providers without firing up the whole screensaver.
+  /// </summary>
   internal class WeatherCrawlerApp
   {
-    [STAThread]
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-      YandexSeleniumReader reader = new YandexSeleniumReader(WeatherSource.YC);
-      //var reader = new YandexFileReaderWriter(WeatherSource.YC);
-      var yandex = new YandexWeatherExtractor(reader);
+      string providerName = args.Length > 0 ? args[0] : "yandex-scrape";
 
-      var w = new WeatherInfo();
-      yandex.get_current_weather(w);
+      var builder = Host.CreateApplicationBuilder(args);
+      builder.Services.AddInfrastructure();
+      builder.Services.AddWeatherProviders(opts =>
+      {
+        opts.SelectedProvider = providerName;
+        opts.ApplyCurrentTemperatureOverride = false;
+      });
+      using var host = builder.Build();
+      await host.StartAsync().ConfigureAwait(false);
 
-      var forecast = new Dictionary<WeatherPeriod, WeatherInfo>();
-      yandex.get_forecast(forecast);
+      try
+      {
+        var registry = host.Services.GetRequiredService<IWeatherProviderRegistry>();
+        await using var provider = registry.Resolve(providerName);
 
-      //for (double lat = -80.03; lat < 0; lat += 3.018)
-      //{
-      //  for (double lon = -180.02; lon < 170; lon += 3.046)
-      //  {
-      //    reader.SetLocation(lat, lon);
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+        var current = await provider.GetCurrentAsync(cts.Token).ConfigureAwait(false);
+        Console.WriteLine("current: " + (current is null ? "<null>" : System.Text.Json.JsonSerializer.Serialize(current)));
 
-      //    yandex.get_current_weather(new WeatherInfo());
-      //    yandex.get_forecast(new Dictionary<WeatherPeriod, WeatherInfo>());
-      //  }
-      //}
-
-
-      //yandex.get_nsu_current_temp(w);
-
-      reader.close();
+        var forecast = await provider.GetForecastAsync(cts.Token).ConfigureAwait(false);
+        Console.WriteLine("forecast periods: " + (forecast?.Periods.Count ?? 0));
+      }
+      finally
+      {
+        await host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+      }
     }
   }
 }

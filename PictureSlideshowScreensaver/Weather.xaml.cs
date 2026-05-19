@@ -13,10 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using weather;
 using informers;
+using Microsoft.Extensions.DependencyInjection;
+using PictureSlideshowScreensaver;
 using System.Windows.Markup;
 using System.Globalization;
+using Yaps.Core.Models.Weather;
 
 namespace presenters
 {
@@ -78,7 +80,15 @@ namespace presenters
     {
       Dispatcher.ShutdownStarted += OnShutdownStarted;
 
-      _weatherInformer = new WeatherInformer();
+      // Stage 5 service-locator: Weather UserControl is instantiated by
+      // XAML's parameterless ctor, so it can't take WeatherInformer via
+      // DI. Stage 6 will swap this for a DataContext-bound ViewModel
+      // pushed from the parent VM.
+      var services = (App.Current as App)?.Services;
+      _weatherInformer = services != null
+        ? services.GetRequiredService<WeatherInformer>()
+        : new WeatherInformer(new Yaps.Infrastructure.Weather.WeatherSnapshotStore());
+
       InitializeComponent();
       (Content as FrameworkElement).DataContext = this;
       WeatherInfo.Weather_Period = WeatherPeriod;
@@ -87,8 +97,6 @@ namespace presenters
       StrokeColor = Brushes.Black;
       FontSize = 30;
       FontFamily = new FontFamily("Segoe UI Light");
-
- //     H_Border.ClearValue(Border.WidthProperty);
     }
 
     private void OnShutdownStarted(object sender, EventArgs e)

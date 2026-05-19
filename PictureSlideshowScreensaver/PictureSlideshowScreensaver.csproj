@@ -19,7 +19,6 @@
     <PackageReference Include="ExifLibNet" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="OpenCvSharp4" />
     <PackageReference Include="OpenCvSharp4.Extensions" />
     <PackageReference Include="OpenCvSharp4.runtime.win" />
@@ -31,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Weather\Weather.csproj" />
     <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
     <ProjectReference Include="..\YAPS.Infrastructure\YAPS.Infrastructure.csproj" />
   </ItemGroup>
