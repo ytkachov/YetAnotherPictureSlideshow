@@ -1,104 +1,95 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Serilog;
 using ExifLibrary;
-using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
 using Yaps.Infrastructure.Faces;
+using PictureSlideshowScreensaver.Models;
 
 class LocalImages : ImagesProvider
 {
   private readonly IGeocoder _geocoder;
   private readonly IFaceDetector _faceDetector;
   private readonly IFinfoStore _finfoStore;
-  private object _locker = new object();
-  private int _currentSecCount;
-  private IEnumerator<int> _currentSecEnum;
-  private DateTime[] _dates;
+  private readonly Settings _settings;
+
+  private readonly object _locker = new object();
+  private readonly List<LocalImageInfo> _imagesTmp = new List<LocalImageInfo>();
+  private readonly List<string> _messages = new List<string>();
+
   private string _imagesPath;
+  private volatile bool _scanCompleted;
 
   private LocalImageInfo[] _images;
-  private Dictionary<DateTime, List<int>> _imagesByDate;
-  private List<LocalImageInfo> _imagesTmp = new List<LocalImageInfo>();
-  private Random _rand;
-  private int _maxSecNumber = 10;
-  private int _maxSecLength = 30;
-  private int _shownImages = 0;
-  private List<string> _messages = new List<string>();
+  private Dictionary<string, int[]> _imagesByFolder;
+  private string[] _folders;
 
-  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector, IFinfoStore finfoStore)
+  private int[] _currentBatch;
+  private int _currentBatchIdx;
+
+  private int _shownImages;
+
+  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector, IFinfoStore finfoStore, Settings settings)
   {
     _geocoder = geocoder;
     _faceDetector = faceDetector;
     _finfoStore = finfoStore;
+    _settings = settings;
   }
 
   public void init(string[] parameters)
   {
-    // Load images
-    if (parameters.Length > 0)
-    {
-      _imagesPath = parameters[0];
-      if (_imagesPath != null)
-      {
-        Thread imgscaner = new Thread(new ThreadStart(scanForImages)) { IsBackground = true };
-        imgscaner.Start();
+    if (parameters.Length == 0)
+      return;
 
-        Thread.Sleep(1000);
-      }
-    }
+    _imagesPath = parameters[0];
+    if (string.IsNullOrEmpty(_imagesPath))
+      return;
+
+    // Background scan — must not block UI startup. GetNext() gates on
+    // _scanCompleted, so the slideshow simply waits (returns null) until
+    // the full index is built, and never shows photos against a partially
+    // filled _imagesTmp.
+    Task.Run(scanForImages);
   }
 
   public ImageInfo GetNext()
   {
-    ImageInfo currentImage = null;
-
     lock (_locker)
     {
-      if (_images == null || _images.Length != _imagesTmp.Count)
-        buildImageSec();
+      if (!_scanCompleted || _folders == null || _folders.Length == 0)
+        return null;
 
-      if (_images.Length != 0)
+      if (_currentBatch == null || _currentBatchIdx >= _currentBatch.Length)
       {
-        if (_currentSecCount <= 0)
-        {
-          // build new sequence
-          DateTime currentSecDate = _dates[_rand.Next(0, _dates.Length)];
-
-          _imagesByDate[currentSecDate] = RandomizeGenericList(_imagesByDate[currentSecDate]);
-          _currentSecEnum = _imagesByDate[currentSecDate].GetEnumerator();
-          _currentSecEnum.MoveNext();
-
-          _currentSecCount = Math.Min(_maxSecNumber, _imagesByDate[currentSecDate].Count);
-        }
-
-        _currentSecCount--;
-        _images[_currentSecEnum.Current]._shown++;
-        currentImage = _images[_currentSecEnum.Current];
-
-        if (!_currentSecEnum.MoveNext())
-          _currentSecCount = 0;
-
-        _shownImages++;
+        string folder = _folders[Random.Shared.Next(_folders.Length)];
+        int[] src = _imagesByFolder[folder];
+        int take = Math.Min(_settings._photosPerFolder, src.Length);
+        _currentBatch = PickRandomSubset(src, take);
+        _currentBatchIdx = 0;
       }
-    }
 
-    return currentImage;
+      var info = _images[_currentBatch[_currentBatchIdx++]];
+      info._shown++;
+      _shownImages++;
+      return info;
+    }
   }
 
   public void WriteStat(string write_stat_path)
   {
     lock (_locker)
     {
-      if (!Directory.Exists(write_stat_path))
+      if (!Directory.Exists(write_stat_path) || _images == null)
         return;
 
-      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("YYYY-MM-dd-HHmm")));
+      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("yyyy-MM-dd-HHmm")));
       using (StreamWriter tw = new StreamWriter(fn))
       {
         foreach (string s in _messages)
@@ -148,6 +139,12 @@ class LocalImages : ImagesProvider
       }
 
       addImages(p, subdir);
+    }
+
+    lock (_locker)
+    {
+      BuildIndex();
+      _scanCompleted = true;
     }
   }
 
@@ -265,66 +262,44 @@ class LocalImages : ImagesProvider
     }
   }
 
-  private void buildImageSec()
+  private void BuildIndex()
   {
-    _messages.Add(string.Format("Images current {0} new {1}", _images == null ? 0: _images.Length, _imagesTmp.Count));
+    _messages.Add(string.Format("Images: {0}", _imagesTmp.Count));
 
     _images = _imagesTmp.ToArray();
-    _imagesByDate = new Dictionary<DateTime, List<int>>();
 
-    _rand = new Random(DateTime.Now.Millisecond);
-
+    var grouped = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
     for (int i = 0; i < _images.Length; i++)
     {
-      DateTime dt = _images[i]._dateTaken == null ? DateTime.MinValue : _images[i]._dateTaken.Value.Date;
-
-      if (!_imagesByDate.ContainsKey(dt))
-        _imagesByDate.Add(dt, new List<int>());
-
-      _imagesByDate[dt].Add(i);
+      string folder = Path.GetDirectoryName(_images[i]._name) ?? string.Empty;
+      if (!grouped.TryGetValue(folder, out var list))
+      {
+        list = new List<int>();
+        grouped[folder] = list;
+      }
+      list.Add(i);
     }
 
-    // split long lists to smaller parts
-    var dts = _imagesByDate.Keys.ToArray();
-    foreach (DateTime dt in dts)
-      if (_imagesByDate[dt].Count > _maxSecLength)
-      {
-        DateTime dtn = dt;
-        for (int r = 0; r < _imagesByDate[dt].Count; r += _maxSecLength)
-        {
-          dtn = dtn.AddSeconds(1.0);
-
-          int cnt = Math.Min(_maxSecLength, _imagesByDate[dt].Count - r);
-          _imagesByDate[dtn] = _imagesByDate[dt].GetRange(r, cnt);
-        }
-
-        _imagesByDate.Remove(dt);
-      }
-
-    _dates = _imagesByDate.Keys.ToArray();
+    _imagesByFolder = grouped.ToDictionary(kv => kv.Key, kv => kv.Value.ToArray(), StringComparer.OrdinalIgnoreCase);
+    _folders = _imagesByFolder.Keys.ToArray();
   }
 
-  private static List<T> RandomizeGenericList<T>(IList<T> originalList)
+  // Partial Fisher-Yates: produces a shuffled prefix of length `take`
+  // without copying the full source twice or shuffling a long folder
+  // every time it is picked.
+  private static int[] PickRandomSubset(int[] src, int take)
   {
-    List<T> randomList = new List<T>();
-    Random random = new Random();
-    T value = default(T);
-
-    //now loop through all the values in the list
-    while (originalList.Count() > 0)
+    int[] copy = (int[])src.Clone();
+    int n = copy.Length;
+    int limit = Math.Min(take, n);
+    for (int i = 0; i < limit; i++)
     {
-      //pick a random item from th original list
-      var nextIndex = random.Next(0, originalList.Count());
-      //get the value for that random index
-      value = originalList[nextIndex];
-      //add item to the new randomized list
-      randomList.Add(value);
-      //remove value from original list (prevents
-      //getting duplicates
-      originalList.RemoveAt(nextIndex);
+      int j = Random.Shared.Next(i, n);
+      (copy[i], copy[j]) = (copy[j], copy[i]);
     }
 
-    //return the randomized list
-    return randomList;
+    int[] result = new int[limit];
+    Array.Copy(copy, result, limit);
+    return result;
   }
 }

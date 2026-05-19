@@ -13,6 +13,7 @@ namespace PictureSlideshowScreensaver.Models
     public double _updateInterval = 5; // seconds
     public int _fadeSpeed = 200;       // milliseconds
     public int _startOffset = 0;
+    public int _photosPerFolder = 10;
     public bool _writeStat = false;
     public string _writeStatPath;
     public bool _writeLog = false;
@@ -48,6 +49,7 @@ namespace PictureSlideshowScreensaver.Models
       _path = (string)key.GetValue("ImageFolder");
       _updateInterval = ReadDouble(key, "Interval", _updateInterval);
       _fadeSpeed = ReadInt(key, "FadeTime", _fadeSpeed);
+      _photosPerFolder = Math.Max(1, ReadInt(key, "PhotosPerFolder", _photosPerFolder));
       _writeStat = ReadInt(key, "WriteStat", 0) == 1;
       _writeStatPath = (string)key.GetValue("WriteStatFolder");
       _writeLog = ReadInt(key, "WriteLog", 0) == 1;
