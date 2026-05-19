@@ -169,21 +169,29 @@ public class LocalImageInfo : ImageInfo
       string finfoname = Path.ChangeExtension(_name, "finfo");
       if (File.Exists(finfoname))
       {
-        // IFinfoStore transparently handles legacy Rectangle[] files; we
-        // no longer need the manual fallback that lived here.
-        FinfoData finfo = _finfoStore.Read(finfoname);
-
-        if (finfo?.Faces != null && finfo.Faces.Length != 0)
+        // IFinfoStore swallows JSON errors and returns null, but any
+        // exception escaping from here propagates out of the bitmap
+        // getter and the photo disappears from the slideshow — guard it.
+        try
         {
-          _faces = new List<PointF>();
-          foreach (var f in finfo.Faces)
-            _faces.Add(new PointF((float)((f.Right + f.Left) * dmult / 2.0 - pixel_width / 2.0),
-                                  (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
-        }
+          FinfoData finfo = _finfoStore.Read(finfoname);
 
-        _placeName = finfo?.PlaceName;
-        if (finfo?.Latitude != null) _latitude = finfo.Latitude;
-        if (finfo?.Longitude != null) _longitude = finfo.Longitude;
+          if (finfo?.Faces != null && finfo.Faces.Length != 0)
+          {
+            _faces = new List<PointF>();
+            foreach (var f in finfo.Faces)
+              _faces.Add(new PointF((float)((f.Right + f.Left) * dmult / 2.0 - pixel_width / 2.0),
+                                    (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
+          }
+
+          _placeName = finfo?.PlaceName;
+          if (finfo?.Latitude != null) _latitude = finfo.Latitude;
+          if (finfo?.Longitude != null) _longitude = finfo.Longitude;
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "Failed to load cached .finfo for {Image}", _name);
+        }
 
         _processed = true;
         return;
@@ -264,7 +272,11 @@ public class LocalImageInfo : ImageInfo
         }
         catch (Exception ex)
         {
-          Log.Error(ex, "");
+          // Without the file name + classifier source we previously had no
+          // way to tell whether OpenCV native DLLs failed to load, the
+          // resized Bitmap was rejected by BitmapConverter, or .finfo
+          // writing collapsed on permissions.
+          Log.Error(ex, "FindFaces failed for {Image} (detector present: {HasDetector})", _name, _faceDetector != null);
         }
       }
     }

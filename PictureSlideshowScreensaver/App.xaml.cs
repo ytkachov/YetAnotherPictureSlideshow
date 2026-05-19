@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,12 @@ namespace PictureSlideshowScreensaver
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+      // Default error-only logger writes to %TEMP%\PictureSlideshow before
+      // Settings has a chance to swap in a fuller file logger. Without it
+      // any failure during startup or before the user enables WriteLog
+      // disappears into Serilog's no-op SilentLogger.
+      ConfigureFallbackLogger();
+
       // Build the DI host up front so command-line modes (/c, /s) can pull
       // the window and view model out of the container rather than newing
       // them up by hand. _host.Start() is non-blocking; OnExit takes care
@@ -79,6 +86,27 @@ namespace PictureSlideshowScreensaver
       }
 
       base.OnExit(e);
+    }
+
+    private static void ConfigureFallbackLogger()
+    {
+      try
+      {
+        var folder = Path.Combine(Path.GetTempPath(), "PictureSlideshow");
+        Directory.CreateDirectory(folder);
+        var path = Path.Combine(folder, "fallback_log-.txt");
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(path,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                rollingInterval: RollingInterval.Day,
+                shared: true)
+            .CreateLogger();
+      }
+      catch
+      {
+        // Fallback logger is best-effort; never block startup on it.
+      }
     }
 
     private void LaunchScreensaver()

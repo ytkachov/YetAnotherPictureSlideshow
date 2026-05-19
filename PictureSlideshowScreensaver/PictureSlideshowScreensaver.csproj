@@ -11,7 +11,7 @@
     <StartupObject>PictureSlideshowScreensaver.App</StartupObject>
     <ApplicationIcon>preferences-desktop-screensaver.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <Platforms>AnyCPU;x86;x64</Platforms>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

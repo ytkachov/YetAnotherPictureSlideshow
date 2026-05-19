@@ -35,7 +35,10 @@
 
       <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Orientation="Vertical" DataContext="{Binding PhotoProperties}">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-          <CustomControls:OutlinedTextBlock Text="{Binding FacesFound}" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
+          <!-- Segoe UI Symbol covers U+263B natively; the "Black" weight
+               lacks a glyph for it and WPF font-fallback was dropping
+               the 3rd repeat, so SetFacesFound(3) looked like 2 icons. -->
+          <CustomControls:OutlinedTextBlock Text="{Binding FacesFound}" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Symbol" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
           <CustomControls:OutlinedTextBlock Text=" " Width="10"  VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
           <CustomControls:OutlinedTextBlock Text="{Binding PhotoDescription}" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe UI Black" FontSize="30" StrokeThickness="3" Stroke="White" Fill="DarkRed" />
         </StackPanel>

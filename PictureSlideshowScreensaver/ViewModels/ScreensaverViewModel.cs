@@ -122,7 +122,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         }
         catch (Exception ex)
         {
-          Log.Error(ex, "ERROR");
+          Log.Error(ex, "NextImage failed for {Desc}", nextphoto?.description);
         }
       }
     }
