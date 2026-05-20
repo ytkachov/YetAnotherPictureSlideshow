@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using Microsoft.Win32;
+using Microsoft.Extensions.DependencyInjection;
+using Yaps.Core.Abstractions;
 
 namespace PictureSlideshowScreensaver
 {
@@ -21,6 +23,9 @@ namespace PictureSlideshowScreensaver
     public partial class Configuration : Window
     {
         private bool _saved = true;
+        private bool _loading = false;
+
+        private const string DefaultWeatherProvider = "yandex-api";
 
         public Configuration()
         {
@@ -34,18 +39,25 @@ namespace PictureSlideshowScreensaver
 
         private bool LoadSettings()
         {
+            _loading = true;
             try
             {
+                string currentProvider = DefaultWeatherProvider;
                 RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
                 if (key != null)
                 {
                     txtFolder.Text = (string)key.GetValue("ImageFolder");
                     slideInterval.Value = double.Parse((string)key.GetValue("Interval"));
+                    var stored = (string)key.GetValue("WeatherProvider");
+                    if (!string.IsNullOrEmpty(stored))
+                        currentProvider = stored;
                 }
                 else
                 {
                     slideInterval.Value = 5;
                 }
+
+                LoadWeatherProviders(currentProvider);
                 _saved = true;
                 return true;
             }
@@ -54,8 +66,32 @@ namespace PictureSlideshowScreensaver
                 MessageBox.Show("ERROR: " + ex.Message);
                 return false;
             }
+            finally
+            {
+                _loading = false;
+            }
+        }
 
-
+        // Populate the provider list from the registry the host wired up in
+        // AddWeatherProviders. If the container isn't available (e.g. the
+        // window is opened outside the host), fall back to the stored value
+        // alone so the ComboBox still round-trips the user's choice.
+        private void LoadWeatherProviders(string currentProvider)
+        {
+            var registry = (App.Current as App)?.Services?.GetService<IWeatherProviderRegistry>();
+            if (registry != null)
+            {
+                cbWeatherProvider.ItemsSource = registry.Available;
+                cbWeatherProvider.SelectedValue = currentProvider;
+                // A stored name no longer offered by the registry won't match;
+                // fall back to the first available provider so the box isn't blank.
+                if (cbWeatherProvider.SelectedItem == null && registry.Available.Count > 0)
+                    cbWeatherProvider.SelectedIndex = 0;
+            }
+            else
+            {
+                cbWeatherProvider.IsEnabled = false;
+            }
         }
 
         private bool SaveSettings()
@@ -68,6 +104,8 @@ namespace PictureSlideshowScreensaver
 
                     key.SetValue("ImageFolder", txtFolder.Text);
                     key.SetValue("Interval", slideInterval.Value);
+                    if (cbWeatherProvider.SelectedValue is string provider && !string.IsNullOrEmpty(provider))
+                        key.SetValue("WeatherProvider", provider);
                     _saved = true;
                     return true;
                 }
@@ -131,6 +169,13 @@ namespace PictureSlideshowScreensaver
         {
             _saved = false;
         }
-        
+
+        private void cbWeatherProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Ignore the programmatic selection made while LoadSettings runs;
+            // only a real user pick counts as an unsaved change.
+            if (!_loading)
+                _saved = false;
+        }
     }
 }
