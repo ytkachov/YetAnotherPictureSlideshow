@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Interop;
+using ExifLibrary;
 using Serilog;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
@@ -24,6 +25,8 @@ public class LocalImageInfo : ImageInfo
 
   private List<PointF> _faces = null;
   private volatile bool _processed = false;
+  private readonly object _metaLock = new object();
+  private volatile bool _metadataLoaded = false;
   internal double? _latitude = null;
   internal double? _longitude = null;
   internal string _placeName = null;
@@ -38,6 +41,96 @@ public class LocalImageInfo : ImageInfo
     _geocoder = geocoder;
     _faceDetector = faceDetector;
     _finfoStore = finfoStore ?? new FileFinfoStore();
+  }
+
+  public void EnsureMetadataLoaded()
+  {
+    if (_metadataLoaded)
+      return;
+
+    lock (_metaLock)
+    {
+      if (_metadataLoaded)
+        return;
+
+      ReadExif();
+      _metadataLoaded = true;
+    }
+  }
+
+  // EXIF used to be read for every photo up front during the library scan,
+  // which meant pulling every file (often whole multi-MB JPEGs) over the
+  // network before the first photo could appear. The slideshow index only
+  // needs the file path, so the read is now deferred to just before display.
+  private void ReadExif()
+  {
+    // A previous GeoTagger run may have flagged this file's EXIF as
+    // unreadable; honour that and skip the (failing) read.
+    string finfoPath = Path.ChangeExtension(_name, "finfo");
+    var existing = _finfoStore.Read(finfoPath);
+    if (existing != null && existing.ExifReadFailed)
+      return;
+
+    try
+    {
+      var reader = ImageFile.FromFile(_name);
+
+      var orientation = reader.Properties.Get<ExifUShort>(ExifTag.Orientation);
+      if (orientation != null)
+        _orientation = orientation;
+
+      ExifDateTime eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTime);
+      if (eDatePicture != null)
+        _dateTaken = eDatePicture;
+      else
+      {
+        eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTimeOriginal);
+        if (eDatePicture != null)
+          _dateTaken = eDatePicture;
+      }
+
+      try
+      {
+        var latProp = reader.Properties[ExifTag.GPSLatitude];
+        var latRefProp = reader.Properties[ExifTag.GPSLatitudeRef];
+        var lonProp = reader.Properties[ExifTag.GPSLongitude];
+        var lonRefProp = reader.Properties[ExifTag.GPSLongitudeRef];
+
+        if (latProp?.Value is Array latArr && latArr.Length == 3 &&
+            lonProp?.Value is Array lonArr && lonArr.Length == 3)
+        {
+          dynamic latD = latArr.GetValue(0), latM = latArr.GetValue(1), latS = latArr.GetValue(2);
+          double lat = (double)latD.Numerator / (double)latD.Denominator +
+                       (double)latM.Numerator / (double)latM.Denominator / 60.0 +
+                       (double)latS.Numerator / (double)latS.Denominator / 3600.0;
+
+          dynamic lonD = lonArr.GetValue(0), lonM = lonArr.GetValue(1), lonS = lonArr.GetValue(2);
+          double lon = (double)lonD.Numerator / (double)lonD.Denominator +
+                       (double)lonM.Numerator / (double)lonM.Denominator / 60.0 +
+                       (double)lonS.Numerator / (double)lonS.Denominator / 3600.0;
+
+          var latRef = latRefProp?.Value?.ToString();
+          var lonRef = lonRefProp?.Value?.ToString();
+          if (latRef == "S" || latRef == "South") lat = -lat;
+          if (lonRef == "W" || lonRef == "West") lon = -lon;
+
+          if (!double.IsNaN(lat) && !double.IsNaN(lon) && !double.IsInfinity(lat) && !double.IsInfinity(lon))
+          {
+            _latitude = lat;
+            _longitude = lon;
+          }
+        }
+      }
+      catch (Exception ex2)
+      {
+        Log.Error(ex2, $"GPS EXIF failed for {_name}");
+      }
+    }
+    catch (Exception ex)
+    {
+      Log.Error(ex, $"Image: {_name}");
+      _messages.Add("Exeption " + ex.ToString());
+    }
   }
 
   public RotateFlipType orientation

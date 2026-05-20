@@ -93,5 +93,24 @@
         </StackPanel>
       </DockPanel>
     </Grid>
+
+    <!-- Startup scan overlay. Sits above both Frame views (ZIndex) and covers
+         the black screen while LocalImages walks the (possibly SMB) photo tree.
+         Hidden the moment the first photo is rendered (IsScanning -> false). -->
+    <Grid Grid.RowSpan="2" Panel.ZIndex="100" Background="Black"
+          Visibility="{Binding ScanOverlayVisibility}">
+      <StackPanel Width="700" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <CustomControls:OutlinedTextBlock Text="Yet Another Picture Slideshow" HorizontalAlignment="Center"
+                                          FontFamily="Segoe UI Light" FontSize="48" StrokeThickness="2" Stroke="Black" Fill="White" />
+        <ProgressBar IsIndeterminate="True" Height="6" Margin="0,30,0,0"
+                     Foreground="#FFD70000" Background="#FF202020" BorderThickness="0" />
+        <TextBlock HorizontalAlignment="Center" Margin="0,24,0,0" Foreground="White"
+                   FontFamily="Segoe UI Light" FontSize="24"
+                   Text="{Binding ScanFileCount, StringFormat='Сканирую: {0} фото'}" />
+        <TextBlock HorizontalAlignment="Center" Margin="0,8,0,0" Foreground="#FFAAAAAA"
+                   FontFamily="Segoe UI Light" FontSize="16" TextTrimming="CharacterEllipsis"
+                   Text="{Binding ScanFolder}" />
+      </StackPanel>
+    </Grid>
   </Grid>
 </Window>

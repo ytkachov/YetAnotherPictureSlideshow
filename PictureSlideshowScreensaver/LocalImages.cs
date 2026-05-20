@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
-using ExifLibrary;
 using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
@@ -25,6 +24,9 @@ class LocalImages : ImagesProvider
 
   private string _imagesPath;
   private volatile bool _scanCompleted;
+  private int _filesFound;
+
+  public event EventHandler<ScanProgress> ScanProgressChanged;
 
   private LocalImageInfo[] _images;
   private Dictionary<string, int[]> _imagesByFolder;
@@ -158,7 +160,11 @@ class LocalImages : ImagesProvider
         {
           string ss = s.ToLower();
           if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
+          {
             Add(ss);
+            // Only the scan thread touches _filesFound, so the bare ++ is safe.
+            ScanProgressChanged?.Invoke(this, new ScanProgress(++_filesFound, p));
+          }
         }
       }
       catch (Exception ex)
@@ -183,81 +189,12 @@ class LocalImages : ImagesProvider
   {
     lock (_locker)
     {
-      // special treatment for iPhone photo-video pair
+      // Cheap during the scan: just record the path (and the paired iPhone
+      // .mov if present). EXIF is read lazily by LocalImageInfo just before
+      // the photo is shown — see EnsureMetadataLoaded — so the scan no longer
+      // pulls every file over the network.
       string movfile = Path.ChangeExtension(name, "mov");
       LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _faceDetector, _finfoStore);
-
-      // If a previous run flagged this image as having unreadable EXIF, skip the read.
-      string finfoPath = Path.ChangeExtension(name, "finfo");
-      var existing = _finfoStore.Read(finfoPath);
-      if (existing != null && existing.ExifReadFailed)
-      {
-        _imagesTmp.Add(ii);
-        return;
-      }
-
-      try
-      {
-        var reader = ImageFile.FromFile(name);
-
-        var orientation = reader.Properties.Get<ExifUShort>(ExifTag.Orientation);
-        if (orientation != null)
-          ii._orientation = orientation;
-
-        ExifDateTime eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTime);
-        if (eDatePicture != null)
-          ii._dateTaken = eDatePicture;
-        else
-        {
-          eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTimeOriginal);
-          if (eDatePicture != null)
-            ii._dateTaken = eDatePicture;
-        }
-
-        try
-        {
-          var latProp = reader.Properties[ExifTag.GPSLatitude];
-          var latRefProp = reader.Properties[ExifTag.GPSLatitudeRef];
-          var lonProp = reader.Properties[ExifTag.GPSLongitude];
-          var lonRefProp = reader.Properties[ExifTag.GPSLongitudeRef];
-
-          if (latProp?.Value is Array latArr && latArr.Length == 3 &&
-              lonProp?.Value is Array lonArr && lonArr.Length == 3)
-          {
-            dynamic latD = latArr.GetValue(0), latM = latArr.GetValue(1), latS = latArr.GetValue(2);
-            double lat = (double)latD.Numerator / (double)latD.Denominator +
-                         (double)latM.Numerator / (double)latM.Denominator / 60.0 +
-                         (double)latS.Numerator / (double)latS.Denominator / 3600.0;
-
-            dynamic lonD = lonArr.GetValue(0), lonM = lonArr.GetValue(1), lonS = lonArr.GetValue(2);
-            double lon = (double)lonD.Numerator / (double)lonD.Denominator +
-                         (double)lonM.Numerator / (double)lonM.Denominator / 60.0 +
-                         (double)lonS.Numerator / (double)lonS.Denominator / 3600.0;
-
-            var latRef = latRefProp?.Value?.ToString();
-            var lonRef = lonRefProp?.Value?.ToString();
-            if (latRef == "S" || latRef == "South") lat = -lat;
-            if (lonRef == "W" || lonRef == "West") lon = -lon;
-
-            if (!double.IsNaN(lat) && !double.IsNaN(lon) && !double.IsInfinity(lat) && !double.IsInfinity(lon))
-            {
-              ii._latitude = lat;
-              ii._longitude = lon;
-            }
-          }
-        }
-        catch (Exception ex2)
-        {
-          Log.Error(ex2, $"GPS EXIF failed for {name}");
-        }
-      }
-      catch (Exception ex)
-      {
-        Log.Error(ex, $"Image: {name}");
-
-        ii._messages.Add("Exeption " + ex.ToString());
-      }
-
       _imagesTmp.Add(ii);
     }
   }

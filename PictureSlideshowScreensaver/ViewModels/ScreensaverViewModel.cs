@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -19,6 +20,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     private readonly Settings _settings;
     private readonly ImagesProvider _images;
     private readonly IClock _clock;
+    private readonly Dispatcher _dispatcher;
     private DispatcherTimer _switchImage;
 
     private PhotoProperties _photo_properties;
@@ -29,15 +31,41 @@ namespace PictureSlideshowScreensaver.ViewModels
     private bool _isNightTime = false;
     private bool _disposed;
 
+    // Scan-overlay state. The "pending" fields are written on the scan thread
+    // and read back when the throttled dispatcher callback fires; the public
+    // properties are only ever touched on the UI thread.
+    private bool _isScanning = true;
+    private int _scanFileCount;
+    private string _scanFolder;
+    private volatile int _pendingCount;
+    private volatile string _pendingFolder;
+    private long _lastScanUiTicks;
+
     public PhotoProperties PhotoProperties { get { return _photo_properties; } set { _photo_properties = value; RaisePropertyChanged(); } }
     public FrameViewModel FirstImage { get { return _firstImage; } set { _firstImage = value; RaisePropertyChanged(); } }
     public FrameViewModel SecondImage { get { return _secondImage; } set { _secondImage = value; RaisePropertyChanged(); } }
+
+    public bool IsScanning
+    {
+      get { return _isScanning; }
+      set { _isScanning = value; RaisePropertyChanged(); RaisePropertyChanged(nameof(ScanOverlayVisibility)); }
+    }
+
+    public Visibility ScanOverlayVisibility => _isScanning ? Visibility.Visible : Visibility.Collapsed;
+
+    public int ScanFileCount { get { return _scanFileCount; } set { _scanFileCount = value; RaisePropertyChanged(); } }
+    public string ScanFolder { get { return _scanFolder; } set { _scanFolder = value; RaisePropertyChanged(); } }
 
     public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock)
     {
       _settings = settings;
       _images = images;
       _clock = clock;
+      _dispatcher = Dispatcher.CurrentDispatcher;
+
+      // Subscribe before init() kicks off the background scan so we don't miss
+      // the early progress events on a slow share.
+      _images.ScanProgressChanged += OnScanProgress;
       _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
       FirstImage = new FrameViewModel("one") { IsActive = true };
       SecondImage = new FrameViewModel("two") { IsActive = false };
@@ -57,6 +85,8 @@ namespace PictureSlideshowScreensaver.ViewModels
         return;
       _disposed = true;
 
+      _images.ScanProgressChanged -= OnScanProgress;
+
       // Stop the timer and unsubscribe so the closure capturing 'this'
       // doesn't keep the VM alive after the window closes.
       if (_switchImage != null)
@@ -65,6 +95,41 @@ namespace PictureSlideshowScreensaver.ViewModels
         _switchImage.Tick -= fade_Tick;
         _switchImage = null;
       }
+    }
+
+    // Fires on the scan thread, potentially once per file. Stash the latest
+    // values and only marshal to the UI at ~4 Hz so a fast SMB enumeration
+    // doesn't flood the dispatcher.
+    private void OnScanProgress(object sender, ScanProgress e)
+    {
+      if (_disposed)
+        return;
+
+      _pendingCount = e.FilesFound;
+      _pendingFolder = e.CurrentFolder;
+
+      long now = Environment.TickCount64;
+      if (now - Interlocked.Read(ref _lastScanUiTicks) < 250)
+        return;
+      Interlocked.Exchange(ref _lastScanUiTicks, now);
+
+      _dispatcher.BeginInvoke(new Action(() =>
+      {
+        if (_disposed || !IsScanning)
+          return;
+        ScanFileCount = _pendingCount;
+        ScanFolder = ShortenFolder(_pendingFolder);
+      }));
+    }
+
+    // Keep only the trailing part of a long network path so the overlay text
+    // stays on one line, e.g. "…\share\PHOTOS\2023".
+    private static string ShortenFolder(string folder)
+    {
+      const int max = 60;
+      if (string.IsNullOrEmpty(folder) || folder.Length <= max)
+        return folder;
+      return "…" + folder.Substring(folder.Length - (max - 1));
     }
 
     void fade_Tick(object sender, EventArgs e)
@@ -90,39 +155,70 @@ namespace PictureSlideshowScreensaver.ViewModels
       _prevTime = hour;
 
       ImageInfo nextphoto = _images.GetNext();
-      if (nextphoto != null)
+      if (nextphoto == null)
+        return;
+
+      // EXIF (orientation / date / GPS) is read lazily and off the UI thread —
+      // on a network share it can pull the whole file. The orientation and the
+      // on-screen date caption are both consumed during activation, so we wait
+      // for the read before marshalling the activation back to the dispatcher.
+      Task.Run(() =>
       {
         try
         {
-          PhotoProperties.PhotoDescription = nextphoto.description;
-          var ft = TimeSpan.FromMilliseconds(_settings._noImageFading ||
-                                             (_isNightTime && _settings._noNightImageFading)
-                                            ? 0 : _settings._fadeSpeed);
-
-          var mt = TimeSpan.MinValue;
-
-          if (!(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
-            mt = TimeSpan.FromSeconds(_settings._updateInterval);
-
-          bool acc = !_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents);
-
-          if (!FirstImage.IsActive)
-          {
-            FirstImage.Activate(nextphoto, ft, mt, acc);
-            SecondImage.Deactivate(ft);
-          }
-          else
-          {
-            SecondImage.Activate(nextphoto, ft, mt, acc);
-            FirstImage.Deactivate(ft);
-          }
-
-          PhotoProperties.SetFacesFound(nextphoto.accent_count);
+          nextphoto.EnsureMetadataLoaded();
         }
         catch (Exception ex)
         {
-          Log.Error(ex, "NextImage failed for {Desc}", nextphoto?.description);
+          Log.Error(ex, "Metadata load failed");
         }
+
+        if (_disposed)
+          return;
+
+        _dispatcher.BeginInvoke(new Action(() => ActivatePhoto(nextphoto)));
+      });
+    }
+
+    private void ActivatePhoto(ImageInfo nextphoto)
+    {
+      if (_disposed)
+        return;
+
+      try
+      {
+        PhotoProperties.PhotoDescription = nextphoto.description;
+        var ft = TimeSpan.FromMilliseconds(_settings._noImageFading ||
+                                           (_isNightTime && _settings._noNightImageFading)
+                                          ? 0 : _settings._fadeSpeed);
+
+        var mt = TimeSpan.MinValue;
+
+        if (!(_settings._noImageScaling || (_isNightTime && _settings._noNightImageScaling)))
+          mt = TimeSpan.FromSeconds(_settings._updateInterval);
+
+        bool acc = !_settings._noImageAccents && !(_isNightTime && _settings._noNightImageAccents);
+
+        if (!FirstImage.IsActive)
+        {
+          FirstImage.Activate(nextphoto, ft, mt, acc);
+          SecondImage.Deactivate(ft);
+        }
+        else
+        {
+          SecondImage.Activate(nextphoto, ft, mt, acc);
+          FirstImage.Deactivate(ft);
+        }
+
+        PhotoProperties.SetFacesFound(nextphoto.accent_count);
+
+        // First real photo on screen — drop the scanning overlay.
+        if (IsScanning)
+          IsScanning = false;
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "NextImage failed for {Desc}", nextphoto?.description);
       }
     }
   }
