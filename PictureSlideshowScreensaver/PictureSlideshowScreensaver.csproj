@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="CalcBinding6" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="ExifLibNet" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />

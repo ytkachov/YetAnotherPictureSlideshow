@@ -33,6 +33,7 @@
 
     <!-- WPF helpers -->
     <PackageVersion Include="CalcBinding6" Version="1.1.0" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
 
     <!-- Selenium (Weather scrapers) -->

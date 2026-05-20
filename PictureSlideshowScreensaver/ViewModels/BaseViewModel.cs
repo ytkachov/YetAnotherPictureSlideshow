@@ -1,22 +1,20 @@
-﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PictureSlideshowScreensaver.ViewModels
 {
-  public class Notifier : INotifyPropertyChanged
+  // INotifyPropertyChanged now comes from CommunityToolkit.Mvvm's
+  // ObservableObject instead of a hand-rolled event. RaisePropertyChanged
+  // is kept as a thin alias over OnPropertyChanged so existing setters
+  // (and the nameof()-based notifications) keep working unchanged; new
+  // code can also use SetProperty / [ObservableProperty] from the base.
+  public class Notifier : ObservableObject
   {
-    #region Events
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string caller_name = null)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(caller_name));
-    }
-
-    #endregion
+    protected void RaisePropertyChanged([CallerMemberName] string caller_name = null)
+        => OnPropertyChanged(caller_name);
   }
+
   public class BaseViewModel : Notifier
   {
   }
-
 }
