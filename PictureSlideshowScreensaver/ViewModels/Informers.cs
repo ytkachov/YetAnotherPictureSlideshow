@@ -59,6 +59,7 @@ namespace informers
     private string _date_DayMon = "01/05";
     private string _date_DayMonTomorrow = "02/05";
     private string _date_DayMonAfterTomorrow = "03/05";
+    private int    _lastMinute = -1;
     private DispatcherTimer _clockTick = new DispatcherTimer();
 
     public DateTimeInformer()
@@ -93,15 +94,28 @@ namespace informers
 
     void clock_Tick(object sender, EventArgs e)
     {
-      Time_Tick = 1 - Time_Tick;
-      Time_Hours = DateTime.Now.Hour.ToString("D2");
-      Time_Minutes = DateTime.Now.Minute.ToString("D2");
-      Time_Seconds = DateTime.Now.Second.ToString("D2");
+      var now = DateTime.Now;
 
-      Date_Full = DateFormatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.Month - 1];
-      Date_DayMon = DateFormatter.weekdays_short[(int)DateTime.Now.DayOfWeek] + ", " + (DateTime.Now.Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.Month - 1];
-      Date_DayMonTomorrow = DateFormatter.weekdays_short[(int)DateTime.Now.AddDays(1).DayOfWeek] + ", " + (DateTime.Now.AddDays(1).Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.AddDays(1).Month - 1];
-      Date_DayMonAfterTomorrow = DateFormatter.weekdays_short[(int)DateTime.Now.AddDays(2).DayOfWeek] + ", " + (DateTime.Now.AddDays(2).Day).ToString() + " " + DateFormatter.monthes_short[DateTime.Now.AddDays(2).Month - 1];
+      // Seconds and the colon-blink toggle move every tick.
+      Time_Tick = 1 - Time_Tick;
+      Time_Seconds = now.Second.ToString("D2");
+
+      // Hour, minute and the three date captions only change on a minute
+      // boundary; recomputing the four date strings every second (12+
+      // array indexes + concatenations) was wasted work on every tick.
+      if (now.Minute == _lastMinute)
+        return;
+      _lastMinute = now.Minute;
+
+      Time_Hours = now.Hour.ToString("D2");
+      Time_Minutes = now.Minute.ToString("D2");
+
+      var tomorrow = now.AddDays(1);
+      var afterTomorrow = now.AddDays(2);
+      Date_Full = DateFormatter.weekdays_short[(int)now.DayOfWeek] + ", " + now.Day.ToString() + " " + DateFormatter.monthes_short[now.Month - 1];
+      Date_DayMon = Date_Full;
+      Date_DayMonTomorrow = DateFormatter.weekdays_short[(int)tomorrow.DayOfWeek] + ", " + tomorrow.Day.ToString() + " " + DateFormatter.monthes_short[tomorrow.Month - 1];
+      Date_DayMonAfterTomorrow = DateFormatter.weekdays_short[(int)afterTomorrow.DayOfWeek] + ", " + afterTomorrow.Day.ToString() + " " + DateFormatter.monthes_short[afterTomorrow.Month - 1];
     }
   }
 }
