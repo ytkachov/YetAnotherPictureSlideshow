@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using informers;
 using PictureSlideshowScreensaver.Models;
 using presenters;
@@ -15,7 +17,7 @@ using Yaps.Core.Abstractions;
 namespace PictureSlideshowScreensaver.ViewModels
 {
 
-  public class ScreensaverViewModel : BaseViewModel, IDisposable
+  public partial class ScreensaverViewModel : BaseViewModel, IDisposable
   {
     private readonly Settings _settings;
     private readonly ImagesProvider _images;
@@ -55,6 +57,17 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     public int ScanFileCount { get { return _scanFileCount; } set { _scanFileCount = value; RaisePropertyChanged(); } }
     public string ScanFolder { get { return _scanFolder; } set { _scanFolder = value; RaisePropertyChanged(); } }
+
+    // Bound to the forecast overlay's visibility; toggled by the F key via
+    // ToggleForecastCommand (see the window's InputBindings).
+    [ObservableProperty]
+    private bool _isForecastVisible;
+
+    [RelayCommand]
+    private void ToggleForecast() => IsForecastVisible = !IsForecastVisible;
+
+    [RelayCommand]
+    private static void Exit() => Application.Current.Shutdown();
 
     public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock)
     {
