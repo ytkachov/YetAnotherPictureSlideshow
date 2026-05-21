@@ -1,181 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.IO;
-using Microsoft.Win32;
-using Microsoft.Extensions.DependencyInjection;
-using Yaps.Core.Abstractions;
+using PictureSlideshowScreensaver.ViewModels;
 
 namespace PictureSlideshowScreensaver
 {
     /// <summary>
-    /// Interaction logic for Configuration.xaml
+    /// Interaction logic for Configuration.xaml. State, validation and the
+    /// Registry round-trip live in ConfigurationViewModel; the code-behind
+    /// keeps only the inherently view-layer hooks — the OS folder picker,
+    /// message boxes and closing the window.
     /// </summary>
     public partial class Configuration : Window
     {
-        private bool _saved = true;
-        private bool _loading = false;
+        private readonly ConfigurationViewModel _vm;
 
-        private const string DefaultWeatherProvider = "yandex-api";
-
-        public Configuration()
+        public Configuration(ConfigurationViewModel viewModel)
         {
+            _vm = viewModel;
+            _vm.BrowseForFolder = BrowseForFolder;
+            _vm.ShowError = msg => MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            _vm.RequestClose += (_, _) => Application.Current.Shutdown();
+
+            DataContext = _vm;
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private static string BrowseForFolder()
         {
-            LoadSettings();
-        }
-
-        private bool LoadSettings()
-        {
-            _loading = true;
-            try
-            {
-                string currentProvider = DefaultWeatherProvider;
-                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\PictureSlideshowScreensaver");
-                if (key != null)
-                {
-                    txtFolder.Text = (string)key.GetValue("ImageFolder");
-                    slideInterval.Value = double.Parse((string)key.GetValue("Interval"));
-                    var stored = (string)key.GetValue("WeatherProvider");
-                    if (!string.IsNullOrEmpty(stored))
-                        currentProvider = stored;
-                }
-                else
-                {
-                    slideInterval.Value = 5;
-                }
-
-                LoadWeatherProviders(currentProvider);
-                _saved = true;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ERROR: " + ex.Message);
-                return false;
-            }
-            finally
-            {
-                _loading = false;
-            }
-        }
-
-        // Populate the provider list from the registry the host wired up in
-        // AddWeatherProviders. If the container isn't available (e.g. the
-        // window is opened outside the host), fall back to the stored value
-        // alone so the ComboBox still round-trips the user's choice.
-        private void LoadWeatherProviders(string currentProvider)
-        {
-            var registry = (App.Current as App)?.Services?.GetService<IWeatherProviderRegistry>();
-            if (registry != null)
-            {
-                cbWeatherProvider.ItemsSource = registry.Available;
-                cbWeatherProvider.SelectedValue = currentProvider;
-                // A stored name no longer offered by the registry won't match;
-                // fall back to the first available provider so the box isn't blank.
-                if (cbWeatherProvider.SelectedItem == null && registry.Available.Count > 0)
-                    cbWeatherProvider.SelectedIndex = 0;
-            }
-            else
-            {
-                cbWeatherProvider.IsEnabled = false;
-            }
-        }
-
-        private bool SaveSettings()
-        {
-            try
-            {
-                if (Directory.Exists(txtFolder.Text))
-                {
-                    RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\PictureSlideshowScreensaver");
-
-                    key.SetValue("ImageFolder", txtFolder.Text);
-                    key.SetValue("Interval", slideInterval.Value);
-                    if (cbWeatherProvider.SelectedValue is string provider && !string.IsNullOrEmpty(provider))
-                        key.SetValue("WeatherProvider", provider);
-                    _saved = true;
-                    return true;
-                }
-                else
-                {
-                    MessageBox.Show("The selected folder does not exist!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    _saved = false;
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ERROR: " + ex.Message);
-                _saved = false;
-                return false;
-            }
-        }
-
-        private void bBrowse_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                txtFolder.Text = dialog.SelectedPath;
-            }
+            using var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            return dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ? dialog.SelectedPath : null;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!_saved)
+            if (_vm.HasUnsavedChanges &&
+                MessageBox.Show("There are unsaved changes. Really exit the configuration?", "Unsaved changes", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
             {
-                if (MessageBox.Show("There are unsaved changes. Really exit the configuration?", "Unsaved changes", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
-                {
-                    e.Cancel = true;
-                }
+                e.Cancel = true;
             }
-        }
-
-        private void slideInterval_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            lblInterval.Content = slideInterval.Value.ToString() + " seconds";
-            _saved = false;
-        }
-
-        private void bSave_Click(object sender, RoutedEventArgs e)
-        {
-            if (SaveSettings())
-            {
-                _saved = true;
-                Application.Current.Shutdown();
-            }
-        }
-
-        private void bCancel_Click(object sender, RoutedEventArgs e)
-        {
-            _saved = true;
-            Application.Current.Shutdown();
-        }
-
-        private void txtFolder_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            _saved = false;
-        }
-
-        private void cbWeatherProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Ignore the programmatic selection made while LoadSettings runs;
-            // only a real user pick counts as an unsaved change.
-            if (!_loading)
-                _saved = false;
         }
     }
 }

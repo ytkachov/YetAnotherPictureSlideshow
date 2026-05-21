@@ -47,7 +47,7 @@ namespace PictureSlideshowScreensaver
         // Configuration mode
         if (first == "/c")
         {
-          new Configuration().Show();
+          _host.Services.GetRequiredService<Configuration>().Show();
         }
         // Preview mode — not implemented; exit cleanly.
         else if (first == "/p")

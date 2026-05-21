@@ -54,6 +54,8 @@ namespace PictureSlideshowScreensaver.Composition
 
             services.AddTransient<ScreensaverViewModel>();
             services.AddTransient<Screensaver>();
+            services.AddTransient<ConfigurationViewModel>();
+            services.AddTransient<Configuration>();
 
             return services;
         }
