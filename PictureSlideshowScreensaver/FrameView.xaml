@@ -24,7 +24,7 @@
       </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" Visibility="{Binding ImageVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+    <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" RenderOptions.BitmapScalingMode="Fant" Visibility="{Binding ImageVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
     <MediaElement x:Name="VideoElement" Stretch="Uniform" Source="{Binding VideoSource}" Visibility="{Binding ImageVisible, Converter={StaticResource inverseBooleanToVisibilityConverter}}" >
       <MediaElement.LayoutTransform>
         <TransformGroup>
