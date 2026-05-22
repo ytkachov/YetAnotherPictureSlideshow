@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Yaps.Core.Abstractions;
+using Yaps.Core.Models;
 using Yaps.Core.Models.Weather;
 using Yaps.Infrastructure.Geocoding;
 using Yaps.Infrastructure.Weather;
@@ -18,9 +19,10 @@ public static class ServiceCollectionExtensions
     /// DNS refresh without dragging the static HttpClient pattern into
     /// Infrastructure.
     /// </summary>
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, FinfoStoreOptions? finfoOptions = null)
     {
-        services.AddSingleton<IFinfoStore, FileFinfoStore>();
+        services.AddSingleton(finfoOptions ?? FinfoStoreOptions.Empty);
+        services.AddSingleton<IFinfoStore>(sp => new FileFinfoStore(sp.GetRequiredService<FinfoStoreOptions>()));
 
         services.AddHttpClient<IGeocoder, NominatimGeocoder>(client =>
         {

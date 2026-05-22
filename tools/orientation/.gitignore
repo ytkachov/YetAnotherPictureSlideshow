@@ -1,0 +1,14 @@
+# Python virtual environment (large; recreate via README step 0)
+.venv/
+
+# Per-machine model calibration cache (regenerate with --self-test)
+.orientation_calib.json
+
+# Run outputs
+*.csv
+*.html
+*_thumbs/
+previews*/
+
+__pycache__/
+*.pyc

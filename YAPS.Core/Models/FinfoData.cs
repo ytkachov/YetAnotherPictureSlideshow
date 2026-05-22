@@ -19,10 +19,20 @@ public class FinfoData
     public bool GeocodingAttempted { get; set; }
     public bool ExifReadFailed { get; set; }
 
+    /// <summary>
+    /// Corrected display orientation as an EXIF orientation code (1-8),
+    /// written by the tools/orientation utility when a photo's pixels are
+    /// rotated but its own metadata says otherwise. When set, it overrides
+    /// whatever the file's EXIF Orientation tag claims. Null = not
+    /// determined, in which case the EXIF tag (if any) is used.
+    /// </summary>
+    public int? Orientation { get; set; }
+
     // Bumped whenever the on-disk schema breaks the previous shape. Legacy
     // files written by Newtonsoft (no SchemaVersion field) deserialise as
-    // null which is treated as "unknown / version 0".
-    private const int CurrentSchemaVersion = 1;
+    // null which is treated as "unknown / version 0". v2 added Orientation
+    // (additive — older files simply lack it and fall back to EXIF).
+    private const int CurrentSchemaVersion = 2;
 
     private static readonly JsonSerializerOptions _options = new()
     {
@@ -131,6 +141,10 @@ public class FinfoData
                 case "exifreadfailed":
                     if (prop.Value.ValueKind is JsonValueKind.True or JsonValueKind.False)
                         result.ExifReadFailed = prop.Value.GetBoolean();
+                    break;
+                case "orientation":
+                    if (prop.Value.ValueKind == JsonValueKind.Number && prop.Value.TryGetInt32(out var orient))
+                        result.Orientation = orient;
                     break;
             }
         }

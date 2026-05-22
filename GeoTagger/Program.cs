@@ -10,6 +10,7 @@ using Serilog;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
 using Yaps.Infrastructure;
+using Yaps.Infrastructure.Settings;
 
 class Program
 {
@@ -120,7 +121,10 @@ class Program
         // screensaver does so the Nominatim rate-limit / User-Agent /
         // HttpClient pooling all match.
         var builder = Host.CreateApplicationBuilder();
-        builder.Services.AddInfrastructure();
+        // Share the screensaver's photo-folder ↔ finfo-folder pairing so a
+        // read-only library tagged here writes its .finfo to the same
+        // configured folder the slideshow reads from.
+        builder.Services.AddInfrastructure(RegistryConfig.ReadFinfoStoreOptions());
         using var host = builder.Build();
         await host.StartAsync();
 
@@ -161,7 +165,6 @@ class Program
         foreach (var imagePath in imageFiles)
         {
             processed++;
-            string finfoPath = Path.ChangeExtension(imagePath, "finfo");
 
             if (processed % 100 == 0)
                 Log.Information("Progress: {Processed}/{Total} | tagged: {Tagged} | cache: {Cache} | not found: {NotFound} | bad EXIF: {BadExif} | no GPS: {NoGps} | has place: {HasPlace} | attempted: {Attempted} | skipped bad: {SkipBad} | errors: {Errors}",
@@ -169,7 +172,7 @@ class Program
 
             // Read existing finfo first so we can short-circuit on stable terminal states
             // (has place, geocoding already attempted, EXIF previously unreadable).
-            FinfoData existingData = finfoStore.Read(finfoPath);
+            FinfoData existingData = finfoStore.Read(imagePath);
 
             if (existingData != null && !string.IsNullOrEmpty(existingData.PlaceName))
             {
@@ -219,11 +222,11 @@ class Program
                 {
                     var data = existingData ?? new FinfoData();
                     data.ExifReadFailed = true;
-                    finfoStore.Write(finfoPath, data);
+                    finfoStore.Write(imagePath, data);
                 }
                 catch (Exception writeEx)
                 {
-                    Log.Error(writeEx, "Failed to write ExifReadFailed marker to {File}", finfoPath);
+                    Log.Error(writeEx, "Failed to write ExifReadFailed marker for {File}", imagePath);
                     errors++;
                 }
                 badExif++;
@@ -279,7 +282,7 @@ class Program
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
 
-                    finfoStore.Write(finfoPath, data);
+                    finfoStore.Write(imagePath, data);
 
                     if (!fromCache)
                         Log.Information("  -> {PlaceName}", result.PlaceName);
@@ -287,7 +290,7 @@ class Program
                 }
                 else
                 {
-                    finfoStore.Write(finfoPath, data);
+                    finfoStore.Write(imagePath, data);
 
                     if (!fromCache)
                         Log.Warning("  -> No place name resolved (marked attempted)");

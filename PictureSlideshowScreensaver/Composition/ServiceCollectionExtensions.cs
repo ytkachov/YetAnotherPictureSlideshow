@@ -7,6 +7,7 @@ using PictureSlideshowScreensaver.ViewModels;
 using Yaps.Core.Abstractions;
 using Yaps.Infrastructure;
 using Yaps.Infrastructure.Faces;
+using Yaps.Infrastructure.Settings;
 using Yaps.Infrastructure.Weather;
 
 namespace PictureSlideshowScreensaver.Composition
@@ -21,10 +22,12 @@ namespace PictureSlideshowScreensaver.Composition
         /// </summary>
         public static IServiceCollection AddScreensaver(this IServiceCollection services)
         {
-            services.AddInfrastructure();
+            // IFinfoStore is registered by AddInfrastructure(); the finfo-folder
+            // pairing comes from the registry so the screensaver and the
+            // utilities resolve sidecars to the same place.
+            services.AddInfrastructure(RegistryConfig.ReadFinfoStoreOptions());
 
-            // IFinfoStore is registered by AddInfrastructure(); IClock and
-            // Settings are screensaver-level concerns.
+            // IClock and Settings are screensaver-level concerns.
             services.AddSingleton<IClock, SystemClock>();
             services.AddSingleton<Settings>();
             services.AddSingleton<ImagesProvider, LocalImages>();

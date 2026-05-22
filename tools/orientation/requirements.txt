@@ -1,0 +1,13 @@
+# Orientation-fixer dependencies.
+# Tested with Python 3.9-3.11. CPU-only torch is fine (no GPU needed).
+#
+# If the default torch wheel is too large or you want CPU-only explicitly:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+# then install the rest from this file.
+
+torch>=1.13
+check_orientation>=0.0.4
+albumentations>=1.0
+opencv-python>=4.5
+Pillow>=9.0
+numpy>=1.21

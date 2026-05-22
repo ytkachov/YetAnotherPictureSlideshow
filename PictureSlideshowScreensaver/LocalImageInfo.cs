@@ -65,9 +65,19 @@ public class LocalImageInfo : ImageInfo
   private void ReadExif()
   {
     // A previous GeoTagger run may have flagged this file's EXIF as
-    // unreadable; honour that and skip the (failing) read.
-    string finfoPath = Path.ChangeExtension(_name, "finfo");
-    var existing = _finfoStore.Read(finfoPath);
+    // unreadable; honour that and skip the (failing) read. The store resolves
+    // the .finfo location (next to the photo, or a configured finfo folder).
+    var existing = _finfoStore.Read(_name);
+
+    // A corrected orientation in .finfo (written by tools/orientation) wins
+    // over EXIF: this library's EXIF Orientation is always Normal/absent even
+    // for visibly sideways photos, so the sidecar is the authoritative source.
+    // Applied before the early return so it survives even when EXIF is skipped.
+    bool orientationFromFinfo = existing?.Orientation is int finfoOrientation
+                                && finfoOrientation is >= 1 and <= 8;
+    if (orientationFromFinfo)
+      _orientation = (ushort)existing!.Orientation!.Value;
+
     if (existing != null && existing.ExifReadFailed)
       return;
 
@@ -75,19 +85,24 @@ public class LocalImageInfo : ImageInfo
     {
       var reader = ImageFile.FromFile(_name);
 
-      var orientation = reader.Properties.Get<ExifUShort>(ExifTag.Orientation);
-      if (orientation != null)
-        _orientation = orientation;
+      // Fall back to the EXIF Orientation tag only when .finfo did not specify
+      // one. ExifLibrary exposes it as ExifEnumProperty<Orientation>, not
+      // ExifUShort, so the old Get<ExifUShort> always returned null and
+      // rotation was never applied; the enum's numeric value is the code 1-8.
+      if (!orientationFromFinfo &&
+          reader.Properties[ExifTag.Orientation]?.Value is Orientation exifOrientation)
+        _orientation = (ushort)exifOrientation;
 
-      ExifDateTime eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTime);
-      if (eDatePicture != null)
-        _dateTaken = eDatePicture;
-      else
-      {
-        eDatePicture = reader.Properties.Get<ExifDateTime>(ExifTag.DateTimeOriginal);
-        if (eDatePicture != null)
-          _dateTaken = eDatePicture;
-      }
+      // Prefer the capture time (DateTimeOriginal) over the file-edit time
+      // (DateTime): re-saved / exported photos carry an edit date in DateTime
+      // that is not when the shot was taken. Each candidate is validated
+      // because some files store a garbage 0001-01-01 original. Fall back to
+      // the file's own timestamp when no usable EXIF date is present.
+      _dateTaken =
+          ReadValidDate(reader, ExifTag.DateTimeOriginal) ??
+          ReadValidDate(reader, ExifTag.DateTimeDigitized) ??
+          ReadValidDate(reader, ExifTag.DateTime) ??
+          FileTimestampFallback(_name);
 
       try
       {
@@ -130,6 +145,36 @@ public class LocalImageInfo : ImageInfo
     {
       Log.Error(ex, $"Image: {_name}");
       _messages.Add("Exeption " + ex.ToString());
+    }
+  }
+
+  // Reads one EXIF date tag and rejects values that are null or obviously
+  // bogus (year <= 1), which some cameras write into DateTimeOriginal.
+  private static DateTime? ReadValidDate(ImageFile reader, ExifTag tag)
+  {
+    var prop = reader.Properties.Get<ExifDateTime>(tag);
+    if (prop == null)
+      return null;
+
+    DateTime value = prop; // ExifDateTime -> DateTime (implicit)
+    return value.Year > 1 ? value : (DateTime?)null;
+  }
+
+  // Last resort when a photo carries no usable EXIF date (~8% of the
+  // library). The earlier of write/creation time is the closest proxy for
+  // capture time; it can reflect a copy, so it is used only as a fallback.
+  private static DateTime? FileTimestampFallback(string path)
+  {
+    try
+    {
+      var write = File.GetLastWriteTime(path);
+      var create = File.GetCreationTime(path);
+      var earliest = write < create ? write : create;
+      return earliest.Year > 1 ? earliest : (DateTime?)null;
+    }
+    catch
+    {
+      return null;
     }
   }
 
@@ -259,35 +304,43 @@ public class LocalImageInfo : ImageInfo
       int pixel_width = bitmap.Width;
       int pixel_height = bitmap.Height;
 
-      string finfoname = Path.ChangeExtension(_name, "finfo");
-      if (File.Exists(finfoname))
+      // Read any existing sidecar up front. A non-null Faces array (even an
+      // empty one — meaning "detected, none found") is an authoritative cache
+      // and we skip detection. A missing Faces array means faces were never
+      // computed, or were invalidated after an orientation change in .finfo
+      // (tools/orientation clears Faces so we re-detect on the rotated image).
+      FinfoData existing = null;
+      try
       {
         // IFinfoStore swallows JSON errors and returns null, but any
-        // exception escaping from here propagates out of the bitmap
-        // getter and the photo disappears from the slideshow — guard it.
-        try
-        {
-          FinfoData finfo = _finfoStore.Read(finfoname);
+        // exception escaping from here propagates out of the bitmap getter
+        // and the photo disappears from the slideshow — guard it.
+        existing = _finfoStore.Read(_name);
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "Failed to load cached .finfo for {Image}", _name);
+      }
 
-          if (finfo?.Faces != null && finfo.Faces.Length != 0)
+      if (existing != null)
+      {
+        _placeName = existing.PlaceName;
+        if (existing.Latitude != null) _latitude = existing.Latitude;
+        if (existing.Longitude != null) _longitude = existing.Longitude;
+
+        if (existing.Faces != null)
+        {
+          if (existing.Faces.Length != 0)
           {
             _faces = new List<PointF>();
-            foreach (var f in finfo.Faces)
+            foreach (var f in existing.Faces)
               _faces.Add(new PointF((float)((f.Right + f.Left) * dmult / 2.0 - pixel_width / 2.0),
                                     (float)((f.Top + f.Bottom) * dmult / 2.0 - pixel_height / 2.0)));
           }
 
-          _placeName = finfo?.PlaceName;
-          if (finfo?.Latitude != null) _latitude = finfo.Latitude;
-          if (finfo?.Longitude != null) _longitude = finfo.Longitude;
+          _processed = true;
+          return;
         }
-        catch (Exception ex)
-        {
-          Log.Error(ex, "Failed to load cached .finfo for {Image}", _name);
-        }
-
-        _processed = true;
-        return;
       }
 
       System.Drawing.Bitmap b = new System.Drawing.Bitmap((int)(pixel_width / dmult), (int)(pixel_height / dmult), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -305,15 +358,17 @@ public class LocalImageInfo : ImageInfo
             ? _faceDetector.Detect(b)
             : Array.Empty<System.Drawing.Rectangle>();
 
-          FinfoData finfo = new FinfoData
-          {
-            Faces = faces.ToArray(),
-            Latitude = _latitude,
-            Longitude = _longitude,
-            PlaceName = _placeName
-          };
+          // Merge into the existing sidecar (if any) so an Orientation set by
+          // tools/orientation, plus geocoding flags / Nominatim data, survive
+          // the face re-detection. Only Faces and freshly-read EXIF geo are
+          // (re)written here.
+          FinfoData finfo = existing ?? new FinfoData();
+          finfo.Faces = faces.ToArray();
+          finfo.Latitude ??= _latitude;
+          finfo.Longitude ??= _longitude;
+          finfo.PlaceName ??= _placeName;
 
-          _finfoStore.Write(finfoname, finfo);
+          _finfoStore.Write(_name, finfo);
 
           if (faces.Count != 0)
           {
@@ -337,8 +392,7 @@ public class LocalImageInfo : ImageInfo
               {
                 var result = await geocoder.ReverseGeocodeAsync(lat, lon);
 
-                string fname = Path.ChangeExtension(imgName, "finfo");
-                var data = finfoStore.Read(fname);
+                var data = finfoStore.Read(imgName);
                 if (data != null)
                 {
                   data.GeocodingAttempted = true;
@@ -351,7 +405,7 @@ public class LocalImageInfo : ImageInfo
                     data.PlaceName = result.PlaceName;
                     data.NominatimData = result.FullResponse;
                   }
-                  finfoStore.Write(fname, data);
+                  finfoStore.Write(imgName, data);
                 }
               }
               catch (Exception ex)

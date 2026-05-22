@@ -27,6 +27,12 @@ namespace PictureSlideshowScreensaver.ViewModels
     [ObservableProperty]
     private string _imageFolder = "";
 
+    // Semicolon-separated, positionally paired with ImageFolder. An empty entry
+    // keeps that photo folder's .finfo next to the photos; a path stores them
+    // (mirrored) only under that folder — for read-only photo libraries.
+    [ObservableProperty]
+    private string _finfoFolder = "";
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IntervalText))]
     private double _interval = 5;
@@ -65,6 +71,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         if (key != null)
         {
           ImageFolder = (string)key.GetValue("ImageFolder") ?? "";
+          FinfoFolder = (string)key.GetValue("FinfoFolder") ?? "";
 
           if (double.TryParse((string)key.GetValue("Interval"), NumberStyles.Float, CultureInfo.InvariantCulture, out double iv))
             Interval = iv;
@@ -104,9 +111,29 @@ namespace PictureSlideshowScreensaver.ViewModels
         return;
       }
 
+      // Each non-empty finfo entry must be a usable directory; create it now so
+      // the store can write there. Empty entries mean "next to the photo".
+      foreach (var entry in (FinfoFolder ?? "").Split(';'))
+      {
+        var path = entry.Trim();
+        if (path.Length == 0)
+          continue;
+
+        try
+        {
+          Directory.CreateDirectory(path);
+        }
+        catch (Exception ex)
+        {
+          ShowError?.Invoke($"Cannot use finfo folder \"{path}\": {ex.Message}");
+          return;
+        }
+      }
+
       using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
       {
         key.SetValue("ImageFolder", ImageFolder);
+        key.SetValue("FinfoFolder", FinfoFolder ?? "");
         key.SetValue("Interval", Interval.ToString(CultureInfo.InvariantCulture));
         if (!string.IsNullOrEmpty(SelectedProvider))
           key.SetValue("WeatherProvider", SelectedProvider);
@@ -124,6 +151,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     }
 
     partial void OnImageFolderChanged(string value) => MarkDirty();
+    partial void OnFinfoFolderChanged(string value) => MarkDirty();
     partial void OnIntervalChanged(double value) => MarkDirty();
     partial void OnSelectedProviderChanged(string value) => MarkDirty();
 

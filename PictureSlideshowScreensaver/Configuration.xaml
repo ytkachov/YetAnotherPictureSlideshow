@@ -1,16 +1,18 @@
 ﻿<Window x:Class="PictureSlideshowScreensaver.Configuration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Yet another picture slideshow - Configuration" Height="300" Width="599" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Closing="Window_Closing" ResizeMode="NoResize" Background="Silver">
+        Title="Yet another picture slideshow - Configuration" Height="360" Width="599" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Closing="Window_Closing" ResizeMode="NoResize" Background="Silver">
     <Grid>
         <Label Content="Choose Image folder:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="lblTitleFolder" VerticalAlignment="Top" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="21,46,0,0" Name="txtFolder" VerticalAlignment="Top" Width="456" Text="{Binding ImageFolder, UpdateSourceTrigger=PropertyChanged}" />
         <Button Content="Browse" Height="23" Margin="483,46,12,0" Name="bBrowse" VerticalAlignment="Top" Command="{Binding BrowseCommand}" />
-        <Label Content="Choose Interval:" Height="28" HorizontalAlignment="Left" Margin="12,75,0,0" Name="lblTitleInterval" VerticalAlignment="Top" />
-        <Label Content="{Binding IntervalText}" Height="28" HorizontalAlignment="Left" Margin="117,75,0,0" Name="lblInterval" VerticalAlignment="Top" />
-        <Slider Height="23" Margin="21,109,12,0" Name="slideInterval" VerticalAlignment="Top" Minimum="3" Maximum="20" Value="{Binding Interval}" IsSnapToTickEnabled="True" />
-        <Label Content="Weather source:" Height="28" HorizontalAlignment="Left" Margin="12,142,0,0" Name="lblTitleWeather" VerticalAlignment="Top" />
-        <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,176,0,0" Name="cbWeatherProvider" VerticalAlignment="Top" Width="456"
+        <Label Content="finfo folder (optional; ';'-separated, paired with image folders):" Height="28" HorizontalAlignment="Left" Margin="12,75,0,0" Name="lblTitleFinfo" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="21,103,0,0" Name="txtFinfoFolder" VerticalAlignment="Top" Width="556" Text="{Binding FinfoFolder, UpdateSourceTrigger=PropertyChanged}" />
+        <Label Content="Choose Interval:" Height="28" HorizontalAlignment="Left" Margin="12,135,0,0" Name="lblTitleInterval" VerticalAlignment="Top" />
+        <Label Content="{Binding IntervalText}" Height="28" HorizontalAlignment="Left" Margin="117,135,0,0" Name="lblInterval" VerticalAlignment="Top" />
+        <Slider Height="23" Margin="21,169,12,0" Name="slideInterval" VerticalAlignment="Top" Minimum="3" Maximum="20" Value="{Binding Interval}" IsSnapToTickEnabled="True" />
+        <Label Content="Weather source:" Height="28" HorizontalAlignment="Left" Margin="12,202,0,0" Name="lblTitleWeather" VerticalAlignment="Top" />
+        <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,236,0,0" Name="cbWeatherProvider" VerticalAlignment="Top" Width="456"
                   ItemsSource="{Binding WeatherProviders}" SelectedValue="{Binding SelectedProvider}" IsEnabled="{Binding ProviderSelectionEnabled}"
                   DisplayMemberPath="DisplayName" SelectedValuePath="Name" />
         <Button Content="Save" HorizontalAlignment="Left" Margin="12,0,0,10" Name="bSave" Width="93" Command="{Binding SaveCommand}" Height="41" VerticalAlignment="Bottom" />
