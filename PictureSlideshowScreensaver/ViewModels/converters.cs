@@ -35,4 +35,22 @@ namespace PictureSlideshowScreensaver.ViewModels
       return Binding.DoNothing;
     }
   }
+
+  /// <summary>
+  /// Collapses a control when its bound string is null or empty — used to
+  /// hide the rotation-indicator slot in the top-right photo overlay when
+  /// the current photo has no non-trivial orientation.
+  /// </summary>
+  internal sealed class StringToVisibilityConverter : IValueConverter
+  {
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      return string.IsNullOrEmpty(value as string) ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+      return Binding.DoNothing;
+    }
+  }
 }

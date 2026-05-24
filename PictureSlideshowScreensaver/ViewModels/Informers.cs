@@ -21,6 +21,7 @@ namespace informers
   {
     private string _faces_found = "";
     private string _date_taken = "21/12/1997";
+    private string _rotation_glyph = "";
 
     public string PhotoDescription { get { return _date_taken; } set { _date_taken = value; RaisePropertyChanged(); } }
     public string FacesFound { get { return _faces_found; } }
@@ -31,6 +32,26 @@ namespace informers
           _faces_found += "\u263B";
 
         RaisePropertyChanged("FacesFound");
+    }
+
+    /// <summary>
+    /// Single-glyph hint shown to the LEFT of <see cref="FacesFound"/> when the
+    /// current photo's stored pixels are rotated relative to display upright.
+    /// Empty string = no rotation (or a pure flip, which we deliberately skip);
+    /// the XAML cell collapses via StringToVisibilityConverter.
+    /// </summary>
+    public string RotationGlyph { get { return _rotation_glyph; } }
+
+    public void SetRotation(System.Drawing.RotateFlipType rf)
+    {
+      _rotation_glyph = rf switch
+      {
+        System.Drawing.RotateFlipType.Rotate90FlipNone  => "\u21BB",          // \u21BB  EXIF 6 (viewer rotates 90 CW)
+        System.Drawing.RotateFlipType.Rotate270FlipNone => "\u21BA",          // \u21BA  EXIF 8 (viewer rotates 90 CCW)
+        System.Drawing.RotateFlipType.Rotate180FlipNone => "\u21BB\u21BB",    // \u21BB\u21BB EXIF 3 (180)
+        _ => "",                                                              // Normal / flips: no indicator
+      };
+      RaisePropertyChanged(nameof(RotationGlyph));
     }
   }
 

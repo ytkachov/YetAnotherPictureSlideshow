@@ -224,6 +224,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         }
 
         PhotoProperties.SetFacesFound(nextphoto.accent_count);
+        PhotoProperties.SetRotation(nextphoto.orientation);
 
         // First real photo on screen — drop the scanning overlay.
         if (IsScanning)
