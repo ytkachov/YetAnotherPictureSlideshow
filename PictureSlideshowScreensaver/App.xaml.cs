@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PictureSlideshowScreensaver.Composition;
@@ -27,6 +29,7 @@ namespace PictureSlideshowScreensaver
       // any failure during startup or before the user enables WriteLog
       // disappears into Serilog's no-op SilentLogger.
       ConfigureFallbackLogger();
+      HookGlobalExceptionHandlers();
 
       // Build the DI host up front so command-line modes (/c, /s) can pull
       // the window and view model out of the container rather than newing
@@ -91,6 +94,40 @@ namespace PictureSlideshowScreensaver
       }
 
       base.OnExit(e);
+    }
+
+    // Three sinks for "exceptions that nobody caught", in order of how
+    // they reach us. Without these, a bad photo / weather provider hiccup
+    // can kill the screensaver silently on an appliance that nobody is
+    // watching. We keep the dispatcher exception swallowed (Handled=true)
+    // because the slideshow is meant to run unattended for days; an
+    // unhandled UI-thread exception that we log + dismiss is strictly
+    // better than process death. The AppDomain handler can't truly stop
+    // termination; it just buys a chance to flush.
+    private static void HookGlobalExceptionHandlers()
+    {
+      Current.DispatcherUnhandledException += (sender, args) =>
+      {
+        Log.Error(args.Exception, "Unhandled dispatcher exception");
+        args.Handled = true;
+      };
+
+      AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+      {
+        var ex = args.ExceptionObject as Exception;
+        Log.Fatal(ex, "Unhandled AppDomain exception (terminating={Terminating})", args.IsTerminating);
+        if (args.IsTerminating)
+          Log.CloseAndFlush();
+      };
+
+      // Fires when a faulted Task is GC'd without anyone observing its
+      // Exception. Common in fire-and-forget Task.Run paths — prefetch,
+      // geocoding, the scanner — none of which we want to crash on.
+      TaskScheduler.UnobservedTaskException += (sender, args) =>
+      {
+        Log.Warning(args.Exception, "Unobserved task exception");
+        args.SetObserved();
+      };
     }
 
     private static void ConfigureFallbackLogger()
