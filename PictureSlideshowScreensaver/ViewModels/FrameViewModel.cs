@@ -94,9 +94,9 @@ namespace PictureSlideshowScreensaver.ViewModels
       _onVideoEnded = new SimpleCommand((video) => StartImage());
     }
 
-    public void Activate(ImageInfo nextphoto, TimeSpan fadetime, TimeSpan movetime, bool accented)
+    public void Activate(ImageInfo nextphoto, TimeSpan fadetime, TimeSpan movetime, bool accented, BitmapImage prebuiltBitmap = null)
     {
-      SetImage(nextphoto, movetime, accented);
+      SetImage(nextphoto, movetime, accented, prebuiltBitmap);
 
       if (!nextphoto.has_accompanying_video)
       {
@@ -130,9 +130,13 @@ namespace PictureSlideshowScreensaver.ViewModels
       IsActive = false;
     }
 
-    private void SetImage(ImageInfo nextphoto, TimeSpan movetime, bool accented)
+    // prebuiltBitmap is supplied when ScreensaverViewModel pre-decoded this
+    // photo's full pipeline (bitmap + orientation + faces) during the prior
+    // photo's display. Reusing it avoids a second JPEG decode on the UI
+    // thread, which is the whole point of the prefetch path.
+    private void SetImage(ImageInfo nextphoto, TimeSpan movetime, bool accented, BitmapImage prebuiltBitmap = null)
     {
-      BitmapImage bmp_img = nextphoto.bitmap;
+      BitmapImage bmp_img = prebuiltBitmap ?? nextphoto.bitmap;
 
       ImageStretch = Stretch.Uniform;
       if (bmp_img.Width > bmp_img.Height * 1.2)

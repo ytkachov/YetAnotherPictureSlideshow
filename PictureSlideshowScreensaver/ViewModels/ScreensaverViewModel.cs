@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -32,6 +33,15 @@ namespace PictureSlideshowScreensaver.ViewModels
     private int _prevTime = 0;
     private bool _isNightTime = false;
     private bool _disposed;
+
+    // Prefetch: the next photo's full bitmap pipeline (decode + ONNX
+    // orientation + face detection) runs on a worker during the CURRENT
+    // photo's display, so the dispatcher tick that switches photos no
+    // longer blocks on it. Buffer is exactly one frame deep — enough to
+    // hide the latency, cheap on memory. Only ever touched from the UI
+    // thread: NextImage takes (Interlocked.Exchange), ActivatePhoto starts.
+    private Task<PrefetchedPhoto> _prefetchTask;
+    private CancellationTokenSource _prefetchCts;
 
     // Scan-overlay state. The "pending" fields are written on the scan thread
     // and read back when the throttled dispatcher callback fires; the public
@@ -75,6 +85,7 @@ namespace PictureSlideshowScreensaver.ViewModels
       _images = images;
       _clock = clock;
       _dispatcher = Dispatcher.CurrentDispatcher;
+      _prefetchCts = new CancellationTokenSource();
 
       // Subscribe before init() kicks off the background scan so we don't miss
       // the early progress events on a slow share.
@@ -108,6 +119,18 @@ namespace PictureSlideshowScreensaver.ViewModels
         _switchImage.Tick -= fade_Tick;
         _switchImage = null;
       }
+
+      // Cancel any in-flight prefetch. The bitmap pipeline has no
+      // cancellation hooks, so a task already deep in JPEG decode / ONNX
+      // inference will run to completion — its result is just discarded
+      // and GC'd. The CTS lets the next prefetch check fail fast.
+      if (_prefetchCts != null)
+      {
+        _prefetchCts.Cancel();
+        _prefetchCts.Dispose();
+        _prefetchCts = null;
+      }
+      _prefetchTask = null;
     }
 
     // Fires on the scan thread, potentially once per file. Stash the latest
@@ -167,14 +190,30 @@ namespace PictureSlideshowScreensaver.ViewModels
 
       _prevTime = hour;
 
+      // Prefer the prefetched frame: its EXIF, JPEG decode, ONNX orientation
+      // and face detection all already ran in the background during the
+      // previous photo's display. Interlocked.Exchange so we only consume it
+      // once — the next ActivatePhoto will start a new prefetch.
+      var pending = Interlocked.Exchange(ref _prefetchTask, null);
+      if (pending != null)
+      {
+        pending.ContinueWith(ConsumePrefetched, TaskContinuationOptions.ExecuteSynchronously);
+        return;
+      }
+
+      LoadFreshPhoto();
+    }
+
+    // Fallback when no prefetch is sitting in the buffer — the very first
+    // photo after startup, or a tick that fired before the previous
+    // prefetch could complete (rare; the bitmap pipeline takes ~1 s and
+    // the slideshow interval is many seconds).
+    private void LoadFreshPhoto()
+    {
       ImageInfo nextphoto = _images.GetNext();
       if (nextphoto == null)
         return;
 
-      // EXIF (orientation / date / GPS) is read lazily and off the UI thread —
-      // on a network share it can pull the whole file. The orientation and the
-      // on-screen date caption are both consumed during activation, so we wait
-      // for the read before marshalling the activation back to the dispatcher.
       Task.Run(() =>
       {
         try
@@ -189,11 +228,37 @@ namespace PictureSlideshowScreensaver.ViewModels
         if (_disposed)
           return;
 
-        _dispatcher.BeginInvoke(new Action(() => ActivatePhoto(nextphoto)));
+        _dispatcher.BeginInvoke(new Action(() => ActivatePhoto(nextphoto, null)));
       });
     }
 
-    private void ActivatePhoto(ImageInfo nextphoto)
+    // Runs on whichever thread completed the prefetch task (worker most of
+    // the time, UI on the rare synchronous completion). Marshal the actual
+    // activation back to the dispatcher.
+    private void ConsumePrefetched(Task<PrefetchedPhoto> task)
+    {
+      if (_disposed)
+        return;
+
+      PrefetchedPhoto result = null;
+      if (task.Status == TaskStatus.RanToCompletion)
+        result = task.Result;
+      else if (task.Exception != null)
+        Log.Error(task.Exception, "Prefetch failed");
+
+      if (result == null)
+      {
+        // Prefetch produced nothing (cancelled, faulted, or GetNext returned
+        // null because the scan hadn't finished). Try a fresh load on the
+        // UI thread's schedule.
+        _dispatcher.BeginInvoke(new Action(LoadFreshPhoto));
+        return;
+      }
+
+      _dispatcher.BeginInvoke(new Action(() => ActivatePhoto(result.Info, result.Bitmap)));
+    }
+
+    private void ActivatePhoto(ImageInfo nextphoto, BitmapImage prebuiltBitmap)
     {
       if (_disposed)
         return;
@@ -214,12 +279,12 @@ namespace PictureSlideshowScreensaver.ViewModels
 
         if (!FirstImage.IsActive)
         {
-          FirstImage.Activate(nextphoto, ft, mt, acc);
+          FirstImage.Activate(nextphoto, ft, mt, acc, prebuiltBitmap);
           SecondImage.Deactivate(ft);
         }
         else
         {
-          SecondImage.Activate(nextphoto, ft, mt, acc);
+          SecondImage.Activate(nextphoto, ft, mt, acc, prebuiltBitmap);
           FirstImage.Deactivate(ft);
         }
 
@@ -234,6 +299,74 @@ namespace PictureSlideshowScreensaver.ViewModels
       {
         Log.Error(ex, "NextImage failed for {Desc}", nextphoto?.description);
       }
+      finally
+      {
+        // Kick off preparation of the NEXT photo NOW, while this one is
+        // being shown. Done in finally so an exception above still arms
+        // the prefetch — otherwise a single bad photo would silently
+        // disable prefetch for the rest of the session.
+        StartPrefetch();
+      }
+    }
+
+    // Schedules the next photo's pipeline (GetNext → EnsureMetadataLoaded →
+    // bitmap getter, which covers JPEG decode + ONNX orientation + face
+    // detection) on a worker thread. The bitmap getter freezes its result,
+    // so the returned BitmapImage is safe to hand to the UI thread.
+    //
+    // Only one prefetch in flight at a time — the buffer is one frame deep.
+    // Called only from the UI thread (ActivatePhoto), so the _prefetchTask
+    // assignment doesn't need interlocking on the producer side; NextImage's
+    // Interlocked.Exchange handles the consumer side.
+    private void StartPrefetch()
+    {
+      if (_disposed)
+        return;
+      if (_prefetchTask != null)
+        return;
+
+      var ct = _prefetchCts.Token;
+      _prefetchTask = Task.Run<PrefetchedPhoto>(() =>
+      {
+        try
+        {
+          ct.ThrowIfCancellationRequested();
+          var photo = _images.GetNext();
+          if (photo == null)
+            return null;
+
+          photo.EnsureMetadataLoaded();
+          ct.ThrowIfCancellationRequested();
+
+          // This is the heavy bit: triggers the JPEG decode, the ONNX
+          // orientation detection (only when needed), and Haar face
+          // detection. All previously ran on the UI thread inside SetImage;
+          // doing it here is the whole point of the prefetch.
+          var bmp = photo.bitmap;
+          return new PrefetchedPhoto(photo, bmp);
+        }
+        catch (OperationCanceledException)
+        {
+          return null;
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "Prefetch pipeline failed");
+          return null;
+        }
+      }, ct);
+    }
+
+    private sealed class PrefetchedPhoto
+    {
+      public PrefetchedPhoto(ImageInfo info, BitmapImage bitmap)
+      {
+        Info = info;
+        Bitmap = bitmap;
+      }
+
+      public ImageInfo Info { get; }
+      public BitmapImage Bitmap { get; }
     }
   }
 }
