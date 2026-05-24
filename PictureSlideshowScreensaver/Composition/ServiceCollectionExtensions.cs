@@ -7,6 +7,7 @@ using PictureSlideshowScreensaver.ViewModels;
 using Yaps.Core.Abstractions;
 using Yaps.Infrastructure;
 using Yaps.Infrastructure.Faces;
+using Yaps.Infrastructure.Images;
 using Yaps.Infrastructure.Orientation;
 using Yaps.Infrastructure.Settings;
 using Yaps.Infrastructure.Weather;
@@ -52,6 +53,13 @@ namespace PictureSlideshowScreensaver.Composition
                 var onnxPath = Path.Combine(AppContext.BaseDirectory, "recognition", "orientation.onnx");
                 return new OnnxOrientationDetector(onnxPath);
             });
+
+            // Stage 4 split: the bitmap pipeline (decode + ONNX orientation +
+            // Haar face detection + .finfo persist) lives in the loader so
+            // LocalImageInfo can stay a thin wrapper over ImageMetadata.
+            // Stateless across calls — see WpfImageBitmapLoader's class doc
+            // for why concurrent access is safe by design.
+            services.AddSingleton<IImageBitmapLoader, WpfImageBitmapLoader>();
 
             // Weather subsystem. Options are populated from Settings using
             // the post-configure overload so both reads happen against a

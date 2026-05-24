@@ -8,15 +8,13 @@ using Serilog;
 using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
-using Yaps.Infrastructure.Faces;
-using Yaps.Infrastructure.Orientation;
+using Yaps.Infrastructure.Images;
 using PictureSlideshowScreensaver.Models;
 
 class LocalImages : ImagesProvider
 {
   private readonly IGeocoder _geocoder;
-  private readonly IFaceDetector _faceDetector;
-  private readonly IOrientationDetector _orientationDetector;
+  private readonly IImageBitmapLoader _loader;
   private readonly IFinfoStore _finfoStore;
   private readonly Settings _settings;
 
@@ -39,11 +37,10 @@ class LocalImages : ImagesProvider
 
   private int _shownImages;
 
-  public LocalImages(IGeocoder geocoder, IFaceDetector faceDetector, IOrientationDetector orientationDetector, IFinfoStore finfoStore, Settings settings)
+  public LocalImages(IGeocoder geocoder, IImageBitmapLoader loader, IFinfoStore finfoStore, Settings settings)
   {
     _geocoder = geocoder;
-    _faceDetector = faceDetector;
-    _orientationDetector = orientationDetector;
+    _loader = loader;
     _finfoStore = finfoStore;
     _settings = settings;
   }
@@ -201,7 +198,7 @@ class LocalImages : ImagesProvider
       // the photo is shown — see EnsureMetadataLoaded — so the scan no longer
       // pulls every file over the network.
       string movfile = Path.ChangeExtension(name, "mov");
-      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _faceDetector, _orientationDetector, _finfoStore);
+      LocalImageInfo ii = new LocalImageInfo(name, File.Exists(movfile) ? movfile : null, _geocoder, _loader, _finfoStore);
       _imagesTmp.Add(ii);
     }
   }

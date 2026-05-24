@@ -6,6 +6,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Yaps.Infrastructure</RootNamespace>
     <AssemblyName>Yaps.Infrastructure</AssemblyName>
+    <!-- The Stage 4 image-bitmap loader produces frozen
+         System.Windows.Media.Imaging.BitmapImage instances. PresentationCore
+         and WindowsBase are the minimum WPF assemblies needed; UseWPF would
+         also pull in PresentationFramework which we don't need here. -->
+    <UseWpf>true</UseWpf>
   </PropertyGroup>
 
   <ItemGroup>
