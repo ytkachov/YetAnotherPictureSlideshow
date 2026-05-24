@@ -347,6 +347,35 @@ def _pop_key_ci(data: dict, name: str) -> None:
         data.pop(k, None)
 
 
+def write_finfo_fields(finfo_path: Path, *, orientation: int | None = None,
+                       attempted: bool | None = None) -> None:
+    """Merge `Orientation` and/or `OrientationDetectionAttempted` into the
+    sidecar, preserving everything else. Mirror of the per-field logic in
+    `write_finfo_orientation`, but lets the caller choose what to write — used
+    by `--mark-attempted` to record that the model was evaluated on a photo
+    without necessarily assigning a rotation.
+    """
+    data = read_finfo(finfo_path)
+    old = existing_finfo_orientation(data)
+    if isinstance(data, list):
+        data = {"SchemaVersion": FINFO_SCHEMA_VERSION, "Faces": data}
+    elif not isinstance(data, dict):
+        data = {"SchemaVersion": FINFO_SCHEMA_VERSION}
+
+    if orientation is not None:
+        if old != orientation:
+            _pop_key_ci(data, "Faces")
+        data["Orientation"] = orientation
+    if attempted is not None:
+        data["OrientationDetectionAttempted"] = attempted
+
+    data.setdefault("SchemaVersion", FINFO_SCHEMA_VERSION)
+    finfo_path.parent.mkdir(parents=True, exist_ok=True)
+    finfo_path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+
 def write_finfo_orientation(finfo_path: Path, value: int) -> None:
     """Merge the Orientation code into the sidecar, preserving everything else.
 
@@ -603,7 +632,8 @@ def report_from_csv(args: argparse.Namespace) -> int:
 
     codes = _parse_codes(args.codes)
     make_html = bool(args.html)
-    resolver = FinfoResolver.from_registry() if args.apply else None
+    need_resolver = args.apply or args.mark_attempted
+    resolver = FinfoResolver.from_registry() if need_resolver else None
 
     thumbs_dir = None
     if make_html:
@@ -620,23 +650,25 @@ def report_from_csv(args: argparse.Namespace) -> int:
 
     actions = []
     if args.apply:
-        actions.append("writing .finfo")
+        actions.append(f"writing Orientation for codes {sorted(codes)}")
+    if args.mark_attempted:
+        actions.append("marking all rows as attempted")
     if make_html:
-        actions.append("building thumbnails")
-    print(f"{len(selected)} of {len(rows)} rows match codes {sorted(codes)} "
-          f"({', '.join(actions) or 'dry run'}; no model)...")
+        actions.append(f"building thumbnails for codes {sorted(codes)}")
+    print(f"{len(rows)} rows in CSV, {len(selected)} match codes {sorted(codes)} "
+          f"({'; '.join(actions) or 'dry run'}; no model).")
 
-    entries, errors, applied = [], 0, 0
-    for i, r in enumerate(selected, 1):
-        if i % 100 == 0:
-            print(f"  ...{i}/{len(selected)}", file=sys.stderr)
-        code = int(r["orientation_code"])
-        path = Path(r["path"])
-        try:
-            if args.apply:
-                write_finfo_orientation(resolver.path_for(path), code)
-                applied += 1
-            if make_html:
+    entries, errors, applied, marked = [], 0, 0, 0
+
+    # HTML pass: per-thumbnail loop over the code-filtered subset (the only
+    # cells worth showing in the report).
+    if make_html:
+        for i, r in enumerate(selected, 1):
+            if i % 100 == 0:
+                print(f"  thumbs: ...{i}/{len(selected)}", file=sys.stderr)
+            code = int(r["orientation_code"])
+            path = Path(r["path"])
+            try:
                 rgb = load_rgb(path)
                 thumb_name = f"{i:05d}_{_safe_stem(path)}.jpg"
                 _save_thumb(rgb, CODE_TO_CCW_CORRECTION.get(code, 0), thumbs_dir / thumb_name)
@@ -648,9 +680,46 @@ def report_from_csv(args: argparse.Namespace) -> int:
                     "conf": r.get("confidence", ""),
                     "changed": True,
                 })
-        except Exception as exc:
-            errors += 1
-            print(f"  skip {path}: {exc}", file=sys.stderr)
+            except Exception as exc:
+                errors += 1
+                print(f"  thumb skip {path}: {exc}", file=sys.stderr)
+
+    # Write pass: ONE loop over every non-error row. Each row is touched at
+    # most once, regardless of whether it gets Orientation, the attempted flag,
+    # or both. Skips rows the model never evaluated (action starts with "error").
+    if need_resolver:
+        selected_paths = {r["path"] for r in selected}
+        for i, r in enumerate(rows, 1):
+            if i % 500 == 0:
+                print(f"  writing: ...{i}/{len(rows)}", file=sys.stderr)
+            action = r.get("action") or ""
+            if action.startswith("error"):
+                continue
+
+            path = Path(r["path"])
+            code_str = (r.get("orientation_code") or "").strip()
+            code = int(code_str) if code_str.isdigit() else None
+            do_orientation = args.apply and code is not None and code in codes
+            do_attempted = args.mark_attempted or do_orientation
+
+            if not (do_orientation or do_attempted):
+                continue
+
+            try:
+                write_finfo_fields(
+                    resolver.path_for(path),
+                    orientation=(code if do_orientation else None),
+                    attempted=(True if do_attempted else None),
+                )
+                if do_orientation:
+                    applied += 1
+                if do_attempted and not do_orientation:
+                    marked += 1
+                elif do_attempted and do_orientation:
+                    marked += 1  # also marked
+            except Exception as exc:
+                errors += 1
+                print(f"  write skip {path}: {exc}", file=sys.stderr)
 
     counts = {"flagged": len(selected), "applied": applied, "ok_upright": 0,
               "skipped_low_conf": 0, "skipped_excluded": 0,
@@ -658,8 +727,7 @@ def report_from_csv(args: argparse.Namespace) -> int:
     if make_html:
         _write_html(html_path, entries, counts, f"{csv_path.name} - codes {sorted(codes)}")
         print(f"HTML report: {html_path}")
-    print(f"\nDone. codes {sorted(codes)}: {len(selected)} selected, "
-          f"applied {applied}, errors {errors}")
+    print(f"\nDone. Orientation written: {applied}, attempted-flag set: {marked}, errors: {errors}")
     return 0
 
 
@@ -800,6 +868,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--from-csv", metavar="FILE", dest="from_csv",
                    help="Rebuild an HTML report from a previous CSV, filtered by "
                         "--codes, WITHOUT re-running the model. Pair with --html.")
+    p.add_argument("--mark-attempted", action="store_true", dest="mark_attempted",
+                   help="With --from-csv: write OrientationDetectionAttempted=true "
+                        "into EVERY non-error row's .finfo so subsequent "
+                        "OrientationTagger / live-screensaver runs skip them.")
     return p
 
 

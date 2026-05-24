@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Windows-only because YAPS.Infrastructure (OpenCvSharp, System.Drawing,
+         OnnxRuntime CPU on Windows) is the natural home for the detector. -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>OrientationTagger</RootNamespace>
+    <AssemblyName>OrientationTagger</AssemblyName>
+    <Nullable>disable</Nullable>
+    <AssemblyTitle>OrientationTagger</AssemblyTitle>
+    <Description>Detects sideways photos and records the corrected EXIF orientation code in their .finfo sidecars.</Description>
+    <Product>OrientationTagger</Product>
+    <Copyright>Copyright © 2026</Copyright>
+    <Version>1.0.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YAPS.Core\YAPS.Core.csproj" />
+    <ProjectReference Include="..\YAPS.Infrastructure\YAPS.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- OnnxRuntime CPU native bits must land in publish output. The managed
+         API lives in YAPS.Infrastructure; the runtime package belongs at the
+         deployment leaf so the native DLLs are copied. -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+    <!-- OpenCvSharpExtern.dll likewise — preprocessing uses OpenCvSharp and
+         the native binding lives in this runtime package. -->
+    <PackageReference Include="OpenCvSharp4.runtime.win" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The ONNX model lives next to the Python tool that produced it; link it
+         into the output as recognition/orientation.onnx, mirroring how the
+         screensaver carries recognition/haarcascade_*.xml. -->
+    <Content Include="..\tools\orientation\orientation.onnx"
+             Link="recognition\orientation.onnx"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

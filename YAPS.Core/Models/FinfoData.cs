@@ -28,11 +28,22 @@ public class FinfoData
     /// </summary>
     public int? Orientation { get; set; }
 
+    /// <summary>
+    /// Set by an orientation-detection pass (OrientationTagger / live
+    /// screensaver) to mark that the model was already run on this photo,
+    /// regardless of whether it produced an actionable rotation. Mirrors
+    /// <see cref="GeocodingAttempted"/>: a subsequent pass sees the flag and
+    /// skips re-detection. Lets us avoid re-running an 87 MB ONNX model
+    /// against the same photo on every show.
+    /// </summary>
+    public bool OrientationDetectionAttempted { get; set; }
+
     // Bumped whenever the on-disk schema breaks the previous shape. Legacy
     // files written by Newtonsoft (no SchemaVersion field) deserialise as
-    // null which is treated as "unknown / version 0". v2 added Orientation
-    // (additive — older files simply lack it and fall back to EXIF).
-    private const int CurrentSchemaVersion = 2;
+    // null which is treated as "unknown / version 0". v2 added Orientation,
+    // v3 added OrientationDetectionAttempted (both additive — older files
+    // simply lack the fields and the detection pass picks them up).
+    private const int CurrentSchemaVersion = 3;
 
     private static readonly JsonSerializerOptions _options = new()
     {
@@ -145,6 +156,10 @@ public class FinfoData
                 case "orientation":
                     if (prop.Value.ValueKind == JsonValueKind.Number && prop.Value.TryGetInt32(out var orient))
                         result.Orientation = orient;
+                    break;
+                case "orientationdetectionattempted":
+                    if (prop.Value.ValueKind is JsonValueKind.True or JsonValueKind.False)
+                        result.OrientationDetectionAttempted = prop.Value.GetBoolean();
                     break;
             }
         }
