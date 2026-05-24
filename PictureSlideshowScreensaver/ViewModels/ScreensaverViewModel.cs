@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using informers;
+using Microsoft.Extensions.DependencyInjection;
 using PictureSlideshowScreensaver.Models;
 using presenters;
 using Serilog;
@@ -23,6 +24,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     private readonly Settings _settings;
     private readonly ImagesProvider _images;
     private readonly IClock _clock;
+    private readonly IServiceProvider _services;
     private readonly Dispatcher _dispatcher;
     private DispatcherTimer _switchImage;
 
@@ -79,11 +81,31 @@ namespace PictureSlideshowScreensaver.ViewModels
     [RelayCommand]
     private static void Exit() => Application.Current.Shutdown();
 
-    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock)
+    // Opens the L-key log viewer. Modal — the slideshow keeps animating
+    // behind it (Topmost on the viewer keeps it visible above the
+    // fullscreen screensaver window). IServiceProvider rather than a
+    // direct LogViewer ctor parameter so each press resolves a fresh
+    // transient instance (re-reads the log file from scratch).
+    [RelayCommand]
+    private void ShowLog()
+    {
+      try
+      {
+        var viewer = _services.GetRequiredService<LogViewer>();
+        viewer.ShowDialog();
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "Failed to open log viewer");
+      }
+    }
+
+    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock, IServiceProvider services)
     {
       _settings = settings;
       _images = images;
       _clock = clock;
+      _services = services;
       _dispatcher = Dispatcher.CurrentDispatcher;
       _prefetchCts = new CancellationTokenSource();
 

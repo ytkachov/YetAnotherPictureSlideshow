@@ -70,6 +70,8 @@ namespace PictureSlideshowScreensaver.Composition
             services.AddTransient<Screensaver>();
             services.AddTransient<ConfigurationViewModel>();
             services.AddTransient<Configuration>();
+            services.AddTransient<LogViewerViewModel>();
+            services.AddTransient<LogViewer>();
 
             return services;
         }
