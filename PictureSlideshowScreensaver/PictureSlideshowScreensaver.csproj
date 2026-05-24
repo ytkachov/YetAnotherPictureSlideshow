@@ -19,6 +19,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="ExifLibNet" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="OpenCvSharp4" />
     <PackageReference Include="OpenCvSharp4.Extensions" />
@@ -44,6 +45,11 @@
     <Content Include="recognition\*.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <!-- ONNX orientation model lives next to the Python tool that produced it;
+         linked here so OrientationTagger and the screensaver share one copy. -->
+    <Content Include="..\tools\orientation\orientation.onnx"
+             Link="recognition\orientation.onnx"
+             CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

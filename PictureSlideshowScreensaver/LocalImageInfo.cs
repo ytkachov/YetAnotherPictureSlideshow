@@ -12,6 +12,7 @@ using Serilog;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
 using Yaps.Infrastructure.Faces;
+using Yaps.Infrastructure.Orientation;
 
 public class LocalImageInfo : ImageInfo
 {
@@ -20,6 +21,10 @@ public class LocalImageInfo : ImageInfo
   internal DateTime? _dateTaken;
   internal int _shown = 0;
   internal UInt16 _orientation = 0;
+  // Mirror of finfo.OrientationDetectionAttempted, populated in ReadExif.
+  // When true the bitmap getter skips the live ONNX detector — the model was
+  // already evaluated for this photo by OrientationTagger or a prior show.
+  private bool _orientationAttempted = false;
 
   internal List<string> _messages = new List<string>();
 
@@ -32,14 +37,22 @@ public class LocalImageInfo : ImageInfo
   internal string _placeName = null;
   private readonly IGeocoder _geocoder;
   private readonly IFaceDetector _faceDetector;
+  private readonly IOrientationDetector _orientationDetector;
   private readonly IFinfoStore _finfoStore;
 
-  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null, IFaceDetector faceDetector = null, IFinfoStore finfoStore = null)
+  // Actionable EXIF codes for live detection — mirrors OrientationTagger's
+  // policy (the model is unreliable on 180° = code 3, so it's recorded as
+  // attempted-but-noop). Confidence floor mirrors the same default.
+  private static readonly HashSet<int> _actionableCodes = new HashSet<int> { 6, 8 };
+  private const double _orientationMinConfidence = 0.5;
+
+  public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null, IFaceDetector faceDetector = null, IOrientationDetector orientationDetector = null, IFinfoStore finfoStore = null)
   {
     _name = nm;
     _video_name = videoname;
     _geocoder = geocoder;
     _faceDetector = faceDetector;
+    _orientationDetector = orientationDetector;
     _finfoStore = finfoStore ?? new FileFinfoStore();
   }
 
@@ -77,6 +90,11 @@ public class LocalImageInfo : ImageInfo
                                 && finfoOrientation is >= 1 and <= 8;
     if (orientationFromFinfo)
       _orientation = (ushort)existing!.Orientation!.Value;
+
+    // Track whether the ONNX orientation model was already run on this photo
+    // (either via OrientationTagger or a prior live show) so the bitmap getter
+    // doesn't re-run it. Set together with the corrected Orientation value.
+    _orientationAttempted = existing?.OrientationDetectionAttempted == true || orientationFromFinfo;
 
     if (existing != null && existing.ExifReadFailed)
       return;
@@ -240,8 +258,18 @@ public class LocalImageInfo : ImageInfo
     {
       BitmapImage bmp_img = new BitmapImage(new Uri(_name));
 
+      // Live orientation detection runs when the photo has no recorded
+      // orientation AND the model wasn't already evaluated for it. After the
+      // backfill (Attempted=true across the library) this only fires on new
+      // photos added since. Decided up front so the fast path stays correct.
+      bool needsOrientationDetection = _orientationDetector != null
+                                       && _orientation == 0
+                                       && !_orientationAttempted;
+
       // Fast path: no rotation needed and face detection already cached.
-      if (orientation == RotateFlipType.RotateNoneFlipNone && _processed)
+      if (!needsOrientationDetection
+          && orientation == RotateFlipType.RotateNoneFlipNone
+          && _processed)
       {
         bmp_img.Freeze();
         return bmp_img;
@@ -257,6 +285,13 @@ public class LocalImageInfo : ImageInfo
         // unmanaged GDI handle is freed even if FindFaces throws.
         using (Bitmap bitmap = new Bitmap(outStream))
         {
+          // Detect on the loaded-but-not-yet-rotated pixels, so the result
+          // matches the standard EXIF orientation contract. Must happen BEFORE
+          // RotateFlip and BEFORE FindFaces (the latter detects faces on the
+          // rotated bitmap and would otherwise cache them in the wrong frame).
+          if (needsOrientationDetection)
+            DetectAndPersistOrientation(bitmap);
+
           bitmap.RotateFlip(orientation);
 
           bmp_img = Bitmap2BitmapImage(bitmap);
@@ -293,6 +328,46 @@ public class LocalImageInfo : ImageInfo
       }
 
       return pt;
+    }
+  }
+
+  // Runs the ONNX orientation detector once for a photo, persists the result
+  // into .finfo (merging so existing fields survive), and sets _orientation
+  // when the prediction is actionable. Mirrors OrientationTagger's policy:
+  // only EXIF codes 6 and 8 with confidence >= 0.5 are applied; everything
+  // else (180 = code 3 / upright / low confidence) is recorded as
+  // attempted-but-noop so the model is never run on this photo again.
+  private void DetectAndPersistOrientation(Bitmap pixels)
+  {
+    try
+    {
+      var result = _orientationDetector.Detect(pixels);
+      bool actionable = _actionableCodes.Contains(result.Code)
+                        && result.Confidence >= _orientationMinConfidence;
+
+      if (actionable)
+        _orientation = (ushort)result.Code;
+      _orientationAttempted = true;
+
+      var data = _finfoStore.Read(_name) ?? new FinfoData();
+      data.OrientationDetectionAttempted = true;
+      if (actionable)
+      {
+        data.Orientation = result.Code;
+        // Any cached faces were detected against the un-rotated frame and
+        // would land in the wrong place once the screensaver rotates the
+        // photo. Drop them; FindFaces will recompute on the rotated bitmap
+        // (and merge back, preserving the new Orientation).
+        data.Faces = null;
+      }
+      _finfoStore.Write(_name, data);
+    }
+    catch (Exception ex)
+    {
+      Log.Error(ex, "Live orientation detection failed for {Image}", _name);
+      // Still mark attempted in-memory so we don't keep trying on every show
+      // of the same photo in this process. The next process start may retry.
+      _orientationAttempted = true;
     }
   }
 

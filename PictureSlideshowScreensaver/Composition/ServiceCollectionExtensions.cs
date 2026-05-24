@@ -7,6 +7,7 @@ using PictureSlideshowScreensaver.ViewModels;
 using Yaps.Core.Abstractions;
 using Yaps.Infrastructure;
 using Yaps.Infrastructure.Faces;
+using Yaps.Infrastructure.Orientation;
 using Yaps.Infrastructure.Settings;
 using Yaps.Infrastructure.Weather;
 
@@ -40,6 +41,16 @@ namespace PictureSlideshowScreensaver.Composition
             {
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, "recognition", "haarcascade_frontalface_alt2.xml");
                 return new OpenCvFaceDetector(xmlPath);
+            });
+
+            // ONNX orientation detector. Same recognition\ folder + linked from
+            // tools/orientation/orientation.onnx by the csproj so utility and
+            // screensaver share a single copy of the 88 MB model file. The
+            // session is reused for the process lifetime; Run is thread-safe.
+            services.AddSingleton<IOrientationDetector>(_ =>
+            {
+                var onnxPath = Path.Combine(AppContext.BaseDirectory, "recognition", "orientation.onnx");
+                return new OnnxOrientationDetector(onnxPath);
             });
 
             // Weather subsystem. Options are populated from Settings using
