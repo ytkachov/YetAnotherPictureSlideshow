@@ -59,7 +59,21 @@ namespace PictureSlideshowScreensaver.Composition
             // LocalImageInfo can stay a thin wrapper over ImageMetadata.
             // Stateless across calls — see WpfImageBitmapLoader's class doc
             // for why concurrent access is safe by design.
-            services.AddSingleton<IImageBitmapLoader, WpfImageBitmapLoader>();
+            //
+            // Stage 6.7b: the primary screen's pixel width is used as the
+            // DecodePixelWidth hint so 24 MP photos shown on a 1080p frame
+            // retain a ~2 MB pixel buffer instead of ~50 MB. Forms.Screen
+            // (rather than SystemParameters) so the value matches what
+            // App.xaml.cs uses to size the screensaver window — same DPI
+            // model, no surprises on multi-monitor.
+            services.AddSingleton<IImageBitmapLoader>(sp =>
+            {
+                var faceDetector = sp.GetRequiredService<IFaceDetector>();
+                var orientationDetector = sp.GetService<IOrientationDetector>();
+                var finfoStore = sp.GetRequiredService<IFinfoStore>();
+                int screenWidth = System.Windows.Forms.Screen.PrimaryScreen?.Bounds.Width ?? 0;
+                return new WpfImageBitmapLoader(faceDetector, orientationDetector, finfoStore, screenWidth);
+            });
 
             // Weather subsystem. Options are populated from Settings using
             // the post-configure overload so both reads happen against a
