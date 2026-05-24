@@ -40,6 +40,14 @@ namespace PictureSlideshowScreensaver.ViewModels
     [ObservableProperty]
     private string _selectedProvider = DefaultWeatherProvider;
 
+    // Stored as the Serilog level name; the ComboBox is populated from
+    // LogLevels. The list deliberately omits Fatal — picking "log only
+    // fatal" silences everything the screensaver actually emits.
+    [ObservableProperty]
+    private string _selectedLogLevel = "Verbose";
+
+    public IReadOnlyList<string> LogLevels { get; } = new[] { "Verbose", "Debug", "Information", "Warning", "Error" };
+
     public string IntervalText => Interval.ToString(CultureInfo.InvariantCulture) + " seconds";
 
     public IReadOnlyList<WeatherProviderDescriptor> WeatherProviders { get; }
@@ -79,6 +87,10 @@ namespace PictureSlideshowScreensaver.ViewModels
           var stored = (string)key.GetValue("WeatherProvider");
           if (!string.IsNullOrEmpty(stored))
             SelectedProvider = stored;
+
+          var storedLevel = (string)key.GetValue("LogLevel");
+          if (!string.IsNullOrEmpty(storedLevel) && LogLevels.Contains(storedLevel))
+            SelectedLogLevel = storedLevel;
         }
 
         // A stored name no longer offered by the registry would leave the
@@ -137,6 +149,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         key.SetValue("Interval", Interval.ToString(CultureInfo.InvariantCulture));
         if (!string.IsNullOrEmpty(SelectedProvider))
           key.SetValue("WeatherProvider", SelectedProvider);
+        key.SetValue("LogLevel", SelectedLogLevel ?? "Verbose");
       }
 
       HasUnsavedChanges = false;
@@ -154,6 +167,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     partial void OnFinfoFolderChanged(string value) => MarkDirty();
     partial void OnIntervalChanged(double value) => MarkDirty();
     partial void OnSelectedProviderChanged(string value) => MarkDirty();
+    partial void OnSelectedLogLevelChanged(string value) => MarkDirty();
 
     private void MarkDirty()
     {

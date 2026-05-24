@@ -31,6 +31,10 @@ namespace PictureSlideshowScreensaver
       ConfigureFallbackLogger();
       HookGlobalExceptionHandlers();
 
+      var mode = e.Args.Length > 0 ? e.Args[0] : "(default)";
+      var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+      Log.Information("Screensaver starting; version {Version}, mode {Mode}", version, mode);
+
       // Build the DI host up front so command-line modes (/c, /s) can pull
       // the window and view model out of the container rather than newing
       // them up by hand. _host.Start() is non-blocking; OnExit takes care

@@ -315,7 +315,10 @@ namespace PictureSlideshowScreensaver.ViewModels
 
         // First real photo on screen — drop the scanning overlay.
         if (IsScanning)
+        {
           IsScanning = false;
+          Log.Information("First photo shown");
+        }
       }
       catch (Exception ex)
       {
@@ -350,6 +353,7 @@ namespace PictureSlideshowScreensaver.ViewModels
       var ct = _prefetchCts.Token;
       _prefetchTask = Task.Run<PrefetchedPhoto>(() =>
       {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
         try
         {
           ct.ThrowIfCancellationRequested();
@@ -365,6 +369,9 @@ namespace PictureSlideshowScreensaver.ViewModels
           // detection. All previously ran on the UI thread inside SetImage;
           // doing it here is the whole point of the prefetch.
           var bmp = photo.bitmap;
+          sw.Stop();
+          Log.Debug("Prefetched photo in {Ms} ms (faces={Faces}, rotation={Rotation})",
+              sw.ElapsedMilliseconds, photo.accent_count, photo.orientation);
           return new PrefetchedPhoto(photo, bmp);
         }
         catch (OperationCanceledException)

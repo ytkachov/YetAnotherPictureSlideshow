@@ -133,6 +133,7 @@ class LocalImages : ImagesProvider
 
   private void scanForImages()
   {
+    var sw = System.Diagnostics.Stopwatch.StartNew();
     foreach (var path in _imagesPath.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
     {
       bool subdir = false;
@@ -151,6 +152,9 @@ class LocalImages : ImagesProvider
       BuildIndex();
       _scanCompleted = true;
     }
+    sw.Stop();
+    Log.Information("Scan completed: {Photos} photos across {Folders} folders in {Ms} ms",
+        _images?.Length ?? 0, _folders?.Length ?? 0, sw.ElapsedMilliseconds);
   }
 
   private void addImages(string p, bool subdir)

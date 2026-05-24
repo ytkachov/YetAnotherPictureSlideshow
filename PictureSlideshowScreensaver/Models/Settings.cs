@@ -34,6 +34,12 @@ namespace PictureSlideshowScreensaver.Models
     public string WeatherProvider = "yandex-api";
     public string YandexApiKey = null;
 
+    // Serilog minimum level for the configured file sinks. Defaults to
+    // Verbose to preserve existing behaviour; the Configuration window
+    // lets the user dial it down (Information / Warning) once they're
+    // happy the slideshow is stable and don't want gigabytes of logs.
+    public LogEventLevel _logLevel = LogEventLevel.Verbose;
+
     private const string RegistryPath = "SOFTWARE\\PictureSlideshowScreensaver";
 
     enum PerfOptions
@@ -81,11 +87,16 @@ namespace PictureSlideshowScreensaver.Models
         WeatherProvider = providerRaw.Trim();
       YandexApiKey = (string)key.GetValue("YandexApiKey");
 
+      var logLevelRaw = (string)key.GetValue("LogLevel");
+      if (!string.IsNullOrWhiteSpace(logLevelRaw) &&
+          Enum.TryParse<LogEventLevel>(logLevelRaw, ignoreCase: true, out var parsedLevel))
+        _logLevel = parsedLevel;
+
       EnsureDirectoryExists(_writeStat, _writeStatPath);
       EnsureDirectoryExists(_writeLog, _writeLogPath);
 
       if (_writeLog && !string.IsNullOrEmpty(_writeLogPath) && Directory.Exists(_writeLogPath))
-        ConfigureFileLogger(_writeLogPath);
+        ConfigureFileLogger(_writeLogPath, _logLevel);
     }
 
     private static int ReadInt(RegistryKey key, string name, int fallback)
@@ -128,7 +139,7 @@ namespace PictureSlideshowScreensaver.Models
       }
     }
 
-    private static void ConfigureFileLogger(string folder)
+    private static void ConfigureFileLogger(string folder, LogEventLevel minLevel)
     {
       var info_log_file = Path.Combine(folder, "information_log-.txt");
       var verbose_log_file = Path.Combine(folder, "verbose_log-.txt");
@@ -137,7 +148,7 @@ namespace PictureSlideshowScreensaver.Models
 
       const string output_template = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {SourceContext} (at {ClassName} class in {MethodName} method): {Message}{NewLine}{Exception}";
       Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Verbose()
+          .MinimumLevel.Is(minLevel)
           .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
           .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
           .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
