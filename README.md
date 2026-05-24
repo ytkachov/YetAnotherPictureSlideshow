@@ -62,6 +62,13 @@ arbitrary folders) or rename the binary to `.scr` and place it under
 `SlideshowLouncher.exe` wraps the screensaver and relaunches it if it
 exits — useful on a kiosk-mode photo frame.
 
+While the slideshow is running, three keys are bound:
+
+- `Escape` — close the screensaver.
+- `F` — toggle the 3-day weather forecast overlay.
+- `L` — open a viewer that tails the active Serilog file (useful on an
+  appliance where the log folder isn't easy to get at).
+
 ## Configuration
 
 All runtime configuration lives under
@@ -79,6 +86,7 @@ double-click. Notable keys:
 | `YandexApiKey` | string | Yandex Weather API key (only needed by `yandex-api`) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
 | `WriteLogFolder` | string | Where to write the log files |
+| `LogLevel` | string | Serilog minimum level: `Verbose` / `Debug` / `Information` / `Warning` / `Error` (default `Verbose`) |
 | `PerformanceOptions` | dword | Bit flags for fade/scale/accent disable at night |
 
 A `WeatherProvider` of `yandex-api` without a valid `YandexApiKey`
@@ -139,12 +147,15 @@ singleton in `AddWeatherProviders`, and add a matching
 
 ## Status
 
-The codebase is in the middle of a multi-stage architectural refactor;
-stages 0–5 are landed and stages 6 (UI/MVVM, ComboBox for weather
-provider in the Configuration window, WPF perf) and 7 (logging
-polish, README/CLAUDE cleanup, `TreatWarningsAsErrors`) remain. See
-`CLAUDE.md` for the conventions and anti-patterns established along
-the way.
+The codebase is in the middle of a multi-stage architectural refactor.
+Stages 0–5 are fully landed, most of stage 6 (UI/MVVM, ComboBox for
+the weather provider, `ConfigurationViewModel`, `Fant` scaling,
+diagnostics) and stage 7 (`TreatWarningsAsErrors`, README, lifecycle
+logging) are done; the open items are the `LocalImageInfo` split into
+a Core POCO + Infrastructure bitmap loader (stage 4 tail), the
+weather control's MVVM rewrite (6.2b/6.4) and `DecodePixelWidth` for
+the slideshow image (6.7b). See `CLAUDE.md` for the conventions and
+anti-patterns established along the way.
 
 ## License
 

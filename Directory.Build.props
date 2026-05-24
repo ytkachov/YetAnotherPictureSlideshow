@@ -4,6 +4,12 @@
     <LangVersion>latest</LangVersion>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Builds have been at zero warnings since Stage 1; lock it in so a
+         regression breaks the build instead of being noticed later.
+         Nullable is still per-project (Core and Infrastructure enable,
+         five legacy projects disable) — flipping the rest is a Stage 4
+         follow-up, not part of this guard. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>
