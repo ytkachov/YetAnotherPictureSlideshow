@@ -26,7 +26,13 @@ namespace PictureSlideshowScreensaver.ViewModels
     private readonly IClock _clock;
     private readonly IServiceProvider _services;
     private readonly Dispatcher _dispatcher;
+    private readonly ForecastViewModel _forecast;
     private DispatcherTimer _switchImage;
+
+    // Root of the weather widget tree. Pushed through DataContext from the
+    // window's XAML (Stage 6.2b) so the W_now tile and the WeatherForecast
+    // overlay no longer reach into App.Current.Services for an informer.
+    public ForecastViewModel Forecast => _forecast;
 
     private PhotoProperties _photo_properties;
     private FrameViewModel _firstImage;
@@ -100,12 +106,13 @@ namespace PictureSlideshowScreensaver.ViewModels
       }
     }
 
-    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock, IServiceProvider services)
+    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock, IServiceProvider services, ForecastViewModel forecast)
     {
       _settings = settings;
       _images = images;
       _clock = clock;
       _services = services;
+      _forecast = forecast;
       _dispatcher = Dispatcher.CurrentDispatcher;
       _prefetchCts = new CancellationTokenSource();
 
@@ -153,6 +160,11 @@ namespace PictureSlideshowScreensaver.ViewModels
         _prefetchCts = null;
       }
       _prefetchTask = null;
+
+      // Stops the 13 informer DispatcherTimers and unsubscribes them from
+      // IWeatherSnapshotStore.Updated; otherwise the timer closures keep
+      // the VM alive past window close.
+      _forecast?.Dispose();
     }
 
     // Fires on the scan thread, potentially once per file. Stash the latest

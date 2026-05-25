@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using informers;
-using Microsoft.Extensions.DependencyInjection;
-using PictureSlideshowScreensaver;
 using System.Windows.Markup;
-using System.Globalization;
-using Yaps.Core.Models.Weather;
+using System.Windows.Media;
+using informers;
 
 namespace presenters
 {
@@ -69,29 +57,21 @@ namespace presenters
   }
 
   /// <summary>
-  /// Interaction logic for Weather.xaml
+  /// Interaction logic for Weather.xaml. Stage 6.2b: the per-period
+  /// <see cref="WeatherInformer"/> is supplied through the
+  /// <see cref="InformerProperty"/> dependency property (typically bound
+  /// to <c>ForecastViewModel</c>) — the control no longer reaches into
+  /// the DI container for one. Stage 6.4: width sync between tiles now
+  /// rides on Grid <c>SharedSizeGroup</c>, so the
+  /// <c>ChildrenWidths</c>/<c>ComponentWidths</c>/<c>LayoutUpdated</c>
+  /// measurement protocol is gone.
   /// </summary>
   public partial class Weather : UserControl, INotifyPropertyChanged
   {
-    private WeatherInformer _weatherInformer;
-    private string _componentWidths;
-
     public Weather()
     {
-      Dispatcher.ShutdownStarted += OnShutdownStarted;
-
-      // Stage 5 service-locator: Weather UserControl is instantiated by
-      // XAML's parameterless ctor, so it can't take WeatherInformer via
-      // DI. Stage 6 will swap this for a DataContext-bound ViewModel
-      // pushed from the parent VM.
-      var services = (App.Current as App)?.Services;
-      _weatherInformer = services != null
-        ? services.GetRequiredService<WeatherInformer>()
-        : new WeatherInformer(new Yaps.Infrastructure.Weather.WeatherSnapshotStore());
-
       InitializeComponent();
       (Content as FrameworkElement).DataContext = this;
-      WeatherInfo.Weather_Period = WeatherPeriod;
       BorderColor = Brushes.White;
       FillColor = Brushes.White;
       StrokeColor = Brushes.Black;
@@ -99,39 +79,26 @@ namespace presenters
       FontFamily = new FontFamily("Segoe UI Light");
     }
 
-    private void OnShutdownStarted(object sender, EventArgs e)
-    {
-      _weatherInformer.Close();
-      // Unhook to make sure the handler isn't called twice if a future
-      // refactor uses a non-disposing dispatcher lifecycle.
-      Dispatcher.ShutdownStarted -= OnShutdownStarted;
-    }
-
     public static readonly DependencyProperty ShowProperty = DependencyProperty.Register("Show", typeof(ShowWhat), typeof(Weather), new UIPropertyMetadata(ShowWhat.TemperatureRange));
-    public static readonly DependencyProperty WeatherPeriodProperty = DependencyProperty.Register("WeatherPeriod", typeof(WeatherPeriod), typeof(Weather), new FrameworkPropertyMetadata(OnWeatherPeriodUpdated));
+    public static readonly DependencyProperty InformerProperty = DependencyProperty.Register("Informer", typeof(WeatherInformer), typeof(Weather), new PropertyMetadata(null));
     public static readonly DependencyProperty PictureSizeProperty = DependencyProperty.Register("PictureSize", typeof(double), typeof(Weather), new UIPropertyMetadata(40.0));
     public static readonly DependencyProperty ChildMarginProperty = DependencyProperty.Register("ChildMargin", typeof(double), typeof(Weather), new UIPropertyMetadata(2.0));
     public static readonly DependencyProperty ChildBorderThicknessProperty = DependencyProperty.Register("ChildBorderThickness", typeof(double), typeof(Weather), new UIPropertyMetadata(2.0));
-    public static readonly DependencyProperty ChildrenWidthsProperty = DependencyProperty.Register("ChildrenWidths", typeof(string), typeof(Weather), new FrameworkPropertyMetadata(OnChildrenWidthUpdated));
     public static readonly DependencyProperty ChildPaddingProperty = DependencyProperty.Register("ChildPadding", typeof(double), typeof(Weather), new UIPropertyMetadata(3.0));
     public static readonly DependencyProperty FillColorProperty = DependencyProperty.Register("FillColor", typeof(Brush), typeof(Weather), new UIPropertyMetadata(Brushes.White));
     public static readonly DependencyProperty StrokeColorProperty = DependencyProperty.Register("StrokeColor", typeof(Brush), typeof(Weather), new UIPropertyMetadata(Brushes.Black));
     public static readonly DependencyProperty BorderColorProperty = DependencyProperty.Register("BorderColor", typeof(Brush), typeof(Weather), null);
 
-    public WeatherPeriod WeatherPeriod
-    {
-      get { return (WeatherPeriod)GetValue(WeatherPeriodProperty); }
-      set
-      {
-        WeatherInfo.Weather_Period = value;
-        SetValueDP(WeatherPeriodProperty, value);
-      }
-    }
-
     public ShowWhat Show
     {
       get { return (ShowWhat)GetValue(ShowProperty); }
       set { SetValueDP(ShowProperty, value); }
+    }
+
+    public WeatherInformer Informer
+    {
+      get { return (WeatherInformer)GetValue(InformerProperty); }
+      set { SetValueDP(InformerProperty, value); }
     }
 
     public double PictureSize
@@ -144,12 +111,6 @@ namespace presenters
     {
       get { return (double)GetValue(ChildMarginProperty); }
       set { SetValueDP(ChildMarginProperty, value); }
-    }
-
-    public string ChildrenWidths
-    {
-      get { return (string)GetValue(ChildrenWidthsProperty); }
-      set { SetValueDP(ChildrenWidthsProperty, value); }
     }
 
     public double ChildBorderThickness
@@ -165,7 +126,7 @@ namespace presenters
     }
 
     public Brush FillColor
-    {                                                                                                            
+    {
       get { return (Brush)GetValue(FillColorProperty); }
       set { SetValueDP(FillColorProperty, value); }
     }
@@ -182,23 +143,6 @@ namespace presenters
       set { SetValueDP(BorderColorProperty, value); }
     }
 
-    public WeatherInformer WeatherInfo
-    {
-      get { return _weatherInformer; }
-      set
-      {
-        _weatherInformer = value;
-      }
-    }
-
-    public string  ComponentWidths
-    {
-      get
-      {
-        return _componentWidths;
-      }
-    }
-
     // INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
     private void SetValueDP(DependencyProperty dp, object value, [System.Runtime.CompilerServices.CallerMemberName] string caller_name = null)
@@ -206,42 +150,6 @@ namespace presenters
       SetValue(dp, value);
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(caller_name));
-    }
-
-    private static void OnWeatherPeriodUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-    {
-      var wp = (Weather)dependencyObject;
-      wp.WeatherInfo.Weather_Period = wp.WeatherPeriod;
-    }
-
-    private static void OnChildrenWidthUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-    {
-      var wp = (Weather)dependencyObject;
-      string cw = wp.ChildrenWidths;
-
-      FrameworkElement[] children = { wp.T_Border, wp.W_Border, wp.WIND_Border, wp.P_Border, wp.H_Border };
-      var widths = cw.Split(',');
-      for (int i = 0; i < widths.Length; i++)
-      {
-        if (i >= children.Length)
-          break;
-
-        double w = 0;
-        if (widths[i].Length != 0 && double.TryParse(widths[i], out w))
-          children[i].Width = w;
-        else
-          children[i].ClearValue(WidthProperty);
-      }
-    }
-
-    private void OnLayoutUpdated(object sender, EventArgs e)
-    {
-      string cw = "";
-      FrameworkElement[] children = { T_Border, W_Border, WIND_Border, P_Border, H_Border };
-      for (int i = 0; i < children.Length; i++)
-        cw += (cw.Length == 0 ? "" : ",") + children[i].ActualWidth.ToString();
-
-      _componentWidths = cw;
     }
   }
 }

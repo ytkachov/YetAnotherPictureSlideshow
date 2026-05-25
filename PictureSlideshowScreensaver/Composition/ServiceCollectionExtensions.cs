@@ -86,7 +86,11 @@ namespace PictureSlideshowScreensaver.Composition
                 opts.PollingInterval = TimeSpan.FromMinutes(10);
             });
             services.AddHostedService<WeatherPollingService>();
-            services.AddTransient<WeatherInformer>();
+
+            // Stage 6.2b: weather widgets bind to the per-period informers
+            // exposed by ForecastViewModel (pushed via DataContext) instead
+            // of resolving a WeatherInformer through the service locator.
+            services.AddTransient<ForecastViewModel>();
 
             services.AddTransient<ScreensaverViewModel>();
             services.AddTransient<Screensaver>();

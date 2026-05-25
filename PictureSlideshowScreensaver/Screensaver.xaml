@@ -64,7 +64,7 @@
       <Border x:Name="WeatherForecast" Grid.Row="1" Grid.Column="1" Background="DarkBlue" Opacity="0.6"
               Visibility="{Binding IsForecastVisible, Converter={StaticResource boolToHidden}}"
               Padding="10" BorderThickness="5" BorderBrush="White" CornerRadius="20">
-        <presenters:WeatherForecast/>
+        <presenters:WeatherForecast DataContext="{Binding Forecast}"/>
       </Border>
     </Grid>
 
@@ -105,7 +105,7 @@
               <RowDefinition />
               <RowDefinition />
             </Grid.RowDefinitions>
-            <presenters:Weather Grid.Row="0" x:Name="W_now" WeatherPeriod="Now" Show="TemperatureValue" PictureSize="50" FontSize="40" />
+            <presenters:Weather Grid.Row="0" x:Name="W_now" Informer="{Binding Forecast.Now}" Show="TemperatureValue" PictureSize="50" FontSize="40" />
             <!-- <CustomControls:OutlinedTextBlock Grid.Row="1" Visibility="Visible" Text="{Binding Path=Parent.W_now.Temperature}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="30" /> -->
           </Grid>
         </StackPanel>

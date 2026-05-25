@@ -17,9 +17,9 @@ namespace PictureSlideshowScreensaver
   {
     private IHost _host;
 
-    // Exposed for the few UserControls that can't go through constructor
-    // injection yet (Weather.xaml.cs in Stage 5 — Stage 6 will replace
-    // this with a DataContext-bound WeatherViewModel).
+    // Kept for the (now solitary) /c command line entry point that pulls
+    // the configuration window out of the container; nothing else needs
+    // to reach back into the host's services from XAML-instantiated code.
     public IServiceProvider Services => _host?.Services;
 
     private void Application_Startup(object sender, StartupEventArgs e)

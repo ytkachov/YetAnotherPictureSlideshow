@@ -65,11 +65,15 @@ namespace informers
   {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-      if (values == null)
+      // Bindings traverse `Informer.X`; while Informer DP hasn't been bound
+      // yet (Stage 6.2b — XAML is loaded before the parent DataContext
+      // pushes the per-tile informer) both values arrive as
+      // DependencyProperty.UnsetValue. Cast-throwing here would crash the
+      // first load.
+      if (values == null || values.Length < 2 ||
+          values[0] is not WeatherType wt ||
+          values[1] is not WeatherPeriod wp)
         return null;
-
-      WeatherType wt = (WeatherType)values[0];
-      WeatherPeriod wp = (WeatherPeriod)values[1];
       int n = 0;
       if (wp == WeatherPeriod.DayAfterTomorrowEvening || wp == WeatherPeriod.DayAfterTomorrowNight ||
           wp == WeatherPeriod.TomorrowEvening || wp == WeatherPeriod.TomorrowNight ||
@@ -96,10 +100,10 @@ namespace informers
     public string UseColor { get; set; }
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      if (value == null)
+      // Same UnsetValue / pre-bind race as WeatherToPicture above.
+      if (value is not WindDirection wd)
         return null;
 
-      WindDirection wd = (WindDirection)value;
       return Application.Current.TryFindResource(WeatherFormatter.wind_direction_to_picture[wd]) as Canvas;
     }
 
@@ -118,7 +122,10 @@ namespace informers
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      bool ws = (bool)value;
+      // Pre-bind UnsetValue is treated as "no data" → opacity 0, same as the
+      // false branch. Avoids the (bool) cast throw before Informer arrives.
+      if (value is not bool ws)
+        return 0;
       return ws ? 1 : 0;
     }
 
@@ -137,7 +144,11 @@ namespace informers
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      bool ws = (bool)value;
+      // Pre-bind UnsetValue → Collapsed, same as the false branch. Otherwise
+      // the cast throws on the very first load before the parent DataContext
+      // pushes a WeatherInformer into Weather.Informer.
+      if (value is not bool ws)
+        return Visibility.Collapsed;
       return ws ? Visibility.Visible : Visibility.Collapsed;
     }
 

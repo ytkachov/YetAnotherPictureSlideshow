@@ -1,19 +1,25 @@
-﻿<UserControl x:Class="presenters.Weather"
+<UserControl x:Class="presenters.Weather"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:CustomControls="clr-namespace:CustomControls"
              xmlns:informers="clr-namespace:informers"
              xmlns:presenters="clr-namespace:presenters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="300"
-             LayoutUpdated="OnLayoutUpdated"
              >
 
-  <StackPanel Orientation="Horizontal" >
-    <StackPanel.Resources>
+  <!-- Stage 6.4: each column carries a SharedSizeGroup. With
+       Grid.IsSharedSizeScope=True on a common ancestor (set on the
+       WeatherForecast root grid) every tile's column N grows to the
+       widest content across all tiles, replacing the old measurement
+       timer that cycled a hidden W_Invisible through every period.
+       Auto sizing with SharedSizeGroup ignores Collapsed children, so
+       a missing-metric tile still aligns with its neighbours. -->
+  <Grid>
+    <Grid.Resources>
       <Style TargetType="CustomControls:OutlinedTextBlock">
         <Setter Property="FontFamily" Value="{Binding FontFamily}" />
         <Setter Property="FontSize" Value="{Binding FontSize}" />
@@ -30,32 +36,39 @@
         <Setter Property="BorderBrush" Value="{Binding BorderColor}"  />
         <Setter Property="CornerRadius" Value="8" />
       </Style>
-    </StackPanel.Resources>
-    <Border x:Name="T_Border" Visibility="{Binding WeatherInfo.Weather_Status_Temperature, Converter={informers:WeatherStatusToVisibility}}" >
+    </Grid.Resources>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherCol_T" />
+      <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherCol_W" />
+      <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherCol_Wind" />
+      <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherCol_P" />
+      <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherCol_H" />
+    </Grid.ColumnDefinitions>
+    <Border Grid.Column="0" x:Name="T_Border" Visibility="{Binding Informer.Weather_Status_Temperature, Converter={informers:WeatherStatusToVisibility}}" >
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-        <CustomControls:OutlinedTextBlock x:Name="TR" Visibility="{Binding Show, Converter={presenters:ShowRange}}" Text="{Binding WeatherInfo.TemperatureRange}" />
-        <CustomControls:OutlinedTextBlock x:Name="TV" Visibility="{Binding Show, Converter={presenters:ShowValue}}" Text="{Binding WeatherInfo.Temperature}" />
+        <CustomControls:OutlinedTextBlock x:Name="TR" Visibility="{Binding Show, Converter={presenters:ShowRange}}" Text="{Binding Informer.TemperatureRange}" />
+        <CustomControls:OutlinedTextBlock x:Name="TV" Visibility="{Binding Show, Converter={presenters:ShowValue}}" Text="{Binding Informer.Temperature}" />
         <CustomControls:OutlinedTextBlock x:Name="T_Scale"  Text="°" />
       </StackPanel>
     </Border>
-    <Border x:Name="W_Border" Visibility="{Binding WeatherInfo.Weather_Status_Weather, Converter={informers:WeatherStatusToVisibility}}" >
+    <Border Grid.Column="1" x:Name="W_Border" Visibility="{Binding Informer.Weather_Status_Weather, Converter={informers:WeatherStatusToVisibility}}" >
       <Viewbox x:Name="W" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding PictureSize}" Stretch="Uniform">
         <ContentControl x:Name="W_content" Opacity="1.0">
           <ContentControl.Content>
             <MultiBinding Converter="{informers:WeatherToPicture}">
-              <Binding Path="WeatherInfo.Weather"/>
-              <Binding Path="WeatherInfo.Weather_Period"/>
+              <Binding Path="Informer.Weather"/>
+              <Binding Path="Informer.Weather_Period"/>
             </MultiBinding>
           </ContentControl.Content>
-        </ContentControl> 
+        </ContentControl>
       </Viewbox>
     </Border>
-    <Border x:Name="WIND_Border" Visibility="{Binding WeatherInfo.Weather_Status_Wind, Converter={informers:WeatherStatusToVisibility}}" >
+    <Border Grid.Column="2" x:Name="WIND_Border" Visibility="{Binding Informer.Weather_Status_Wind, Converter={informers:WeatherStatusToVisibility}}" >
       <StackPanel Orientation="Horizontal">
         <Viewbox x:Name="WD" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{c:Binding PictureSize * 0.75}" Stretch="Uniform">
-          <ContentControl x:Name="WD_content" Content="{Binding WeatherInfo.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
+          <ContentControl x:Name="WD_content" Content="{Binding Informer.WindDirection, Converter={informers:WindDirectionToPicture UseColor=yes}}"/>
         </Viewbox>
-        <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding WeatherInfo.WindSpeed}" />
+        <CustomControls:OutlinedTextBlock x:Name="WS"  Text="{Binding Informer.WindSpeed}" />
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="30*"/>
@@ -66,9 +79,9 @@
         </Grid>
       </StackPanel>
     </Border>
-    <Border x:Name="P_Border" Visibility="{Binding WeatherInfo.Weather_Status_Pressure, Converter={informers:WeatherStatusToVisibility}}" >
+    <Border Grid.Column="3" x:Name="P_Border" Visibility="{Binding Informer.Weather_Status_Pressure, Converter={informers:WeatherStatusToVisibility}}" >
       <StackPanel Orientation="Horizontal">
-        <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding WeatherInfo.Pressure}" />
+        <CustomControls:OutlinedTextBlock x:Name="P"  Text="{Binding Informer.Pressure}" />
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="30*"/>
@@ -79,9 +92,9 @@
         </Grid>
       </StackPanel>
     </Border>
-    <Border x:Name="H_Border" Visibility="{Binding WeatherInfo.Weather_Status_Humidity, Converter={informers:WeatherStatusToVisibility}}" >
+    <Border Grid.Column="4" x:Name="H_Border" Visibility="{Binding Informer.Weather_Status_Humidity, Converter={informers:WeatherStatusToVisibility}}" >
       <StackPanel Orientation="Horizontal">
-        <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding WeatherInfo.Humidity}" />
+        <CustomControls:OutlinedTextBlock x:Name="H"  Text="{Binding Informer.Humidity}" />
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="30*"/>
@@ -92,5 +105,5 @@
         </Grid>
       </StackPanel>
     </Border>
-  </StackPanel>
+  </Grid>
 </UserControl>
