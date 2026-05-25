@@ -110,6 +110,9 @@ namespace WeatherCollector
       bool writeLog = int.TryParse((string)key.GetValue("WriteLog") ?? "0", out var w) && w == 1;
       string writeLogPath = (string)key.GetValue("WriteLogFolder");
       if (!writeLog || string.IsNullOrEmpty(writeLogPath)) return;
+      // Creating the log folder runs before the logger itself exists, so a
+      // failure here can't be Log'd. The Directory.Exists guard below means
+      // a failed mkdir downgrades to "no log writer" rather than crashing.
       try { Directory.CreateDirectory(writeLogPath); } catch { return; }
       if (!Directory.Exists(writeLogPath)) return;
 
