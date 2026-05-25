@@ -5,7 +5,6 @@ using Yaps.Core.Models;
 using Yaps.Core.Models.Weather;
 using Yaps.Infrastructure.Geocoding;
 using Yaps.Infrastructure.Weather;
-using Yaps.Infrastructure.Weather.Files;
 using Yaps.Infrastructure.Weather.Providers;
 using Yaps.Infrastructure.Weather.Selenium;
 
@@ -37,9 +36,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers every weather provider, the snapshot store, the
     /// temperature override, and the lookup registry. Hosted polling
-    /// (<c>WeatherPollingService</c>) is left to the caller —
-    /// WeatherCollector wants one-shot fetches, the screensaver wants
-    /// continuous polling, both share these registrations.
+    /// (<c>WeatherPollingService</c>) is left to the caller — the
+    /// screensaver registers it; other hosts (e.g. WeatherCrawler) want
+    /// one-shot fetches and skip it.
     /// </summary>
     public static IServiceCollection AddWeatherProviders(
         this IServiceCollection services,
@@ -51,7 +50,6 @@ public static class ServiceCollectionExtensions
             services.AddOptions<WeatherOptions>();
 
         services.AddSingleton<SeleniumDriverFactory>();
-        services.AddSingleton<IWeatherFileWriter, WeatherFileWriter>();
 
         services.AddSingleton<WeatherSnapshotStore>();
         services.AddSingleton<IWeatherSnapshotStore>(sp => sp.GetRequiredService<WeatherSnapshotStore>());

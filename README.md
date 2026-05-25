@@ -21,7 +21,6 @@ Built to run unattended on a digital photo frame.
   Yandex Pogoda scrape, NGS Pogoda scrape) and a layered NSU
   point-thermometer override for current temperature.
 - Companion utilities: `GeoTagger` (batch reverse-geocode a folder),
-  `WeatherCollector` (Task Scheduler–driven cache writer),
   `WeatherCrawler` (one-shot debug fetch), `SlideshowLouncher`
   (auto-restart helper).
 
@@ -84,6 +83,7 @@ double-click. Notable keys:
 | `PhotosPerFolder` | string | How many random photos from one folder before switching folders |
 | `WeatherProvider` | string | `yandex-api`, `yandex-scrape`, or `ngs-scrape` |
 | `YandexApiKey` | string | Yandex Weather API key (only needed by `yandex-api`) |
+| `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
 | `WriteLogFolder` | string | Where to write the log files |
 | `LogLevel` | string | Serilog minimum level: `Verbose` / `Debug` / `Information` / `Warning` / `Error` (default `Verbose`) |
@@ -99,7 +99,6 @@ themselves rather than crashing the slideshow.
 YAPS.Core                    net8.0          POCOs, abstractions, no Windows deps
 YAPS.Infrastructure          net8.0-windows  Concrete impls (HTTP, OpenCV, Selenium)
 PictureSlideshowScreensaver  net8.0-windows  WPF host + composition root (UseWPF)
-WeatherCollector             net8.0-windows  Task Scheduler–driven snapshot writer
 WeatherCrawler               net8.0-windows  Dev harness for weather providers
 GeoTagger                    net8.0-windows  Batch reverse-geocoding console
 SlideshowLouncher            net8.0          Auto-restart launcher
@@ -135,10 +134,12 @@ The weather subsystem is the cleanest example of the plugin shape:
 - `IWeatherProviderRegistry` looks providers up by string name.
 - `IWeatherSnapshotStore` holds the last successful fetch; the UI
   consumes that store, not the providers directly.
-- `WeatherPollingService` (`BackgroundService`) ticks every 10 minutes
-  and applies every `ICurrentTemperatureOverride` registered in the
-  container to the fetched snapshot — that's the seam the NSU
-  thermometer override plugs into.
+- `WeatherPollingService` (`BackgroundService`) ticks on the interval
+  set by `WeatherPollingMinutes` (default 60 — sized to the Yandex
+  free-tier budget of ~30 requests/day) and applies every
+  `ICurrentTemperatureOverride` registered in the container to the
+  fetched snapshot — that's the seam the NSU thermometer override
+  plugs into.
 
 To add a new weather provider, implement `IWeatherProvider` in
 `YAPS.Infrastructure/Weather/Providers/`, register it as a keyed
