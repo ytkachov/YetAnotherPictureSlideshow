@@ -83,7 +83,7 @@ namespace PictureSlideshowScreensaver.Composition
             {
                 opts.SelectedProvider = string.IsNullOrWhiteSpace(settings.WeatherProvider) ? "yandex-api" : settings.WeatherProvider;
                 opts.YandexApiKey = settings.YandexApiKey;
-                opts.PollingInterval = TimeSpan.FromMinutes(10);
+                opts.PollingInterval = TimeSpan.FromMinutes(settings.WeatherPollingMinutes);
             });
             services.AddHostedService<WeatherPollingService>();
 

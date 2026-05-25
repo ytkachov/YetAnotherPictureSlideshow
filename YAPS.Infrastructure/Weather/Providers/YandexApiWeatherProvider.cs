@@ -31,6 +31,20 @@ public sealed class YandexApiWeatherProvider : IWeatherProvider
     private readonly HttpClient _httpClient;
     private readonly IOptions<WeatherOptions> _options;
 
+    // The Yandex API charges per request and limits free accounts to ~30/day.
+    // The /v2/forecast endpoint returns BOTH the current fact and the forecast
+    // in one payload, but WeatherPollingService still calls GetCurrentAsync
+    // and GetForecastAsync back-to-back on every tick. Memoise the parsed
+    // response for a short window so those two consecutive calls share one
+    // HTTP request — this is the difference between burning the daily budget
+    // by 9:00 and staying under it. The TTL is intentionally tiny: it's
+    // there to coalesce calls *inside* a polling tick, not to age data across
+    // ticks (the tick cadence itself is the cross-tick freshness control).
+    private static readonly TimeSpan _coalesceWindow = TimeSpan.FromSeconds(30);
+    private readonly SemaphoreSlim _fetchGate = new(1, 1);
+    private YandexApiResponse? _cachedResponse;
+    private DateTimeOffset _cachedAtUtc;
+
     public YandexApiWeatherProvider(HttpClient httpClient, IOptions<WeatherOptions> options)
     {
         _httpClient = httpClient;
@@ -117,29 +131,59 @@ public sealed class YandexApiWeatherProvider : IWeatherProvider
 
     private async Task<YandexApiResponse?> FetchAsync(CancellationToken cancellationToken)
     {
-        var opts = _options.Value;
-        var apiKey = opts.YandexApiKey;
-        if (string.IsNullOrWhiteSpace(apiKey) || apiKey == "get_from_bitwarden")
+        // Fast path: still within the coalesce window of the previous fetch.
+        // No semaphore needed — DateTimeOffset reads are atomic on x64 and the
+        // worst case of a torn read is one extra HTTP call.
+        if (_cachedResponse is not null && DateTimeOffset.UtcNow - _cachedAtUtc < _coalesceWindow)
+            return _cachedResponse;
+
+        await _fetchGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
         {
-            Log.Warning("Yandex weather API key is not configured (Settings.YandexApiKey={Key}); skipping fetch", apiKey ?? "<null>");
-            return null;
+            // Re-check after taking the gate: a concurrent GetCurrent/GetForecast
+            // pair may have already populated the cache while we waited.
+            if (_cachedResponse is not null && DateTimeOffset.UtcNow - _cachedAtUtc < _coalesceWindow)
+                return _cachedResponse;
+
+            var opts = _options.Value;
+            var apiKey = opts.YandexApiKey;
+            if (string.IsNullOrWhiteSpace(apiKey) || apiKey == "get_from_bitwarden")
+            {
+                Log.Warning("Yandex weather API key is not configured (Settings.YandexApiKey={Key}); skipping fetch", apiKey ?? "<null>");
+                return null;
+            }
+
+            var url = $"v2/forecast?lat={opts.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={opts.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.TryAddWithoutValidation("X-Yandex-Weather-Key", apiKey);
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Warning("Yandex weather API returned {Status} {Reason}", (int)response.StatusCode, response.ReasonPhrase);
+                return null;
+            }
+
+            var parsed = await response.Content
+                .ReadFromJsonAsync(YandexApiJsonContext.Default.YandexApiResponse, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (parsed is not null)
+            {
+                _cachedResponse = parsed;
+                _cachedAtUtc = DateTimeOffset.UtcNow;
+            }
+            return parsed;
         }
-
-        var url = $"v2/forecast?lat={opts.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={opts.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.TryAddWithoutValidation("X-Yandex-Weather-Key", apiKey);
-
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
+        finally
         {
-            Log.Warning("Yandex weather API returned {Status} {Reason}", (int)response.StatusCode, response.ReasonPhrase);
-            return null;
+            _fetchGate.Release();
         }
-
-        return await response.Content
-            .ReadFromJsonAsync(YandexApiJsonContext.Default.YandexApiResponse, cancellationToken)
-            .ConfigureAwait(false);
     }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    public ValueTask DisposeAsync()
+    {
+        _fetchGate.Dispose();
+        return ValueTask.CompletedTask;
+    }
 }

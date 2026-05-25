@@ -34,6 +34,13 @@ namespace PictureSlideshowScreensaver.Models
     public string WeatherProvider = "yandex-api";
     public string YandexApiKey = null;
 
+    // Minutes between weather polls. Default 60 — the Yandex free tier
+    // caps free accounts at ~30 requests/day, so 1/hour is the natural
+    // budget. Registry override is "WeatherPollingMinutes". Clamped
+    // [1, 1440] when read so a typo can't accidentally hammer the API
+    // or freeze the widget for days.
+    public int WeatherPollingMinutes = 60;
+
     // Serilog minimum level for the configured file sinks. Defaults to
     // Verbose to preserve existing behaviour; the Configuration window
     // lets the user dial it down (Information / Warning) once they're
@@ -86,6 +93,7 @@ namespace PictureSlideshowScreensaver.Models
       if (!string.IsNullOrWhiteSpace(providerRaw))
         WeatherProvider = providerRaw.Trim();
       YandexApiKey = (string)key.GetValue("YandexApiKey");
+      WeatherPollingMinutes = Math.Clamp(ReadInt(key, "WeatherPollingMinutes", WeatherPollingMinutes), 1, 1440);
 
       var logLevelRaw = (string)key.GetValue("LogLevel");
       if (!string.IsNullOrWhiteSpace(logLevelRaw) &&

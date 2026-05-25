@@ -13,7 +13,14 @@ namespace Yaps.Infrastructure.Weather;
 public sealed class WeatherOptions
 {
     public string SelectedProvider { get; set; } = "yandex-api";
-    public TimeSpan PollingInterval { get; set; } = TimeSpan.FromMinutes(10);
+
+    // Default 60 min so a 30-req/day Yandex free-tier key (~one request every
+    // ~48 min) has headroom for occasional retries and the WeatherCollector's
+    // one-shot fetch. Overridable per-deployment via the WeatherPollingMinutes
+    // Registry value; raise it for cheaper providers, lower it for self-hosted
+    // ones. Combined with the per-tick fetch coalescing inside
+    // YandexApiWeatherProvider this lands at ~24 API hits/day in steady state.
+    public TimeSpan PollingInterval { get; set; } = TimeSpan.FromMinutes(60);
     public string? YandexApiKey { get; set; }
     public bool ApplyCurrentTemperatureOverride { get; set; } = true;
 
