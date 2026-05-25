@@ -100,16 +100,25 @@ namespace PictureSlideshowScreensaver.ViewModels
     }
 
     // Opens the L-key log viewer. Modal — the slideshow keeps animating
-    // behind it (Topmost on the viewer keeps it visible above the
-    // fullscreen screensaver window). IServiceProvider rather than a
-    // direct LogViewer ctor parameter so each press resolves a fresh
-    // transient instance (re-reads the log file from scratch).
+    // behind it. Owner is set explicitly (not left to WPF's implicit
+    // pick) for two reasons: it z-orders the modal above the slideshow
+    // window even when both are Topmost, and combined with the dialog's
+    // WindowStartupLocation="CenterOwner" it positions the dialog on
+    // the same monitor the screensaver actually occupies (CenterScreen
+    // would land it on the primary monitor, which on a multi-monitor
+    // appliance may not be the photo frame). IServiceProvider rather
+    // than a direct LogViewer ctor parameter so each press resolves a
+    // fresh transient instance (re-reads the log file from scratch).
     [RelayCommand]
     private void ShowLog()
     {
+      Log.Information("L pressed; opening log viewer");
       try
       {
         var viewer = _services.GetRequiredService<LogViewer>();
+        var owner = Application.Current?.MainWindow;
+        if (owner != null && !ReferenceEquals(owner, viewer))
+          viewer.Owner = owner;
         viewer.ShowDialog();
       }
       catch (Exception ex)
