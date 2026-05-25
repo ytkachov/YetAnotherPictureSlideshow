@@ -84,8 +84,20 @@ namespace PictureSlideshowScreensaver.ViewModels
     [RelayCommand]
     private void ToggleForecast() => IsForecastVisible = !IsForecastVisible;
 
+    // Esc dismisses the forecast overlay first if it's open, only shuts
+    // down the screensaver if nothing else can absorb the keypress.
+    // Otherwise pressing F to peek at the forecast and Esc to dismiss it
+    // would kill the appliance.
     [RelayCommand]
-    private static void Exit() => Application.Current.Shutdown();
+    private void Exit()
+    {
+      if (IsForecastVisible)
+      {
+        IsForecastVisible = false;
+        return;
+      }
+      Application.Current.Shutdown();
+    }
 
     // Opens the L-key log viewer. Modal — the slideshow keeps animating
     // behind it (Topmost on the viewer keeps it visible above the
