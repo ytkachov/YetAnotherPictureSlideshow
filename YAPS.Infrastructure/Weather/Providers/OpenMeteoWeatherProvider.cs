@@ -213,7 +213,10 @@ public sealed class OpenMeteoWeatherProvider : IWeatherProvider
     private static T? ValueAt<T>(List<T?>? list, int i) where T : struct
         => list is not null && i < list.Count ? list[i] : null;
 
-    private static double? ToMmHg(double? hpa) => hpa is double v ? v * HpaToMmHg : null;
+    // Other providers (Yandex API, NGS scrape) supply pressure already as an
+    // integer mmHg; rounding here keeps the displayed value in the same shape
+    // instead of bleeding the hPa→mmHg conversion's 11 trailing decimals.
+    private static double? ToMmHg(double? hpa) => hpa is double v ? Math.Round(v * HpaToMmHg) : null;
 
     // Open-Meteo emits times like "2026-05-26T10:00" already shifted to the
     // requested timezone (we always pass timezone=auto). DateTime.Parse with
