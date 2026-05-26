@@ -86,13 +86,19 @@ namespace PictureSlideshowScreensaver.ViewModels
         Log.Warning(ex, "Could not persist LogLevel={Level} to Registry", value);
       }
       Log.Information("Log level switched to {Level}", value);
+
+      // Re-resolve which file we're tailing — each level has its own
+      // {bucket}_log-*.txt sink, and switching from e.g. Verbose to
+      // Warning should show warning_log, not the verbose stream the
+      // viewer happened to land on at open time.
+      Refresh();
     }
 
     [RelayCommand]
     private void Refresh()
     {
       var folder = ResolveLogFolder();
-      var file = FindMostRecentLog(folder);
+      var file = FindLogFileForLevel(folder, SelectedLogLevel);
 
       LogPath = file ?? (folder ?? "(no log folder)");
 
@@ -162,7 +168,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     private void Clear()
     {
       var folder = ResolveLogFolder();
-      var file = FindMostRecentLog(folder);
+      var file = FindLogFileForLevel(folder, SelectedLogLevel);
       if (file == null)
         return;
 
@@ -204,16 +210,42 @@ namespace PictureSlideshowScreensaver.ViewModels
       return Directory.Exists(fallback) ? fallback : null;
     }
 
-    private static string FindMostRecentLog(string folder)
+    // Picks the file that's a natural fit for the selected level: each
+    // file sink in Settings.ConfigureFileLogger is named "<bucket>_log-*.txt"
+    // and filtered with restrictedToMinimumLevel, so the user's level
+    // choice maps to one file. Verbose / Debug both go to verbose_log
+    // (no separate debug sink). When the matching file doesn't exist yet
+    // (e.g. just switched to Warning but nothing Warning-level has been
+    // logged) we fall back to whatever's newest so the viewer never goes
+    // empty on a freshly switched level.
+    private static string FindLogFileForLevel(string folder, LogEventLevel level)
     {
       if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
         return null;
 
-      var files = Directory.GetFiles(folder, "*.txt");
-      if (files.Length == 0)
+      var prefix = level switch
+      {
+        LogEventLevel.Error => "error_log-",
+        LogEventLevel.Warning => "warning_log-",
+        LogEventLevel.Information => "information_log-",
+        _ => "verbose_log-"
+      };
+
+      var matching = Directory.GetFiles(folder, prefix + "*.txt");
+      if (matching.Length > 0)
+      {
+        return matching
+          .Select(f => new FileInfo(f))
+          .OrderByDescending(fi => fi.LastWriteTimeUtc)
+          .First()
+          .FullName;
+      }
+
+      var anyFiles = Directory.GetFiles(folder, "*.txt");
+      if (anyFiles.Length == 0)
         return null;
 
-      return files
+      return anyFiles
         .Select(f => new FileInfo(f))
         .OrderByDescending(fi => fi.LastWriteTimeUtc)
         .First()

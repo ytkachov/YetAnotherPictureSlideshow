@@ -98,7 +98,11 @@ public sealed class WeatherPollingService : BackgroundService
             {
                 current = await provider.GetCurrentAsync(ct).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) { throw; }
+            // HttpClient.Timeout surfaces as TaskCanceledException without the
+            // stopping token being cancelled — that's a transient network
+            // failure, not a shutdown signal, so let it fall into the Warning
+            // path instead of aborting the whole tick.
+            catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
                 Log.Warning(ex, "{Provider} GetCurrentAsync failed", opts.SelectedProvider);
@@ -114,7 +118,7 @@ public sealed class WeatherPollingService : BackgroundService
             {
                 forecast = await provider.GetForecastAsync(ct).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) { throw; }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
                 Log.Warning(ex, "{Provider} GetForecastAsync failed", opts.SelectedProvider);
@@ -143,7 +147,7 @@ public sealed class WeatherPollingService : BackgroundService
             {
                 value = await ov.GetCurrentTemperatureCelsiusAsync(ct).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) { throw; }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Temperature override '{Source}' failed; keeping previous value", ov.SourceName);
