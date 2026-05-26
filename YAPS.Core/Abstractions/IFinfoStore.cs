@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.IO;
+using Serilog;
 using Yaps.Core.Models;
 
 namespace Yaps.Core.Abstractions;
@@ -21,6 +23,15 @@ public interface IFinfoStore
 public sealed class FileFinfoStore : IFinfoStore
 {
     private readonly FinfoStoreOptions _options;
+
+    // Folders where a previous write failed with AccessDenied / I/O. The
+    // photo-frame use case puts the library on a read-only SMB share, so
+    // attempting to write a sidecar next to every photo would spam the log
+    // with one ERR per shown photo. After the first failure we mark the
+    // folder unwritable and silently skip subsequent writes under it for
+    // the lifetime of the process.
+    private readonly ConcurrentDictionary<string, byte> _unwritableFolders
+        = new(StringComparer.OrdinalIgnoreCase);
 
     // Parameterless default keeps the legacy "next to the photo" behaviour for
     // callers that construct the store without DI (e.g. LocalImageInfo's fallback).
@@ -53,10 +64,21 @@ public sealed class FileFinfoStore : IFinfoStore
         string finfoPath = ResolveFinfoPath(imagePath);
 
         string? dir = Path.GetDirectoryName(finfoPath);
-        if (!string.IsNullOrEmpty(dir))
-            Directory.CreateDirectory(dir);
+        if (!string.IsNullOrEmpty(dir) && _unwritableFolders.ContainsKey(dir))
+            return;
 
-        FinfoData.WriteToFile(finfoPath, data);
+        try
+        {
+            if (!string.IsNullOrEmpty(dir))
+                Directory.CreateDirectory(dir);
+
+            FinfoData.WriteToFile(finfoPath, data);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+        {
+            if (!string.IsNullOrEmpty(dir) && _unwritableFolders.TryAdd(dir, 0))
+                Log.Warning("Skipping further .finfo writes under {Folder}: {Reason}", dir, ex.Message);
+        }
     }
 
     /// <summary>
