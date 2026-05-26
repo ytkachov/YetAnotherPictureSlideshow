@@ -155,12 +155,21 @@ namespace PictureSlideshowScreensaver.Models
       var error_log_file = Path.Combine(folder, "error_log-.txt");
 
       const string output_template = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {SourceContext} (at {ClassName} class in {MethodName} method): {Message}{NewLine}{Exception}";
+
+      // shared: true opens each file with FileShare.ReadWrite and writes
+      // via Serilog's SharedFileSink (length-positioned appends). Without
+      // it the default FileShare.Read leaves the file locked against any
+      // outside writer — which is exactly why the L-viewer's Clear button
+      // failed to truncate ("file is in use"). The extra per-write flush
+      // SharedFileSink does is negligible at our log volume; the
+      // flushToDiskInterval hint is ignored in shared mode but kept on
+      // the call site for documentation.
       Log.Logger = new LoggerConfiguration()
           .MinimumLevel.Is(minLevel)
-          .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
-          .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
-          .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day))
-          .WriteTo.Async(a => a.File(error_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Error, flushToDiskInterval: TimeSpan.FromSeconds(1), rollingInterval: RollingInterval.Day))
+          .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))
+          .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))
+          .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))
+          .WriteTo.Async(a => a.File(error_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Error, flushToDiskInterval: TimeSpan.FromSeconds(1), rollingInterval: RollingInterval.Day, shared: true))
           .CreateLogger()
           .ForContext<App>();
     }
