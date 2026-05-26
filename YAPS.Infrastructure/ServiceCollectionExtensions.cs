@@ -61,14 +61,23 @@ public static class ServiceCollectionExtensions
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        services.AddHttpClient<OpenMeteoWeatherProvider>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.open-meteo.com/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
         // Keyed singletons so the registry can resolve by Registry-stored
         // provider name. Each provider self-reports its Name; keep them
         // in sync with the descriptor list below.
         services.AddKeyedSingleton<IWeatherProvider>("yandex-api",
             (sp, _) => sp.GetRequiredService<YandexApiWeatherProvider>());
+        services.AddKeyedSingleton<IWeatherProvider>("open-meteo",
+            (sp, _) => sp.GetRequiredService<OpenMeteoWeatherProvider>());
         services.AddKeyedSingleton<IWeatherProvider, YandexScraperWeatherProvider>("yandex-scrape");
         services.AddKeyedSingleton<IWeatherProvider, NgsScraperWeatherProvider>("ngs-scrape");
 
+        services.AddSingleton(new WeatherProviderDescriptor("open-meteo",   "Open-Meteo (free, no key)", WeatherCapabilities.All));
         services.AddSingleton(new WeatherProviderDescriptor("yandex-api",   "Yandex Weather API", WeatherCapabilities.All));
         services.AddSingleton(new WeatherProviderDescriptor("yandex-scrape","Yandex Pogoda (scrape)", WeatherCapabilities.All));
         services.AddSingleton(new WeatherProviderDescriptor("ngs-scrape",   "NGS Pogoda (Akademgorodok)", WeatherCapabilities.All));

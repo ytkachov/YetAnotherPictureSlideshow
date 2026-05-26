@@ -17,9 +17,10 @@ Built to run unattended on a digital photo frame.
   limiting, results cached next to the photo as `.finfo` JSON sidecars.
 - Face detection via OpenCvSharp Haar cascade; detected face counts
   drive small accent glyphs on the overlay.
-- Weather subsystem with pluggable providers (Yandex Weather API,
-  Yandex Pogoda scrape, NGS Pogoda scrape) and a layered NSU
-  point-thermometer override for current temperature.
+- Weather subsystem with pluggable providers (Open-Meteo, Yandex
+  Weather API, Yandex Pogoda scrape, NGS Pogoda scrape) and a layered
+  NSU point-thermometer override for current temperature. Default is
+  Open-Meteo — no API key, generous free-tier quota.
 - Companion utilities: `GeoTagger` (batch reverse-geocode a folder),
   `WeatherCrawler` (one-shot debug fetch), `SlideshowLouncher`
   (auto-restart helper).
@@ -81,7 +82,7 @@ double-click. Notable keys:
 | `Interval` | string (seconds) | Time between photo transitions |
 | `FadeTime` | string (ms) | Cross-fade duration |
 | `PhotosPerFolder` | string | How many random photos from one folder before switching folders |
-| `WeatherProvider` | string | `yandex-api`, `yandex-scrape`, or `ngs-scrape` |
+| `WeatherProvider` | string | `open-meteo` (default), `yandex-api`, `yandex-scrape`, or `ngs-scrape` |
 | `YandexApiKey` | string | Yandex Weather API key (only needed by `yandex-api`) |
 | `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
@@ -89,9 +90,10 @@ double-click. Notable keys:
 | `LogLevel` | string | Serilog minimum level: `Verbose` / `Debug` / `Information` / `Warning` / `Error` (default `Verbose`) |
 | `PerformanceOptions` | dword | Bit flags for fade/scale/accent disable at night |
 
-A `WeatherProvider` of `yandex-api` without a valid `YandexApiKey`
-degrades cleanly: warnings are logged and the weather widgets hide
-themselves rather than crashing the slideshow.
+The default `open-meteo` provider has no API key and no per-day quota
+to worry about. `yandex-api` is kept as a backup; without a valid
+`YandexApiKey` it degrades cleanly (warnings logged, widgets hide
+themselves rather than crashing the slideshow).
 
 ## Project layout
 

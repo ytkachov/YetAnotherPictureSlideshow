@@ -81,7 +81,7 @@ namespace PictureSlideshowScreensaver.Composition
             services.AddWeatherProviders();
             services.AddOptions<WeatherOptions>().Configure<Settings>((opts, settings) =>
             {
-                opts.SelectedProvider = string.IsNullOrWhiteSpace(settings.WeatherProvider) ? "yandex-api" : settings.WeatherProvider;
+                opts.SelectedProvider = string.IsNullOrWhiteSpace(settings.WeatherProvider) ? "open-meteo" : settings.WeatherProvider;
                 opts.YandexApiKey = settings.YandexApiKey;
                 opts.PollingInterval = TimeSpan.FromMinutes(settings.WeatherPollingMinutes);
             });

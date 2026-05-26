@@ -31,7 +31,7 @@ namespace PictureSlideshowScreensaver.Models
     // passed into WeatherOptions at composition time. WeatherProvider
     // matches one of the IWeatherProvider.Name values registered by
     // AddWeatherProviders.
-    public string WeatherProvider = "yandex-api";
+    public string WeatherProvider = "open-meteo";
     public string YandexApiKey = null;
 
     // Minutes between weather polls. Default 60 — the Yandex free tier

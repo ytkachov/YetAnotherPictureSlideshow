@@ -12,7 +12,7 @@ namespace Yaps.Infrastructure.Weather;
 /// </summary>
 public sealed class WeatherOptions
 {
-    public string SelectedProvider { get; set; } = "yandex-api";
+    public string SelectedProvider { get; set; } = "open-meteo";
 
     // Default 60 min so a 30-req/day Yandex free-tier key (~one request every
     // ~48 min) has headroom for occasional retries and the WeatherCollector's

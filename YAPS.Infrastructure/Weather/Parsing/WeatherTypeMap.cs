@@ -144,6 +144,46 @@ public static class WeatherTypeMap
         ["cloudy_none_night"]                  = WeatherType.Overcast
     }.ToFrozenDictionary();
 
+    // WMO weather codes (Open-Meteo's `weather_code`). Day/night doesn't
+    // matter — Open-Meteo doesn't split icons by time of day, so a single
+    // table is enough. Codes that we don't have a dedicated glyph for
+    // collapse to the nearest visual equivalent (e.g. freezing drizzle →
+    // partly-rainy because the slideshow has no ice glyph).
+    public static readonly FrozenDictionary<int, WeatherType> OpenMeteoWmo = new Dictionary<int, WeatherType>
+    {
+        [0]  = WeatherType.Clear,
+        [1]  = WeatherType.Clear,
+        [2]  = WeatherType.PartlyCloudy,
+        [3]  = WeatherType.Overcast,
+        [45] = WeatherType.Fog,
+        [48] = WeatherType.Fog,
+        [51] = WeatherType.OvercastPartlyRainy,
+        [53] = WeatherType.OvercastPartlyRainy,
+        [55] = WeatherType.OvercastRainy,
+        [56] = WeatherType.OvercastPartlyRainy,
+        [57] = WeatherType.OvercastRainy,
+        [61] = WeatherType.OvercastPartlyRainy,
+        [63] = WeatherType.OvercastRainy,
+        [65] = WeatherType.OvercastRainyStorm,
+        [66] = WeatherType.OvercastRainy,
+        [67] = WeatherType.OvercastRainyStorm,
+        [71] = WeatherType.OvercastPartlySnowy,
+        [73] = WeatherType.OvercastSnowy,
+        [75] = WeatherType.OvercastSnowyStorm,
+        [77] = WeatherType.OvercastPartlySnowy,
+        [80] = WeatherType.CloudyPartlyRainy,
+        [81] = WeatherType.CloudyRainy,
+        [82] = WeatherType.CloudyRainyStorm,
+        [85] = WeatherType.CloudyPartlySnowy,
+        [86] = WeatherType.CloudySnowy,
+        [95] = WeatherType.OvercastLightningRainy,
+        [96] = WeatherType.OvercastLightningRainy,
+        [99] = WeatherType.OvercastLightningRainy
+    }.ToFrozenDictionary();
+
     public static WeatherType Lookup(FrozenDictionary<string, WeatherType> map, string? key)
         => key is not null && map.TryGetValue(key, out var t) ? t : WeatherType.Undefined;
+
+    public static WeatherType Lookup(FrozenDictionary<int, WeatherType> map, int? key)
+        => key is int k && map.TryGetValue(k, out var t) ? t : WeatherType.Undefined;
 }

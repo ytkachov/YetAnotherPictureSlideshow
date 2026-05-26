@@ -54,4 +54,28 @@ public static class WindDirectionMap
 
     public static WindDirection Lookup(FrozenDictionary<string, WindDirection> map, string? key)
         => key is not null && map.TryGetValue(key, out var dir) ? dir : WindDirection.Undefined;
+
+    // 16-point compass slices of 22.5°; the +11.25 offset centres each
+    // slice on its bearing (N covers 348.75°-11.25°, NNE 11.25°-33.75°, …).
+    // Open-Meteo reports wind_direction in meteorological degrees (0 = wind
+    // from the north). Anything outside the [0, 360) range or non-finite
+    // collapses to Undefined.
+    private static readonly WindDirection[] _compass16 =
+    {
+        WindDirection.N,   WindDirection.NNE, WindDirection.NE,  WindDirection.ENE,
+        WindDirection.E,   WindDirection.ESE, WindDirection.SE,  WindDirection.SSE,
+        WindDirection.S,   WindDirection.SSW, WindDirection.SW,  WindDirection.WSW,
+        WindDirection.W,   WindDirection.WNW, WindDirection.NW,  WindDirection.NNW
+    };
+
+    public static WindDirection FromDegrees(double? degrees)
+    {
+        if (degrees is not double d || double.IsNaN(d) || double.IsInfinity(d))
+            return WindDirection.Undefined;
+
+        // Normalise into [0, 360) without modulo on a negative double.
+        d = ((d % 360.0) + 360.0) % 360.0;
+        int index = (int)Math.Floor((d + 11.25) / 22.5) % 16;
+        return _compass16[index];
+    }
 }
