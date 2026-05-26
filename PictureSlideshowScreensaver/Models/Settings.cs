@@ -1,8 +1,9 @@
 using System;
 using System.Globalization;
 using Microsoft.Win32;
-using Serilog.Events;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using System.IO;
 
 namespace PictureSlideshowScreensaver.Models
@@ -46,6 +47,15 @@ namespace PictureSlideshowScreensaver.Models
     // lets the user dial it down (Information / Warning) once they're
     // happy the slideshow is stable and don't want gigabytes of logs.
     public LogEventLevel _logLevel = LogEventLevel.Verbose;
+
+    // Live, hot-reloadable minimum level. ConfigureFileLogger wires the
+    // Serilog pipeline through `.MinimumLevel.ControlledBy(this)` so a
+    // mutation here takes effect on the very next log call — that's what
+    // the L-key log viewer's level ComboBox flips. The Configuration
+    // window's Save also updates this switch (and persists to Registry
+    // for the cross-restart default); both paths share one instance so
+    // they stay coherent.
+    public readonly LoggingLevelSwitch LogLevelSwitch = new(LogEventLevel.Verbose);
 
     private const string RegistryPath = "SOFTWARE\\PictureSlideshowScreensaver";
 
@@ -99,12 +109,13 @@ namespace PictureSlideshowScreensaver.Models
       if (!string.IsNullOrWhiteSpace(logLevelRaw) &&
           Enum.TryParse<LogEventLevel>(logLevelRaw, ignoreCase: true, out var parsedLevel))
         _logLevel = parsedLevel;
+      LogLevelSwitch.MinimumLevel = _logLevel;
 
       EnsureDirectoryExists(_writeStat, _writeStatPath);
       EnsureDirectoryExists(_writeLog, _writeLogPath);
 
       if (_writeLog && !string.IsNullOrEmpty(_writeLogPath) && Directory.Exists(_writeLogPath))
-        ConfigureFileLogger(_writeLogPath, _logLevel);
+        ConfigureFileLogger(_writeLogPath, LogLevelSwitch);
     }
 
     private static int ReadInt(RegistryKey key, string name, int fallback)
@@ -147,7 +158,7 @@ namespace PictureSlideshowScreensaver.Models
       }
     }
 
-    private static void ConfigureFileLogger(string folder, LogEventLevel minLevel)
+    private static void ConfigureFileLogger(string folder, LoggingLevelSwitch levelSwitch)
     {
       var info_log_file = Path.Combine(folder, "information_log-.txt");
       var verbose_log_file = Path.Combine(folder, "verbose_log-.txt");
@@ -165,7 +176,7 @@ namespace PictureSlideshowScreensaver.Models
       // flushToDiskInterval hint is ignored in shared mode but kept on
       // the call site for documentation.
       Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Is(minLevel)
+          .MinimumLevel.ControlledBy(levelSwitch)
           .WriteTo.Async(a => a.File(verbose_log_file, outputTemplate: output_template, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))
           .WriteTo.Async(a => a.File(info_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Information, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))
           .WriteTo.Async(a => a.File(warning_log_file, outputTemplate: output_template, restrictedToMinimumLevel: LogEventLevel.Warning, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day, shared: true))

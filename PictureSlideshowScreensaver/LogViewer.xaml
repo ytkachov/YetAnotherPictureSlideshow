@@ -35,12 +35,17 @@
              TextWrapping="NoWrap"
              VerticalContentAlignment="Top" />
 
-    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-      <TextBlock Foreground="#888888" VerticalAlignment="Center" Margin="0,0,16,0"
-                 Text="{Binding StatusText}" />
-      <Button Content="Refresh (F5)" Padding="10,3" Margin="0,0,8,0" Command="{Binding RefreshCommand}" />
-      <Button Content="Clear log" Padding="10,3" Margin="0,0,8,0" Command="{Binding ClearCommand}" />
-      <Button Content="Close (Esc)" Padding="10,3" Command="{Binding CloseCommand}" IsCancel="True" />
-    </StackPanel>
+    <DockPanel Grid.Row="2" Margin="0,8,0,0" LastChildFill="False">
+      <TextBlock DockPanel.Dock="Left" Foreground="#AAAAAA" VerticalAlignment="Center"
+                 Margin="0,0,6,0" Text="Level:" />
+      <ComboBox DockPanel.Dock="Left" Width="120" VerticalAlignment="Center"
+                ItemsSource="{Binding LogLevels}"
+                SelectedItem="{Binding SelectedLogLevel}" />
+      <TextBlock DockPanel.Dock="Left" Foreground="#888888" VerticalAlignment="Center"
+                 Margin="16,0,0,0" Text="{Binding StatusText}" />
+      <Button DockPanel.Dock="Right" Content="Close (Esc)" Padding="10,3" Command="{Binding CloseCommand}" IsCancel="True" />
+      <Button DockPanel.Dock="Right" Content="Clear log" Padding="10,3" Margin="0,0,8,0" Command="{Binding ClearCommand}" />
+      <Button DockPanel.Dock="Right" Content="Refresh (F5)" Padding="10,3" Margin="0,0,8,0" Command="{Binding RefreshCommand}" />
+    </DockPanel>
   </Grid>
 </Window>

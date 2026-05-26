@@ -6,6 +6,8 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Serilog.Core;
+using Serilog.Events;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models.Weather;
 
@@ -64,9 +66,12 @@ namespace PictureSlideshowScreensaver.ViewModels
     public Action<string> ShowError { get; set; }
     public event EventHandler RequestClose;
 
-    public ConfigurationViewModel(IWeatherProviderRegistry registry)
+    private readonly LoggingLevelSwitch _levelSwitch;
+
+    public ConfigurationViewModel(IWeatherProviderRegistry registry, LoggingLevelSwitch levelSwitch)
     {
       WeatherProviders = registry?.Available ?? (IReadOnlyList<WeatherProviderDescriptor>)Array.Empty<WeatherProviderDescriptor>();
+      _levelSwitch = levelSwitch;
       Load();
     }
 
@@ -151,6 +156,13 @@ namespace PictureSlideshowScreensaver.ViewModels
           key.SetValue("WeatherProvider", SelectedProvider);
         key.SetValue("LogLevel", SelectedLogLevel ?? "Verbose");
       }
+
+      // Apply the level live as well so the screensaver doesn't need a
+      // restart for the choice to take effect. Same switch the L-viewer
+      // ComboBox drives.
+      if (_levelSwitch is not null &&
+          Enum.TryParse<LogEventLevel>(SelectedLogLevel ?? "Verbose", ignoreCase: true, out var level))
+        _levelSwitch.MinimumLevel = level;
 
       HasUnsavedChanges = false;
       RequestClose?.Invoke(this, EventArgs.Empty);

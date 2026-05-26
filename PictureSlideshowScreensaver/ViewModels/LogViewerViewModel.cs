@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
 using PictureSlideshowScreensaver.Models;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace PictureSlideshowScreensaver.ViewModels
 {
@@ -23,11 +28,28 @@ namespace PictureSlideshowScreensaver.ViewModels
     // makes the editor crawl. The tail is what's useful anyway.
     private const long TailMaxBytes = 256 * 1024;
 
+    private const string RegistryPath = "SOFTWARE\\PictureSlideshowScreensaver";
+
     private readonly Settings _settings;
+    private readonly LoggingLevelSwitch _levelSwitch;
 
     [ObservableProperty] private string _logPath = "(no log file)";
     [ObservableProperty] private string _logText = "";
     [ObservableProperty] private string _statusText = "";
+
+    // Fatal is deliberately omitted — picking it would silence everything
+    // the app emits (no code path writes Log.Fatal as its primary signal).
+    // Matches ConfigurationViewModel.LogLevels.
+    public IReadOnlyList<LogEventLevel> LogLevels { get; } = new[]
+    {
+        LogEventLevel.Verbose,
+        LogEventLevel.Debug,
+        LogEventLevel.Information,
+        LogEventLevel.Warning,
+        LogEventLevel.Error
+    };
+
+    [ObservableProperty] private LogEventLevel _selectedLogLevel;
 
     // Wired by the view: a MessageBox-based error reporter and a
     // confirmation prompt for destructive actions. Kept off the VM so
@@ -36,9 +58,34 @@ namespace PictureSlideshowScreensaver.ViewModels
     public Func<bool> ConfirmClear { get; set; }
     public event EventHandler RequestClose;
 
-    public LogViewerViewModel(Settings settings)
+    public LogViewerViewModel(Settings settings, LoggingLevelSwitch levelSwitch)
     {
       _settings = settings;
+      _levelSwitch = levelSwitch;
+      _selectedLogLevel = levelSwitch.MinimumLevel;
+    }
+
+    // Mutating SelectedLogLevel pokes the live switch immediately AND
+    // persists to Registry so the choice survives a restart (matching what
+    // the Configuration window does on Save). The Settings._logLevel field
+    // is not updated — it's a snapshot of "what we found in registry at
+    // startup" and not consulted again after ConfigureFileLogger ran.
+    partial void OnSelectedLogLevelChanged(LogEventLevel value)
+    {
+      if (_levelSwitch is null)
+        return;
+
+      _levelSwitch.MinimumLevel = value;
+      try
+      {
+        using var key = Registry.CurrentUser.CreateSubKey(RegistryPath);
+        key.SetValue("LogLevel", value.ToString());
+      }
+      catch (Exception ex)
+      {
+        Log.Warning(ex, "Could not persist LogLevel={Level} to Registry", value);
+      }
+      Log.Information("Log level switched to {Level}", value);
     }
 
     [RelayCommand]

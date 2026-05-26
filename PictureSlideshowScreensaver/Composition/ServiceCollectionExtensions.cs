@@ -32,6 +32,12 @@ namespace PictureSlideshowScreensaver.Composition
             // IClock and Settings are screensaver-level concerns.
             services.AddSingleton<IClock, SystemClock>();
             services.AddSingleton<Settings>();
+            // Hot-reloadable Serilog level switch — Settings constructs it and
+            // wires Log.Logger through .ControlledBy(it). Exposed via DI so the
+            // log viewer's level ComboBox and the Configuration window's Save
+            // can both mutate the same instance.
+            services.AddSingleton<Serilog.Core.LoggingLevelSwitch>(
+                sp => sp.GetRequiredService<Settings>().LogLevelSwitch);
             services.AddSingleton<ImagesProvider, LocalImages>();
 
             // Haar cascade XML is copied to output by the <Content> entry
