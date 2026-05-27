@@ -49,7 +49,10 @@ public sealed class NsuTemperatureOverride : ICurrentTemperatureOverride
                 if (string.IsNullOrEmpty(text) || !text.Contains('°'))
                     return null;
 
-                var num = text.Substring(0, text.IndexOf('°')).Trim();
+                // weather.nsu.ru can render the decimal separator as "," or
+                // "." depending on the page locale; normalise to "." so the
+                // InvariantCulture parse works either way.
+                var num = text.Substring(0, text.IndexOf('°')).Trim().Replace(',', '.');
                 return double.TryParse(num, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) ? d : (double?)null;
             }
             catch (Exception ex)
