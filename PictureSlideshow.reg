@@ -10,7 +10,10 @@ Windows Registry Editor Version 5.00
 "ImageFolder"="Z:\\PHOTO_FRAME_STORE\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
-"YandexApiKey"="get_from_bitwarden"
+"YandexApiKeyComment"="get_from_bitwarden"
 "WeatherProvider"="open-meteo"
-"WeatherPollingMinutes"="60"
+"WeatherPollingMinutes"="1"
+"WeatherProviderSecondary"="yandex-api"
+"WeatherPollingMinutesSecondary"="60"
+"WeatherShowProviderBadge"="1"
 

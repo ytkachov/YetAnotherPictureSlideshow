@@ -189,9 +189,22 @@ namespace informers
     private double _humidity = 0.0;
     private WeatherType _weather_type = WeatherType.Undefined;
     private double _pressure = 0.0;
+    private string _source = "";
 
     private WeatherPeriod _weather_period = WeatherPeriod.Undefined;
     private bool _closed;
+
+    // Provider Name → short badge label. Anything not listed falls back
+    // to the first three uppercase chars of the snapshot's Source.
+    private static readonly FrozenDictionary<string, string> _source_labels =
+      new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+      {
+        { "open-meteo",    "OM"  },
+        { "yandex-api",    "Я"   },
+        { "yandex-scrape", "Я*"  },
+        { "ngs-scrape",    "НГС" },
+        { "nsu",           "НГУ" }
+      }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     public WeatherInformer(IWeatherSnapshotStore store)
     {
@@ -253,6 +266,36 @@ namespace informers
         RaisePropertyChanged("Weather_Period");
       }
     }
+
+    /// <summary>Raw provider name (<c>WeatherSnapshot.Source</c>) for the
+    /// currently displayed period. Empty when no data is bound.</summary>
+    public string Source
+    {
+      get { return _source; }
+      private set
+      {
+        if (_source == value)
+          return;
+        _source = value ?? "";
+        RaisePropertyChanged("Source");
+        RaisePropertyChanged("SourceLabel");
+      }
+    }
+
+    /// <summary>Short 2-3 char badge derived from <see cref="Source"/>.
+    /// Bound by the live tile's overlay to surface which tier currently
+    /// drives the screen.</summary>
+    public string SourceLabel
+    {
+      get
+      {
+        if (string.IsNullOrEmpty(_source))
+          return "";
+        return _source_labels.TryGetValue(_source, out var label)
+            ? label
+            : _source.Substring(0, Math.Min(3, _source.Length)).ToUpperInvariant();
+      }
+    }
     public bool Weather_Status_Temperature { get { return _weather_status_temperature; } set { _weather_status_temperature = value; RaisePropertyChanged("Weather_Status_Temperature"); } }
     public bool Weather_Status_Weather { get { return _weather_status_weather; } set { _weather_status_weather = value; RaisePropertyChanged("Weather_Status_Weather"); } }
     public bool Weather_Status_Wind { get { return _weather_status_wind; } set { _weather_status_wind = value; RaisePropertyChanged("Weather_Status_Wind"); } }
@@ -307,6 +350,7 @@ namespace informers
       else Weather_Status_Temperature = false;
 
       ApplyShared(snap.WeatherType, snap.WindDirection, snap.WindSpeedMs, snap.Pressure, snap.Humidity);
+      Source = snap.Source ?? "";
     }
 
     private void ApplyForecast(WeatherForecast forecast, WeatherPeriod period)
@@ -327,6 +371,7 @@ namespace informers
       else Weather_Status_Temperature = false;
 
       ApplyShared(p.WeatherType, p.WindDirection, p.WindSpeedMs, p.Pressure, p.Humidity);
+      Source = forecast.Source ?? "";
     }
 
     private void ApplyShared(WeatherType wt, WindDirection wd, double? wind, double? pressure, double? humidity)
@@ -368,6 +413,7 @@ namespace informers
       Weather_Status_Wind = false;
       Weather_Status_Pressure = false;
       Weather_Status_Humidity = false;
+      Source = "";
     }
 
     public void Close()

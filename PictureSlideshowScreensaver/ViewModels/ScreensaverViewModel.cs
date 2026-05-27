@@ -81,6 +81,11 @@ namespace PictureSlideshowScreensaver.ViewModels
     [ObservableProperty]
     private bool _isForecastVisible;
 
+    // Drives the live tile's "OM" / "Я" / "НГУ" source badge. Read once
+    // from Settings at construction (Registry value WeatherShowProviderBadge);
+    // the badge can't be toggled at runtime today.
+    public bool ShowProviderBadge => _settings.WeatherShowProviderBadge;
+
     [RelayCommand]
     private void ToggleForecast() => IsForecastVisible = !IsForecastVisible;
 

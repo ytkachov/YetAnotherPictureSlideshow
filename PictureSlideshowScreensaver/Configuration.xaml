@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PictureSlideshowScreensaver.Configuration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Yet another picture slideshow - Configuration" Height="430" Width="599" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Closing="Window_Closing" ResizeMode="NoResize" Background="Silver">
+        Title="Yet another picture slideshow - Configuration" Height="580" Width="599" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Closing="Window_Closing" ResizeMode="NoResize" Background="Silver">
     <Grid>
         <Label Content="Choose Image folder:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="lblTitleFolder" VerticalAlignment="Top" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="21,46,0,0" Name="txtFolder" VerticalAlignment="Top" Width="456" Text="{Binding ImageFolder, UpdateSourceTrigger=PropertyChanged}" />
@@ -11,12 +11,21 @@
         <Label Content="Choose Interval:" Height="28" HorizontalAlignment="Left" Margin="12,135,0,0" Name="lblTitleInterval" VerticalAlignment="Top" />
         <Label Content="{Binding IntervalText}" Height="28" HorizontalAlignment="Left" Margin="117,135,0,0" Name="lblInterval" VerticalAlignment="Top" />
         <Slider Height="23" Margin="21,169,12,0" Name="slideInterval" VerticalAlignment="Top" Minimum="3" Maximum="20" Value="{Binding Interval}" IsSnapToTickEnabled="True" />
-        <Label Content="Weather source:" Height="28" HorizontalAlignment="Left" Margin="12,202,0,0" Name="lblTitleWeather" VerticalAlignment="Top" />
+        <Label Content="Weather source (primary):" Height="28" HorizontalAlignment="Left" Margin="12,202,0,0" Name="lblTitleWeather" VerticalAlignment="Top" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,236,0,0" Name="cbWeatherProvider" VerticalAlignment="Top" Width="456"
                   ItemsSource="{Binding WeatherProviders}" SelectedValue="{Binding SelectedProvider}" IsEnabled="{Binding ProviderSelectionEnabled}"
                   DisplayMemberPath="DisplayName" SelectedValuePath="Name" />
-        <Label Content="Log level:" Height="28" HorizontalAlignment="Left" Margin="12,270,0,0" Name="lblTitleLogLevel" VerticalAlignment="Top" />
-        <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,304,0,0" Name="cbLogLevel" VerticalAlignment="Top" Width="200"
+        <Label Content="Weather source (secondary, fallback when primary stalls):" Height="28" HorizontalAlignment="Left" Margin="12,270,0,0" Name="lblTitleWeatherSecondary" VerticalAlignment="Top" />
+        <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,304,0,0" Name="cbWeatherProviderSecondary" VerticalAlignment="Top" Width="456"
+                  ItemsSource="{Binding SecondaryProviderItems}" SelectedValue="{Binding SelectedSecondaryProvider}"
+                  DisplayMemberPath="DisplayName" SelectedValuePath="Name" />
+        <Label Content="Secondary polling interval (minutes):" Height="28" HorizontalAlignment="Left" Margin="12,338,0,0" Name="lblTitleSecondaryMinutes" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="21,372,0,0" Name="txtSecondaryMinutes" VerticalAlignment="Top" Width="80"
+                 Text="{Binding SecondaryPollingMinutes, UpdateSourceTrigger=LostFocus}" />
+        <CheckBox Content="Show provider badge on the live weather tile" HorizontalAlignment="Left" Margin="21,405,0,0" Name="chkShowProviderBadge" VerticalAlignment="Top"
+                  IsChecked="{Binding ShowProviderBadge}" />
+        <Label Content="Log level:" Height="28" HorizontalAlignment="Left" Margin="12,438,0,0" Name="lblTitleLogLevel" VerticalAlignment="Top" />
+        <ComboBox Height="23" HorizontalAlignment="Left" Margin="21,472,0,0" Name="cbLogLevel" VerticalAlignment="Top" Width="200"
                   ItemsSource="{Binding LogLevels}" SelectedValue="{Binding SelectedLogLevel}" />
         <Button Content="Save" HorizontalAlignment="Left" Margin="12,0,0,10" Name="bSave" Width="93" Command="{Binding SaveCommand}" Height="41" VerticalAlignment="Bottom" />
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="111,0,0,10" Name="bCancel" Width="93" Command="{Binding CancelCommand}" Height="41" VerticalAlignment="Bottom" />

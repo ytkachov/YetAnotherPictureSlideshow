@@ -42,6 +42,19 @@ namespace PictureSlideshowScreensaver.Models
     // or freeze the widget for days.
     public int WeatherPollingMinutes = 60;
 
+    // Optional secondary weather provider used by WeatherPollingService
+    // as a fallback when the primary loop's latest data ages past
+    // 2 × WeatherPollingMinutes. Empty = no secondary (only primary +
+    // NSU last-resort temperature remain). When set, the secondary runs
+    // on its own cadence (WeatherPollingMinutesSecondary).
+    public string WeatherProviderSecondary = "";
+    public int WeatherPollingMinutesSecondary = 30;
+
+    // Tiny "OM" / "Я" / "НГУ" chip overlaid on the live weather tile
+    // showing which tier is currently driving the displayed snapshot.
+    // 1 = visible (default), 0 = hidden.
+    public bool WeatherShowProviderBadge = true;
+
     // Serilog minimum level for the configured file sinks. Defaults to
     // Verbose to preserve existing behaviour; the Configuration window
     // lets the user dial it down (Information / Warning) once they're
@@ -104,6 +117,12 @@ namespace PictureSlideshowScreensaver.Models
         WeatherProvider = providerRaw.Trim();
       YandexApiKey = (string)key.GetValue("YandexApiKey");
       WeatherPollingMinutes = Math.Clamp(ReadInt(key, "WeatherPollingMinutes", WeatherPollingMinutes), 1, 1440);
+
+      var secondaryRaw = (string)key.GetValue("WeatherProviderSecondary");
+      if (!string.IsNullOrWhiteSpace(secondaryRaw))
+        WeatherProviderSecondary = secondaryRaw.Trim();
+      WeatherPollingMinutesSecondary = Math.Clamp(ReadInt(key, "WeatherPollingMinutesSecondary", WeatherPollingMinutesSecondary), 1, 1440);
+      WeatherShowProviderBadge = ReadInt(key, "WeatherShowProviderBadge", WeatherShowProviderBadge ? 1 : 0) != 0;
 
       var logLevelRaw = (string)key.GetValue("LogLevel");
       if (!string.IsNullOrWhiteSpace(logLevelRaw) &&

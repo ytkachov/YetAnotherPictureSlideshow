@@ -105,7 +105,7 @@
               <RowDefinition />
               <RowDefinition />
             </Grid.RowDefinitions>
-            <presenters:Weather Grid.Row="0" x:Name="W_now" Informer="{Binding Forecast.Now}" Show="TemperatureValue" PictureSize="50" FontSize="40" />
+            <presenters:Weather Grid.Row="0" x:Name="W_now" Informer="{Binding Forecast.Now}" Show="TemperatureValue" PictureSize="50" FontSize="40" ShowSource="{Binding ShowProviderBadge}" />
             <!-- <CustomControls:OutlinedTextBlock Grid.Row="1" Visibility="Visible" Text="{Binding Path=Parent.W_now.Temperature}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Stroke="Black" Fill="White" StrokeThickness="2" FontFamily="Segoe UI Light" FontSize="30" /> -->
           </Grid>
         </StackPanel>

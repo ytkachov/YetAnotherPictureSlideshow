@@ -42,6 +42,21 @@ namespace PictureSlideshowScreensaver.ViewModels
     [ObservableProperty]
     private string _selectedProvider = DefaultWeatherProvider;
 
+    // Empty string = no secondary (the "(none)" item at the top of
+    // SecondaryProviderItems). Anything else must match a registered
+    // provider name; same SelectedValuePath="Name" pattern as the primary.
+    [ObservableProperty]
+    private string _selectedSecondaryProvider = "";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SecondaryIntervalText))]
+    private int _secondaryPollingMinutes = 30;
+
+    [ObservableProperty]
+    private bool _showProviderBadge = true;
+
+    public string SecondaryIntervalText => SecondaryPollingMinutes.ToString(CultureInfo.InvariantCulture) + " min";
+
     // Stored as the Serilog level name; the ComboBox is populated from
     // LogLevels. The list deliberately omits Fatal — picking "log only
     // fatal" silences everything the screensaver actually emits.
@@ -53,6 +68,12 @@ namespace PictureSlideshowScreensaver.ViewModels
     public string IntervalText => Interval.ToString(CultureInfo.InvariantCulture) + " seconds";
 
     public IReadOnlyList<WeatherProviderDescriptor> WeatherProviders { get; }
+
+    // Same descriptors as WeatherProviders, with a synthetic "(none)"
+    // entry prepended so the user can disable the secondary tier. Name=""
+    // is the sentinel persisted to the Registry as "no secondary".
+    public IReadOnlyList<WeatherProviderDescriptor> SecondaryProviderItems { get; }
+
     public bool ProviderSelectionEnabled => WeatherProviders.Count > 0;
 
     // True once the user touches anything; the window's Closing handler
@@ -71,6 +92,12 @@ namespace PictureSlideshowScreensaver.ViewModels
     public ConfigurationViewModel(IWeatherProviderRegistry registry, LoggingLevelSwitch levelSwitch)
     {
       WeatherProviders = registry?.Available ?? (IReadOnlyList<WeatherProviderDescriptor>)Array.Empty<WeatherProviderDescriptor>();
+      var secondaryItems = new List<WeatherProviderDescriptor>(WeatherProviders.Count + 1)
+      {
+        new WeatherProviderDescriptor("", "(none)", WeatherCapabilities.None)
+      };
+      secondaryItems.AddRange(WeatherProviders);
+      SecondaryProviderItems = secondaryItems;
       _levelSwitch = levelSwitch;
       Load();
     }
@@ -93,6 +120,16 @@ namespace PictureSlideshowScreensaver.ViewModels
           if (!string.IsNullOrEmpty(stored))
             SelectedProvider = stored;
 
+          var storedSecondary = (string)key.GetValue("WeatherProviderSecondary");
+          SelectedSecondaryProvider = storedSecondary ?? "";
+
+          if (int.TryParse((string)key.GetValue("WeatherPollingMinutesSecondary"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var sm))
+            SecondaryPollingMinutes = Math.Clamp(sm, 1, 1440);
+
+          var badgeRaw = (string)key.GetValue("WeatherShowProviderBadge");
+          if (!string.IsNullOrEmpty(badgeRaw) && int.TryParse(badgeRaw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var badge))
+            ShowProviderBadge = badge != 0;
+
           var storedLevel = (string)key.GetValue("LogLevel");
           if (!string.IsNullOrEmpty(storedLevel) && LogLevels.Contains(storedLevel))
             SelectedLogLevel = storedLevel;
@@ -102,6 +139,12 @@ namespace PictureSlideshowScreensaver.ViewModels
         // ComboBox blank — fall back to the first available provider.
         if (WeatherProviders.Count > 0 && WeatherProviders.All(p => p.Name != SelectedProvider))
           SelectedProvider = WeatherProviders[0].Name;
+
+        // Same guard for the secondary — but "" ("(none)") is a valid choice,
+        // so only normalise when a stored non-empty name no longer exists.
+        if (!string.IsNullOrEmpty(SelectedSecondaryProvider)
+            && WeatherProviders.All(p => p.Name != SelectedSecondaryProvider))
+          SelectedSecondaryProvider = "";
 
         HasUnsavedChanges = false;
       }
@@ -154,6 +197,9 @@ namespace PictureSlideshowScreensaver.ViewModels
         key.SetValue("Interval", Interval.ToString(CultureInfo.InvariantCulture));
         if (!string.IsNullOrEmpty(SelectedProvider))
           key.SetValue("WeatherProvider", SelectedProvider);
+        key.SetValue("WeatherProviderSecondary", SelectedSecondaryProvider ?? "");
+        key.SetValue("WeatherPollingMinutesSecondary", SecondaryPollingMinutes.ToString(CultureInfo.InvariantCulture));
+        key.SetValue("WeatherShowProviderBadge", ShowProviderBadge ? "1" : "0");
         key.SetValue("LogLevel", SelectedLogLevel ?? "Verbose");
       }
 
@@ -179,6 +225,9 @@ namespace PictureSlideshowScreensaver.ViewModels
     partial void OnFinfoFolderChanged(string value) => MarkDirty();
     partial void OnIntervalChanged(double value) => MarkDirty();
     partial void OnSelectedProviderChanged(string value) => MarkDirty();
+    partial void OnSelectedSecondaryProviderChanged(string value) => MarkDirty();
+    partial void OnSecondaryPollingMinutesChanged(int value) => MarkDirty();
+    partial void OnShowProviderBadgeChanged(bool value) => MarkDirty();
     partial void OnSelectedLogLevelChanged(string value) => MarkDirty();
 
     private void MarkDirty()

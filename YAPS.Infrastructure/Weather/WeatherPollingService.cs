@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -12,22 +11,35 @@ using Yaps.Core.Models.Weather;
 namespace Yaps.Infrastructure.Weather;
 
 /// <summary>
-/// Owns the polling cadence for the screensaver. Resolves the configured
-/// provider once per tick (so a hot-swap landing in Stage 6 only needs to
-/// flip <c>WeatherOptions.SelectedProvider</c> through IOptionsMonitor),
-/// applies every registered <see cref="ICurrentTemperatureOverride"/>
-/// to the result, and writes the snapshot into
-/// <see cref="IWritableWeatherSnapshotStore"/>. Errors are logged but
-/// never thrown out of <see cref="ExecuteAsync"/> — an unhandled
-/// exception escaping <see cref="BackgroundService"/> tears down the
-/// whole host.
+/// Dual-tier polling with last-resort temperature fallback. Three
+/// independent loops run side-by-side: <b>primary</b> and <b>secondary</b>
+/// <see cref="IWeatherProvider"/> on their own cadences, plus an
+/// <see cref="ICurrentTemperatureOverride"/> loop (NSU scraper) on
+/// <c>max(primary, 5 min)</c>. After every tick the loop calls
+/// <see cref="PublishPresentedAsync"/>, which picks the freshest tier by
+/// priority — primary → secondary → NSU-only — and writes the
+/// combined snapshot/forecast to <see cref="IWritableWeatherSnapshotStore"/>.
+/// The store stays single-snapshot from the UI's perspective; the badge on
+/// the live tile reads <see cref="WeatherSnapshot.Source"/> to surface
+/// which tier is currently driving the screen.
 /// </summary>
 public sealed class WeatherPollingService : BackgroundService
 {
+    // Chrome-headless spinup inside NsuTemperatureOverride is heavy; with
+    // primary at 1 min the NSU loop would otherwise boot Selenium every
+    // 60 s for a number that doesn't actually move that fast. 5 min is the
+    // practical floor.
+    private static readonly TimeSpan MinNsuInterval = TimeSpan.FromMinutes(5);
+
     private readonly IWeatherProviderRegistry _registry;
     private readonly IEnumerable<ICurrentTemperatureOverride> _overrides;
     private readonly IWritableWeatherSnapshotStore _store;
     private readonly IOptions<WeatherOptions> _options;
+    private readonly SemaphoreSlim _publishGate = new(1, 1);
+
+    private TierState? _primary;
+    private TierState? _secondary;
+    private NsuReading? _nsu;
 
     public WeatherPollingService(
         IWeatherProviderRegistry registry,
@@ -44,24 +56,93 @@ public sealed class WeatherPollingService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         // Yield so Host.StartAsync returns promptly; the rest of the host
-        // can finish coming up while we make the first network call.
+        // can finish coming up while the first network call goes out.
         await Task.Yield();
 
-        var interval = _options.Value.PollingInterval;
+        var opts = _options.Value;
+        var loops = new List<Task>(3);
+
+        IWeatherProvider? primary = TryResolve(opts.SelectedProvider, "primary");
+        if (primary is not null)
+            loops.Add(RunLoopAsync("primary", opts.PollingInterval,
+                ct => TierTickAsync(primary, isPrimary: true, ct), stoppingToken));
+
+        if (!string.IsNullOrWhiteSpace(opts.SecondaryProvider))
+        {
+            if (string.Equals(opts.SecondaryProvider, opts.SelectedProvider, StringComparison.Ordinal))
+            {
+                Log.Information("Secondary weather provider '{Name}' matches primary; skipping secondary loop",
+                    opts.SecondaryProvider);
+            }
+            else
+            {
+                IWeatherProvider? secondary = TryResolve(opts.SecondaryProvider!, "secondary");
+                if (secondary is not null)
+                    loops.Add(RunLoopAsync("secondary", opts.SecondaryPollingInterval,
+                        ct => TierTickAsync(secondary, isPrimary: false, ct), stoppingToken));
+            }
+        }
+
+        var nsuInterval = opts.PollingInterval > MinNsuInterval ? opts.PollingInterval : MinNsuInterval;
+        loops.Add(RunLoopAsync("nsu", nsuInterval, NsuTickAsync, stoppingToken));
+
+        try
+        {
+            await Task.WhenAll(loops).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            // Normal shutdown — one of the loops' Task.Delay caught the
+            // cancellation and rethrew.
+        }
+    }
+
+    private IWeatherProvider? TryResolve(string name, string label)
+    {
+        try
+        {
+            return _registry.Resolve(name);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Log.Error(ex, "Weather {Tier} provider '{Name}' is not registered; loop disabled", label, name);
+            return null;
+        }
+    }
+
+    private async Task RunLoopAsync(string label, TimeSpan interval, Func<CancellationToken, Task> tick, CancellationToken stoppingToken)
+    {
+        // Each loop yields onto its own worker so the three actually run
+        // in parallel instead of queueing on this method's continuation
+        // chain.
+        await Task.Yield();
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await PollOnceAsync(stoppingToken).ConfigureAwait(false);
+                await tick(stoppingToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
-                // Normal shutdown; don't log as an error.
                 break;
             }
             catch (Exception ex)
             {
-                Log.Warning(ex, "WeatherPollingService tick failed");
+                Log.Warning(ex, "Weather {Loop} loop tick failed", label);
+            }
+
+            try
+            {
+                await PublishPresentedAsync(stoppingToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Weather PublishPresented after {Loop} tick failed", label);
             }
 
             try
@@ -75,20 +156,8 @@ public sealed class WeatherPollingService : BackgroundService
         }
     }
 
-    private async Task PollOnceAsync(CancellationToken ct)
+    private async Task TierTickAsync(IWeatherProvider provider, bool isPrimary, CancellationToken ct)
     {
-        var opts = _options.Value;
-        IWeatherProvider provider;
-        try
-        {
-            provider = _registry.Resolve(opts.SelectedProvider);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            Log.Error(ex, "Configured weather provider '{Name}' is not registered; nothing to do", opts.SelectedProvider);
-            return;
-        }
-
         WeatherSnapshot? current = null;
         WeatherForecast? forecast = null;
 
@@ -105,12 +174,9 @@ public sealed class WeatherPollingService : BackgroundService
             catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
-                Log.Warning(ex, "{Provider} GetCurrentAsync failed", opts.SelectedProvider);
+                Log.Warning(ex, "{Provider} GetCurrentAsync failed", provider.Name);
             }
         }
-
-        if (current is not null && opts.ApplyCurrentTemperatureOverride)
-            current = await ApplyOverridesAsync(current, ct).ConfigureAwait(false);
 
         if (provider.Capabilities.HasFlag(WeatherCapabilities.Forecast))
         {
@@ -121,25 +187,32 @@ public sealed class WeatherPollingService : BackgroundService
             catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
-                Log.Warning(ex, "{Provider} GetForecastAsync failed", opts.SelectedProvider);
+                Log.Warning(ex, "{Provider} GetForecastAsync failed", provider.Name);
             }
         }
 
-        // Only commit if at least one feed produced data — otherwise keep
-        // the previous (possibly older) snapshot instead of nulling the UI.
-        if (current is not null || forecast is not null)
-        {
-            var nextCurrent = current ?? _store.Current;
-            var nextForecast = forecast ?? _store.Forecast;
-            _store.Set(nextCurrent, nextForecast);
-            Log.Debug("Weather poll: provider={Provider} current={HasCurrent} forecast={HasForecast}",
-                opts.SelectedProvider, current is not null, forecast is not null);
-        }
+        if (current is null && forecast is null)
+            return;
+
+        // Merge with the previous tier state so a tick that only refreshes
+        // one half (e.g. forecast OK, current failed) doesn't drop the other.
+        var previous = isPrimary ? Volatile.Read(ref _primary) : Volatile.Read(ref _secondary);
+        var state = new TierState(
+            current ?? previous?.Snapshot,
+            forecast ?? previous?.Forecast,
+            DateTimeOffset.UtcNow);
+
+        if (isPrimary)
+            Volatile.Write(ref _primary, state);
+        else
+            Volatile.Write(ref _secondary, state);
+
+        Log.Debug("Weather {Tier} tick: provider={Provider} current={HasCurrent} forecast={HasForecast}",
+            isPrimary ? "primary" : "secondary", provider.Name, current is not null, forecast is not null);
     }
 
-    private async Task<WeatherSnapshot> ApplyOverridesAsync(WeatherSnapshot baseline, CancellationToken ct)
+    private async Task NsuTickAsync(CancellationToken ct)
     {
-        var snapshot = baseline;
         foreach (var ov in _overrides)
         {
             double? value;
@@ -157,13 +230,91 @@ public sealed class WeatherPollingService : BackgroundService
             if (value is null)
                 continue;
 
-            Log.Debug("Override '{Source}': {Old} -> {New}", ov.SourceName, snapshot.TemperatureCelsius, value);
-            snapshot = snapshot with
-            {
-                TemperatureCelsius = value,
-                TemperatureOverrideApplied = ov.SourceName
-            };
+            Volatile.Write(ref _nsu, new NsuReading(value.Value, ov.SourceName, DateTimeOffset.UtcNow));
+            Log.Debug("Temperature override '{Source}' updated: {Value}", ov.SourceName, value);
         }
-        return snapshot;
     }
+
+    private async Task PublishPresentedAsync(CancellationToken ct)
+    {
+        await _publishGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            var opts = _options.Value;
+            var now = DateTimeOffset.UtcNow;
+            var primary = Volatile.Read(ref _primary);
+            var secondary = Volatile.Read(ref _secondary);
+            var nsu = Volatile.Read(ref _nsu);
+
+            // 2× interval freshness window: one missed tick is still
+            // tolerated as "fresh enough"; two consecutive misses bumps
+            // the tier out of consideration for the next.
+            var primaryFresh = primary is not null
+                               && now - primary.SuccessAtUtc <= opts.PollingInterval + opts.PollingInterval;
+            var secondaryFresh = secondary is not null
+                                 && now - secondary.SuccessAtUtc <= opts.SecondaryPollingInterval + opts.SecondaryPollingInterval;
+            var nsuEffectiveInterval = opts.PollingInterval > MinNsuInterval ? opts.PollingInterval : MinNsuInterval;
+            var nsuFresh = nsu is not null
+                           && now - nsu.SuccessAtUtc <= nsuEffectiveInterval + nsuEffectiveInterval;
+
+            WeatherSnapshot? current;
+            WeatherForecast? forecast;
+
+            if (primaryFresh)
+            {
+                current = primary!.Snapshot;
+                forecast = primary.Forecast;
+            }
+            else if (secondaryFresh)
+            {
+                current = secondary!.Snapshot;
+                forecast = secondary.Forecast;
+            }
+            else if (nsuFresh)
+            {
+                // Last-resort: temperature only, every other field stays
+                // null so the UI hides those tiles via the existing
+                // WeatherStatusToVisibility converter. Source names the
+                // override so the badge flips to "НГУ".
+                current = new WeatherSnapshot
+                {
+                    TemperatureCelsius = nsu!.Temperature,
+                    Source = nsu.SourceName,
+                    ObservedAtUtc = nsu.SuccessAtUtc
+                };
+                forecast = null;
+            }
+            else
+            {
+                current = null;
+                forecast = null;
+            }
+
+            // Apply the NSU temperature override on top of provider-sourced
+            // snapshots (Stage 5 semantics). When the snapshot itself IS the
+            // NSU fallback the override would be a no-op; skip it then so
+            // the badge keeps reading "НГУ" rather than reverting to whichever
+            // provider's Source the snapshot carried earlier.
+            if (current is not null
+                && nsuFresh
+                && opts.ApplyCurrentTemperatureOverride
+                && !string.Equals(current.Source, nsu!.SourceName, StringComparison.Ordinal))
+            {
+                current = current with
+                {
+                    TemperatureCelsius = nsu.Temperature,
+                    TemperatureOverrideApplied = nsu.SourceName
+                };
+            }
+
+            _store.Set(current, forecast);
+        }
+        finally
+        {
+            _publishGate.Release();
+        }
+    }
+
+    private sealed record TierState(WeatherSnapshot? Snapshot, WeatherForecast? Forecast, DateTimeOffset SuccessAtUtc);
+    private sealed record NsuReading(double Temperature, string SourceName, DateTimeOffset SuccessAtUtc);
 }

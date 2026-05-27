@@ -90,6 +90,9 @@ namespace PictureSlideshowScreensaver.Composition
                 opts.SelectedProvider = string.IsNullOrWhiteSpace(settings.WeatherProvider) ? "open-meteo" : settings.WeatherProvider;
                 opts.YandexApiKey = settings.YandexApiKey;
                 opts.PollingInterval = TimeSpan.FromMinutes(settings.WeatherPollingMinutes);
+                opts.SecondaryProvider = string.IsNullOrWhiteSpace(settings.WeatherProviderSecondary) ? null : settings.WeatherProviderSecondary;
+                opts.SecondaryPollingInterval = TimeSpan.FromMinutes(settings.WeatherPollingMinutesSecondary);
+                opts.ShowProviderBadge = settings.WeatherShowProviderBadge;
             });
             services.AddHostedService<WeatherPollingService>();
 

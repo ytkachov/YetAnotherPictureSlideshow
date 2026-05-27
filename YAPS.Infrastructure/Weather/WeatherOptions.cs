@@ -24,6 +24,23 @@ public sealed class WeatherOptions
     public string? YandexApiKey { get; set; }
     public bool ApplyCurrentTemperatureOverride { get; set; } = true;
 
+    // Optional second-tier source. When the primary loop's most recent
+    // success is older than 2 × PollingInterval the polling service falls
+    // back to whatever the secondary loop last produced. Null/empty disables
+    // the secondary loop entirely. Secondary may have its own cadence
+    // (typically slower than the primary — it's the cheap "always have
+    // SOMETHING fresh" heartbeat behind the primary).
+    public string? SecondaryProvider { get; set; }
+    public TimeSpan SecondaryPollingInterval { get; set; } = TimeSpan.FromMinutes(30);
+
+    // Last-resort tier: when both primary AND secondary are stale, the
+    // polling service synthesises a temperature-only snapshot from the
+    // most recent reading produced by the registered
+    // ICurrentTemperatureOverride implementations (today: NSU scraper).
+    // The badge on the live tile then names "nsu" so the screen shows
+    // the source visually flipped to the fallback.
+    public bool ShowProviderBadge { get; set; } = true;
+
     // Akademgorodok coordinates — same defaults as the legacy
     // YandexApiReader. Override via Registry when deploying elsewhere.
     public double Latitude { get; set; } = 54.85194397;

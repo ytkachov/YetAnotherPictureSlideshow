@@ -17,8 +17,21 @@
        widest content across all tiles, replacing the old measurement
        timer that cycled a hidden W_Invisible through every period.
        Auto sizing with SharedSizeGroup ignores Collapsed children, so
-       a missing-metric tile still aligns with its neighbours. -->
+       a missing-metric tile still aligns with its neighbours.
+
+       Outer two-column Grid wraps the 5-column tile grid in col 0 and
+       the provider-source badge in col 1 so the badge sits to the right
+       of the H tile instead of overlaying it. The badge column is Auto
+       width and Collapsed-friendly: when ShowSource=False the badge
+       takes 0 width and the tile row sits flush against the parent.
+       Only W_now in Screensaver.xaml sets ShowSource=True; forecast
+       tiles inherit the default false to avoid 13 chips on the overlay. -->
   <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    <Grid Grid.Column="0">
     <Grid.Resources>
       <Style TargetType="CustomControls:OutlinedTextBlock">
         <Setter Property="FontFamily" Value="{Binding FontFamily}" />
@@ -105,5 +118,19 @@
         </Grid>
       </StackPanel>
     </Border>
+    </Grid>
+    <!-- Tier badge — lives in its own column to the right of the H tile.
+         WeatherStatusToVisibility is reused for the bool→Visibility
+         conversion (it tolerates UnsetValue when the parent DataContext
+         hasn't pushed Informer yet). -->
+    <CustomControls:OutlinedTextBlock Grid.Column="1" x:Name="SourceBadge"
+        Text="{Binding Informer.SourceLabel}"
+        Visibility="{Binding ShowSource, Converter={informers:WeatherStatusToVisibility}}"
+        HorizontalAlignment="Left" VerticalAlignment="Top"
+        FontFamily="{Binding FontFamily}"
+        Fill="{Binding FillColor}" Stroke="{Binding StrokeColor}"
+        StrokeThickness="1"
+        FontSize="{c:Binding FontSize * 0.35}"
+        Margin="4,2,0,0" />
   </Grid>
 </UserControl>

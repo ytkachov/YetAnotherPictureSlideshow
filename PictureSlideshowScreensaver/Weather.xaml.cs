@@ -81,6 +81,7 @@ namespace presenters
 
     public static readonly DependencyProperty ShowProperty = DependencyProperty.Register("Show", typeof(ShowWhat), typeof(Weather), new UIPropertyMetadata(ShowWhat.TemperatureRange));
     public static readonly DependencyProperty InformerProperty = DependencyProperty.Register("Informer", typeof(WeatherInformer), typeof(Weather), new PropertyMetadata(null));
+    public static readonly DependencyProperty ShowSourceProperty = DependencyProperty.Register("ShowSource", typeof(bool), typeof(Weather), new UIPropertyMetadata(false));
     public static readonly DependencyProperty PictureSizeProperty = DependencyProperty.Register("PictureSize", typeof(double), typeof(Weather), new UIPropertyMetadata(40.0));
     public static readonly DependencyProperty ChildMarginProperty = DependencyProperty.Register("ChildMargin", typeof(double), typeof(Weather), new UIPropertyMetadata(2.0));
     public static readonly DependencyProperty ChildBorderThicknessProperty = DependencyProperty.Register("ChildBorderThickness", typeof(double), typeof(Weather), new UIPropertyMetadata(2.0));
@@ -99,6 +100,16 @@ namespace presenters
     {
       get { return (WeatherInformer)GetValue(InformerProperty); }
       set { SetValueDP(InformerProperty, value); }
+    }
+
+    /// <summary>Only the live "now" tile sets this to true so the small
+    /// source badge appears in its top-right. Forecast tiles share the
+    /// UserControl but keep ShowSource at the default false to avoid
+    /// 13 chips smeared across the forecast overlay.</summary>
+    public bool ShowSource
+    {
+      get { return (bool)GetValue(ShowSourceProperty); }
+      set { SetValueDP(ShowSourceProperty, value); }
     }
 
     public double PictureSize
