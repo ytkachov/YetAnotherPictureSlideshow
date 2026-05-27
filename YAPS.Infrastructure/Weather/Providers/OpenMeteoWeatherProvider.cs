@@ -78,7 +78,7 @@ public sealed class OpenMeteoWeatherProvider : IWeatherProvider
             TemperatureCelsius = cur.Temperature2m,
             WeatherType = WeatherTypeMap.Lookup(WeatherTypeMap.OpenMeteoWmo, cur.WeatherCode),
             WindDirection = WindDirectionMap.FromDegrees(cur.WindDirection10m),
-            WindSpeedMs = cur.WindSpeed10m,
+            WindSpeedMs = Round1(cur.WindSpeed10m),
             Pressure = ToMmHg(cur.SurfacePressureHpa),
             Humidity = cur.RelativeHumidity2m,
             ObservedAtUtc = DateTimeOffset.UtcNow,
@@ -202,7 +202,7 @@ public sealed class OpenMeteoWeatherProvider : IWeatherProvider
             Period = period,
             Low = low,
             High = high,
-            WindSpeedMs = windCount > 0 ? windSum / windCount : null,
+            WindSpeedMs = windCount > 0 ? Round1(windSum / windCount) : null,
             WindDirection = windDirCount > 0 ? WindDirectionMap.FromDegrees(windDirSum / windDirCount) : WindDirection.Undefined,
             Pressure = pressureCount > 0 ? ToMmHg(pressureSum / pressureCount) : null,
             Humidity = humidityCount > 0 ? humiditySum / humidityCount : null,
@@ -217,6 +217,11 @@ public sealed class OpenMeteoWeatherProvider : IWeatherProvider
     // integer mmHg; rounding here keeps the displayed value in the same shape
     // instead of bleeding the hPa→mmHg conversion's 11 trailing decimals.
     private static double? ToMmHg(double? hpa) => hpa is double v ? Math.Round(v * HpaToMmHg) : null;
+
+    // Other providers (Yandex API, NGS scrape) round wind speed to one
+    // decimal; Open-Meteo returns the raw m/s with two, so the displayed
+    // value here gets a trailing digit the rest of the UI never shows.
+    private static double? Round1(double? ms) => ms is double v ? Math.Round(v, 1) : null;
 
     // Open-Meteo emits times like "2026-05-26T10:00" already shifted to the
     // requested timezone (we always pass timezone=auto). DateTime.Parse with
