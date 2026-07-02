@@ -11,8 +11,9 @@ namespace Yaps.Infrastructure.Weather;
 /// Looks providers up by name out of the DI container. Resolution is
 /// deferred (we never call <see cref="GetRequiredKeyedService"/> in the
 /// ctor) so a missing impl shows up only when actually requested — which
-/// matters when WeatherCollector wants one provider and the screensaver
-/// wants another, with both sharing the same registration extension.
+/// matters when different hosts (the screensaver and the WeatherCrawler
+/// debug harness) select different providers while sharing the same
+/// registration extension.
 /// </summary>
 public sealed class WeatherProviderRegistry : IWeatherProviderRegistry
 {
