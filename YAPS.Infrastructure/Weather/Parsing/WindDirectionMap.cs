@@ -26,32 +26,6 @@ public static class WindDirectionMap
         ["sw"] = WindDirection.SW
     }.ToFrozenDictionary();
 
-    // Yandex Pogoda HTML — Cyrillic single-letter abbreviations.
-    public static readonly FrozenDictionary<string, WindDirection> YandexHtml = new Dictionary<string, WindDirection>
-    {
-        ["С"]  = WindDirection.N,
-        ["В"]  = WindDirection.E,
-        ["Ю"]  = WindDirection.S,
-        ["З"]  = WindDirection.W,
-        ["СВ"] = WindDirection.NE,
-        ["СЗ"] = WindDirection.NW,
-        ["ЮВ"] = WindDirection.SE,
-        ["ЮЗ"] = WindDirection.SW
-    }.ToFrozenDictionary();
-
-    // NGS Pogoda HTML — CSS class suffix on icon-wind-* spans.
-    public static readonly FrozenDictionary<string, WindDirection> Ngs = new Dictionary<string, WindDirection>
-    {
-        ["north"]      = WindDirection.N,
-        ["north_east"] = WindDirection.NE,
-        ["east"]       = WindDirection.E,
-        ["south_east"] = WindDirection.SE,
-        ["south"]      = WindDirection.S,
-        ["south_west"] = WindDirection.SW,
-        ["west"]       = WindDirection.W,
-        ["north_west"] = WindDirection.NW
-    }.ToFrozenDictionary();
-
     public static WindDirection Lookup(FrozenDictionary<string, WindDirection> map, string? key)
         => key is not null && map.TryGetValue(key, out var dir) ? dir : WindDirection.Undefined;
 

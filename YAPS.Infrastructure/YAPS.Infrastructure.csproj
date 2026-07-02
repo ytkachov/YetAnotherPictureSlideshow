@@ -26,8 +26,6 @@
     <PackageReference Include="Microsoft.ML.OnnxRuntime" />
     <PackageReference Include="OpenCvSharp4" />
     <PackageReference Include="OpenCvSharp4.Extensions" />
-    <PackageReference Include="Selenium.Support" />
-    <PackageReference Include="Selenium.WebDriver" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>

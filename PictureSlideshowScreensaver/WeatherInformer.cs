@@ -201,8 +201,6 @@ namespace informers
       {
         { "open-meteo",    "OM"  },
         { "yandex-api",    "Я"   },
-        { "yandex-scrape", "Я*"  },
-        { "ngs-scrape",    "НГС" },
         { "nsu",           "НГУ" }
       }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 

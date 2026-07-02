@@ -18,9 +18,10 @@ Built to run unattended on a digital photo frame.
 - Face detection via OpenCvSharp Haar cascade; detected face counts
   drive small accent glyphs on the overlay.
 - Weather subsystem with pluggable providers (Open-Meteo, Yandex
-  Weather API, Yandex Pogoda scrape, NGS Pogoda scrape) and a layered
-  NSU point-thermometer override for current temperature. Default is
-  Open-Meteo — no API key, generous free-tier quota.
+  Weather API) and a layered NSU point-thermometer override for current
+  temperature. Default is Open-Meteo — no API key, generous free-tier
+  quota. Every provider and the NSU override are plain HTTP — no browser
+  or web-driver is involved.
 - Companion utilities: `GeoTagger` (batch reverse-geocode a folder),
   `WeatherCrawler` (one-shot debug fetch), `SlideshowLouncher`
   (auto-restart helper).
@@ -29,10 +30,8 @@ Built to run unattended on a digital photo frame.
 
 - Windows 10 / 11.
 - .NET 8 SDK to build, .NET 8 Desktop Runtime to run.
-- Google Chrome or Microsoft Edge installed — required only by the
-  Selenium-based weather providers (`yandex-scrape`, `ngs-scrape`) and
-  the NSU temperature override. The default `yandex-api` provider is a
-  plain HTTP call and needs no browser.
+- No browser or web-driver required — every weather source (providers
+  and the NSU override) is a plain HTTP call.
 
 ## Building
 
@@ -82,7 +81,7 @@ double-click. Notable keys:
 | `Interval` | string (seconds) | Time between photo transitions |
 | `FadeTime` | string (ms) | Cross-fade duration |
 | `PhotosPerFolder` | string | How many random photos from one folder before switching folders |
-| `WeatherProvider` | string | `open-meteo` (default), `yandex-api`, `yandex-scrape`, or `ngs-scrape` |
+| `WeatherProvider` | string | `open-meteo` (default) or `yandex-api` |
 | `YandexApiKey` | string | Yandex Weather API key (only needed by `yandex-api`) |
 | `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
@@ -99,7 +98,7 @@ themselves rather than crashing the slideshow).
 
 ```
 YAPS.Core                    net8.0          POCOs, abstractions, no Windows deps
-YAPS.Infrastructure          net8.0-windows  Concrete impls (HTTP, OpenCV, Selenium)
+YAPS.Infrastructure          net8.0-windows  Concrete impls (HTTP, OpenCV)
 PictureSlideshowScreensaver  net8.0-windows  WPF host + composition root (UseWPF)
 WeatherCrawler               net8.0-windows  Dev harness for weather providers
 GeoTagger                    net8.0-windows  Batch reverse-geocoding console
@@ -120,9 +119,8 @@ The app is composed via `Microsoft.Extensions.Hosting` with a single
 - `YAPS.Core` holds the contracts and POCOs (no WPF, no Windows
   dependencies; targets `net8.0` so the layer stays portable).
 - `YAPS.Infrastructure` holds the implementations that depend on
-  Windows-only stacks: `HttpClient`-based geocoder and weather
-  provider, OpenCV face detector, Selenium driver factory and the
-  Selenium-based weather scrapers.
+  Windows-only stacks: `HttpClient`-based geocoder, weather providers
+  and NSU temperature override, plus the OpenCV face detector.
 - Each executable composes via an `AddXxx(this IServiceCollection)`
   extension (`AddInfrastructure`, `AddWeatherProviders`,
   `AddScreensaver`). New code never news up an `HttpClient` or wires a

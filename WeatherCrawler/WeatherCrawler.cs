@@ -17,7 +17,7 @@ namespace WeatherCrawler
   {
     static async Task Main(string[] args)
     {
-      string providerName = args.Length > 0 ? args[0] : "yandex-scrape";
+      string providerName = args.Length > 0 ? args[0] : "open-meteo";
 
       var builder = Host.CreateApplicationBuilder(args);
       builder.Services.AddInfrastructure();

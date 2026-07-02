@@ -213,12 +213,12 @@ public sealed class OpenMeteoWeatherProvider : IWeatherProvider
     private static T? ValueAt<T>(List<T?>? list, int i) where T : struct
         => list is not null && i < list.Count ? list[i] : null;
 
-    // Other providers (Yandex API, NGS scrape) supply pressure already as an
-    // integer mmHg; rounding here keeps the displayed value in the same shape
-    // instead of bleeding the hPa→mmHg conversion's 11 trailing decimals.
+    // The Yandex API supplies pressure already as an integer mmHg; rounding
+    // here keeps the displayed value in the same shape instead of bleeding the
+    // hPa→mmHg conversion's 11 trailing decimals.
     private static double? ToMmHg(double? hpa) => hpa is double v ? Math.Round(v * HpaToMmHg) : null;
 
-    // Other providers (Yandex API, NGS scrape) round wind speed to one
+    // The Yandex API rounds wind speed to one
     // decimal; Open-Meteo returns the raw m/s with two, so the displayed
     // value here gets a trailing digit the rest of the UI never shows.
     private static double? Round1(double? ms) => ms is double v ? Math.Round(v, 1) : null;

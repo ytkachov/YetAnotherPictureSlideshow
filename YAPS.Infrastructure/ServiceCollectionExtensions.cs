@@ -6,7 +6,6 @@ using Yaps.Core.Models.Weather;
 using Yaps.Infrastructure.Geocoding;
 using Yaps.Infrastructure.Weather;
 using Yaps.Infrastructure.Weather.Providers;
-using Yaps.Infrastructure.Weather.Selenium;
 
 namespace Yaps.Infrastructure;
 
@@ -49,8 +48,6 @@ public static class ServiceCollectionExtensions
         else
             services.AddOptions<WeatherOptions>();
 
-        services.AddSingleton<SeleniumDriverFactory>();
-
         services.AddSingleton<WeatherSnapshotStore>();
         services.AddSingleton<IWeatherSnapshotStore>(sp => sp.GetRequiredService<WeatherSnapshotStore>());
         services.AddSingleton<IWritableWeatherSnapshotStore>(sp => sp.GetRequiredService<WeatherSnapshotStore>());
@@ -74,15 +71,18 @@ public static class ServiceCollectionExtensions
             (sp, _) => sp.GetRequiredService<YandexApiWeatherProvider>());
         services.AddKeyedSingleton<IWeatherProvider>("open-meteo",
             (sp, _) => sp.GetRequiredService<OpenMeteoWeatherProvider>());
-        services.AddKeyedSingleton<IWeatherProvider, YandexScraperWeatherProvider>("yandex-scrape");
-        services.AddKeyedSingleton<IWeatherProvider, NgsScraperWeatherProvider>("ngs-scrape");
 
         services.AddSingleton(new WeatherProviderDescriptor("open-meteo",   "Open-Meteo (free, no key)", WeatherCapabilities.All));
         services.AddSingleton(new WeatherProviderDescriptor("yandex-api",   "Yandex Weather API", WeatherCapabilities.All));
-        services.AddSingleton(new WeatherProviderDescriptor("yandex-scrape","Yandex Pogoda (scrape)", WeatherCapabilities.All));
-        services.AddSingleton(new WeatherProviderDescriptor("ngs-scrape",   "NGS Pogoda (Akademgorodok)", WeatherCapabilities.All));
 
-        services.AddSingleton<ICurrentTemperatureOverride, NsuTemperatureOverride>();
+        // NSU temperature override (last-resort source + per-tier overlay).
+        // Fetches weather.nsu.ru's loadata.php endpoint over HTTP — no browser.
+        services.AddHttpClient<NsuTemperatureOverride>(client =>
+        {
+            client.BaseAddress = new Uri("http://weather.nsu.ru/");
+            client.Timeout = TimeSpan.FromSeconds(20);
+        });
+        services.AddSingleton<ICurrentTemperatureOverride>(sp => sp.GetRequiredService<NsuTemperatureOverride>());
         services.AddSingleton<IWeatherProviderRegistry, WeatherProviderRegistry>();
 
         return services;

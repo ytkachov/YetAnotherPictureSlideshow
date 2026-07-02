@@ -14,7 +14,7 @@ namespace Yaps.Infrastructure.Weather;
 /// Dual-tier polling with last-resort temperature fallback. Three
 /// independent loops run side-by-side: <b>primary</b> and <b>secondary</b>
 /// <see cref="IWeatherProvider"/> on their own cadences, plus an
-/// <see cref="ICurrentTemperatureOverride"/> loop (NSU scraper) on
+/// <see cref="ICurrentTemperatureOverride"/> loop (NSU HTTP fetch) on
 /// <c>max(primary, 5 min)</c>. After every tick the loop calls
 /// <see cref="PublishPresentedAsync"/>, which picks the freshest tier by
 /// priority — primary → secondary → NSU-only — and writes the
@@ -25,10 +25,10 @@ namespace Yaps.Infrastructure.Weather;
 /// </summary>
 public sealed class WeatherPollingService : BackgroundService
 {
-    // Chrome-headless spinup inside NsuTemperatureOverride is heavy; with
-    // primary at 1 min the NSU loop would otherwise boot Selenium every
-    // 60 s for a number that doesn't actually move that fast. 5 min is the
-    // practical floor.
+    // NSU is now a lightweight HTTP fetch (was a headless-Chrome scrape), so
+    // the floor is no longer about spin-up cost — it's courtesy to the
+    // weather.nsu.ru endpoint plus the fact that a point-thermometer reading
+    // doesn't move fast enough to warrant hitting it every primary tick.
     private static readonly TimeSpan MinNsuInterval = TimeSpan.FromMinutes(5);
 
     private readonly IWeatherProviderRegistry _registry;
