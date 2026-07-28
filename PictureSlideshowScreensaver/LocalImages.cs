@@ -8,6 +8,7 @@ using Serilog;
 using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Core.Selection;
 using Yaps.Infrastructure.Images;
 using PictureSlideshowScreensaver.Models;
 
@@ -30,7 +31,7 @@ class LocalImages : ImagesProvider
 
   private LocalImageInfo[] _images;
   private Dictionary<string, int[]> _imagesByFolder;
-  private string[] _folders;
+  private PhotoRotation _rotation;
 
   private int[] _currentBatch;
   private int _currentBatchIdx;
@@ -66,16 +67,15 @@ class LocalImages : ImagesProvider
     LocalImageInfo info;
     lock (_locker)
     {
-      if (!_scanCompleted || _folders == null || _folders.Length == 0)
+      if (!_scanCompleted || _rotation == null)
         return null;
 
       if (_currentBatch == null || _currentBatchIdx >= _currentBatch.Length)
       {
-        string folder = _folders[Random.Shared.Next(_folders.Length)];
-        int[] src = _imagesByFolder[folder];
-        int take = Math.Min(_settings._photosPerFolder, src.Length);
-        _currentBatch = PickRandomSubset(src, take);
+        _currentBatch = _rotation.NextBatch();
         _currentBatchIdx = 0;
+        if (_currentBatch.Length == 0)
+          return null;
       }
 
       info = _images[_currentBatch[_currentBatchIdx++]];
@@ -122,7 +122,7 @@ class LocalImages : ImagesProvider
 
     sw.Stop();
     Log.Information("Scan completed: {Photos} photos across {Folders} folders in {Ms} ms",
-        _images?.Length ?? 0, _folders?.Length ?? 0, sw.ElapsedMilliseconds);
+        _images?.Length ?? 0, _imagesByFolder?.Count ?? 0, sw.ElapsedMilliseconds);
   }
 
   private void addImages(string p, bool subdir)
@@ -191,25 +191,15 @@ class LocalImages : ImagesProvider
     }
 
     _imagesByFolder = grouped.ToDictionary(kv => kv.Key, kv => kv.Value.ToArray(), StringComparer.OrdinalIgnoreCase);
-    _folders = _imagesByFolder.Keys.ToArray();
-  }
 
-  // Partial Fisher-Yates: produces a shuffled prefix of length `take`
-  // without copying the full source twice or shuffling a long folder
-  // every time it is picked.
-  private static int[] PickRandomSubset(int[] src, int take)
-  {
-    int[] copy = (int[])src.Clone();
-    int n = copy.Length;
-    int limit = Math.Min(take, n);
-    for (int i = 0; i < limit; i++)
-    {
-      int j = Random.Shared.Next(i, n);
-      (copy[i], copy[j]) = (copy[j], copy[i]);
-    }
-
-    int[] result = new int[limit];
-    Array.Copy(copy, result, limit);
-    return result;
+    // Rotation deals folder visits proportionally to folder size and hands
+    // out each folder's photos in a deck, so one pass covers the whole
+    // library exactly once. Historical show counts come from the registry:
+    // after a restart the photos that got least screen time are dealt first.
+    _rotation = _imagesByFolder.Count == 0
+        ? null
+        : new PhotoRotation(_imagesByFolder, id => _stats.GetShowCount(_images[id].path), _settings._photosPerFolder);
+    _currentBatch = null;
+    _currentBatchIdx = 0;
   }
 }

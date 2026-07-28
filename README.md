@@ -81,13 +81,27 @@ slide. The file sits in the log folder (`WriteLogFolder`, falling back to
 
 `S` renders the analysis on demand: share of the library never shown,
 histogram of show counts, Gini coefficient (0 = perfectly even), most-shown
-photos, the unreadable ones, and a per-folder table. That last table is the
-interesting one — the slideshow picks a random *folder* and then
-`PhotosPerFolder` photos out of it, so a folder holding five photos gives
-each of them far more screen time than one holding three thousand.
+photos, the unreadable ones, and a per-folder table.
 
 With `WriteStat=1` the same report is also written to `WriteStatFolder` as
 `pss_stat_<date>.txt`, one file per day, rewritten in place.
+
+## How photos are picked
+
+Photos are shown in mini-batches of `PhotosPerFolder` from one folder at a
+time, so consecutive shots come from the same trip rather than from all over
+the library. Which folder comes next is dealt from a deck rather than rolled:
+each folder appears in the deck once per batch it needs to be fully covered,
+and each folder hands out its own photos from a shuffled deck of its own. One
+pass over both decks therefore shows **every photo in the library exactly
+once**, whatever the folder sizes are — a folder of five photos no longer
+competes on equal terms with a folder of three thousand.
+
+A folder's photo deck is rebuilt least-shown-first (random order within equal
+counts) using the persisted show registry, so a restart resumes with the
+photos that have had the least screen time rather than starting over.
+`YAPS.Core/Selection/PhotoRotation.cs` holds the logic; it is deliberately
+free of file-system knowledge so the behaviour can be exercised on its own.
 
 ## Configuration
 
