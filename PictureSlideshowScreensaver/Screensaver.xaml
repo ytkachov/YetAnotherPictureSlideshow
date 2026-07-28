@@ -17,6 +17,7 @@
     <KeyBinding Key="Escape" Command="{Binding ExitCommand}" />
     <KeyBinding Key="F" Command="{Binding ToggleForecastCommand}" />
     <KeyBinding Key="L" Command="{Binding ShowLogCommand}" />
+    <KeyBinding Key="S" Command="{Binding ShowStatsCommand}" />
   </Window.InputBindings>
   <Grid>
     <Grid.RowDefinitions>

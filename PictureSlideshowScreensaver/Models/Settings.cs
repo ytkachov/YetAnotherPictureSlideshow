@@ -50,6 +50,13 @@ namespace PictureSlideshowScreensaver.Models
     public string WeatherProviderSecondary = "";
     public int WeatherPollingMinutesSecondary = 30;
 
+    // How often the in-memory photo show registry is written to disk.
+    // Coarse on purpose — the registry exists to answer "is the rotation
+    // even over months", not to survive every second. A flush also happens
+    // on clean shutdown, so this only bounds what a power cut costs.
+    // Registry override "StatsFlushHours", clamped [1, 168].
+    public int StatsFlushHours = 6;
+
     // Tiny "OM" / "Я" / "НГУ" chip overlaid on the live weather tile
     // showing which tier is currently driving the displayed snapshot.
     // 1 = visible (default), 0 = hidden.
@@ -123,6 +130,7 @@ namespace PictureSlideshowScreensaver.Models
         WeatherProviderSecondary = secondaryRaw.Trim();
       WeatherPollingMinutesSecondary = Math.Clamp(ReadInt(key, "WeatherPollingMinutesSecondary", WeatherPollingMinutesSecondary), 1, 1440);
       WeatherShowProviderBadge = ReadInt(key, "WeatherShowProviderBadge", WeatherShowProviderBadge ? 1 : 0) != 0;
+      StatsFlushHours = Math.Clamp(ReadInt(key, "StatsFlushHours", StatsFlushHours), 1, 168);
 
       var logLevelRaw = (string)key.GetValue("LogLevel");
       if (!string.IsNullOrWhiteSpace(logLevelRaw) &&
@@ -135,6 +143,25 @@ namespace PictureSlideshowScreensaver.Models
 
       if (_writeLog && !string.IsNullOrEmpty(_writeLogPath) && Directory.Exists(_writeLogPath))
         ConfigureFileLogger(_writeLogPath, LogLevelSwitch);
+    }
+
+    /// <summary>
+    /// Folder holding the photo show registry (and the report the flush
+    /// service writes next to it). Diagnostics belong together, so the
+    /// configured log folder wins; the stat folder is the next best (an
+    /// appliance may have WriteStat configured but not WriteLog), and
+    /// %TEMP%\PictureSlideshow — the same place App.xaml.cs puts its
+    /// startup log — is the last resort.
+    /// </summary>
+    public string ResolveStatsFolder()
+    {
+      if (_writeLog && !string.IsNullOrEmpty(_writeLogPath) && Directory.Exists(_writeLogPath))
+        return _writeLogPath;
+
+      if (_writeStat && !string.IsNullOrEmpty(_writeStatPath) && Directory.Exists(_writeStatPath))
+        return _writeStatPath;
+
+      return Path.Combine(Path.GetTempPath(), "PictureSlideshow");
     }
 
     private static int ReadInt(RegistryKey key, string name, int fallback)

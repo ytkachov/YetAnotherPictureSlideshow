@@ -5,11 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using PictureSlideshowScreensaver.Models;
 using PictureSlideshowScreensaver.ViewModels;
 using Yaps.Core.Abstractions;
+using Yaps.Core.Models.Stats;
 using Yaps.Infrastructure;
 using Yaps.Infrastructure.Faces;
 using Yaps.Infrastructure.Images;
 using Yaps.Infrastructure.Orientation;
 using Yaps.Infrastructure.Settings;
+using Yaps.Infrastructure.Statistics;
 using Yaps.Infrastructure.Weather;
 
 namespace PictureSlideshowScreensaver.Composition
@@ -96,6 +98,23 @@ namespace PictureSlideshowScreensaver.Composition
             });
             services.AddHostedService<WeatherPollingService>();
 
+            // Photo show registry. Counters live in RAM and are written out
+            // by the flush service on a slow cadence — the appliance's
+            // storage shouldn't be touched once per slide. The registry sits
+            // with the logs (see Settings.ResolveStatsFolder); the daily
+            // human-readable report only gets written when the existing
+            // WriteStat switch is on, in the folder it already names.
+            services.AddPhotoStatistics();
+            services.AddOptions<PhotoStatisticsOptions>().Configure<Settings>((opts, settings) =>
+            {
+                opts.StatsFilePath = Path.Combine(settings.ResolveStatsFolder(), "photo_stats.json");
+                opts.ReportFolder = settings._writeStat && !string.IsNullOrEmpty(settings._writeStatPath)
+                    ? settings._writeStatPath
+                    : null;
+                opts.FlushInterval = TimeSpan.FromHours(settings.StatsFlushHours);
+            });
+            services.AddHostedService<PhotoStatsFlushService>();
+
             // Stage 6.2b: weather widgets bind to the per-period informers
             // exposed by ForecastViewModel (pushed via DataContext) instead
             // of resolving a WeatherInformer through the service locator.
@@ -107,6 +126,8 @@ namespace PictureSlideshowScreensaver.Composition
             services.AddTransient<Configuration>();
             services.AddTransient<LogViewerViewModel>();
             services.AddTransient<LogViewer>();
+            services.AddTransient<StatsViewerViewModel>();
+            services.AddTransient<StatsViewer>();
 
             return services;
         }

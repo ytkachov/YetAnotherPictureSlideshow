@@ -61,12 +61,33 @@ arbitrary folders) or rename the binary to `.scr` and place it under
 `SlideshowLouncher.exe` wraps the screensaver and relaunches it if it
 exits — useful on a kiosk-mode photo frame.
 
-While the slideshow is running, three keys are bound:
+While the slideshow is running, four keys are bound:
 
 - `Escape` — close the screensaver.
 - `F` — toggle the 3-day weather forecast overlay.
 - `L` — open a viewer that tails the active Serilog file (useful on an
   appliance where the log folder isn't easy to get at).
+- `S` — open the show registry: how evenly the library is actually being
+  rotated, and which photos fail to load. See below.
+
+## Show registry
+
+Every photo the slideshow picks is counted, and every photo that fails to
+decode is recorded with the error. Counters live in memory and are written
+to `photo_stats.json` every `StatsFlushHours` (default 6) plus once on
+clean shutdown — an appliance's storage should not be touched once per
+slide. The file sits in the log folder (`WriteLogFolder`, falling back to
+`WriteStatFolder`, then `%TEMP%\PictureSlideshow`).
+
+`S` renders the analysis on demand: share of the library never shown,
+histogram of show counts, Gini coefficient (0 = perfectly even), most-shown
+photos, the unreadable ones, and a per-folder table. That last table is the
+interesting one — the slideshow picks a random *folder* and then
+`PhotosPerFolder` photos out of it, so a folder holding five photos gives
+each of them far more screen time than one holding three thousand.
+
+With `WriteStat=1` the same report is also written to `WriteStatFolder` as
+`pss_stat_<date>.txt`, one file per day, rewritten in place.
 
 ## Configuration
 
@@ -86,6 +107,9 @@ double-click. Notable keys:
 | `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
 | `WriteLogFolder` | string | Where to write the log files |
+| `WriteStat` | string `0`/`1` | Write the daily show-registry report as a text file |
+| `WriteStatFolder` | string | Where that report goes (also the fallback home of `photo_stats.json`) |
+| `StatsFlushHours` | string | Hours between show-registry writes (default `6`, clamped 1..168) |
 | `LogLevel` | string | Serilog minimum level: `Verbose` / `Debug` / `Information` / `Warning` / `Error` (default `Verbose`) |
 | `PerformanceOptions` | dword | Bit flags for fade/scale/accent disable at night |
 

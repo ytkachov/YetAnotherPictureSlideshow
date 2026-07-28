@@ -24,6 +24,7 @@ namespace PictureSlideshowScreensaver.ViewModels
     private readonly Settings _settings;
     private readonly ImagesProvider _images;
     private readonly IClock _clock;
+    private readonly IPhotoStatistics _stats;
     private readonly IServiceProvider _services;
     private readonly Dispatcher _dispatcher;
     private readonly ForecastViewModel _forecast;
@@ -38,7 +39,6 @@ namespace PictureSlideshowScreensaver.ViewModels
     private FrameViewModel _firstImage;
     private FrameViewModel _secondImage;
 
-    private int _prevTime = 0;
     private bool _isNightTime = false;
     private bool _disposed;
 
@@ -132,11 +132,35 @@ namespace PictureSlideshowScreensaver.ViewModels
       }
     }
 
-    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock, IServiceProvider services, ForecastViewModel forecast)
+    // Opens the S-key show-registry viewer. Same modal shape as the log
+    // viewer above (explicit Owner + CenterOwner so it lands on the frame's
+    // monitor and above the fullscreen slideshow); a fresh transient per
+    // press so the report is rebuilt from the current counters.
+    [RelayCommand]
+    private void ShowStats()
+    {
+      Log.Information("S pressed; opening photo stats viewer");
+      try
+      {
+        var viewer = _services.GetRequiredService<StatsViewer>();
+        var owner = Application.Current?.MainWindow;
+        if (owner != null && !ReferenceEquals(owner, viewer))
+          viewer.Owner = owner;
+        viewer.ShowDialog();
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "Failed to open photo stats viewer");
+      }
+    }
+
+    public ScreensaverViewModel(Settings settings, ImagesProvider images, IClock clock, IPhotoStatistics stats,
+                                IServiceProvider services, ForecastViewModel forecast)
     {
       _settings = settings;
       _images = images;
       _clock = clock;
+      _stats = stats;
       _services = services;
       _forecast = forecast;
       _dispatcher = Dispatcher.CurrentDispatcher;
@@ -145,7 +169,7 @@ namespace PictureSlideshowScreensaver.ViewModels
       // Subscribe before init() kicks off the background scan so we don't miss
       // the early progress events on a slow share.
       _images.ScanProgressChanged += OnScanProgress;
-      _images.init(new string[] { _settings._path, _settings._writeStat ? _settings._writeStatPath : "" });
+      _images.init(new string[] { _settings._path });
       FirstImage = new FrameViewModel("one") { IsActive = true };
       SecondImage = new FrameViewModel("two") { IsActive = false };
       PhotoProperties = new PhotoProperties();
@@ -243,13 +267,6 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private void NextImage()
     {
-      var hour = _clock.Now.Hour;
-      // write stat every day at 8PM
-      if (_settings._writeStat && _prevTime == 20 && hour == _prevTime + 1)
-        _images.WriteStat(_settings._writeStatPath);
-
-      _prevTime = hour;
-
       // Prefer the prefetched frame: its EXIF, JPEG decode, ONNX orientation
       // and face detection all already ran in the background during the
       // previous photo's display. Interlocked.Exchange so we only consume it
@@ -282,7 +299,8 @@ namespace PictureSlideshowScreensaver.ViewModels
         }
         catch (Exception ex)
         {
-          Log.Error(ex, "Metadata load failed");
+          Log.Error(ex, "Metadata load failed for {Image}", nextphoto.path);
+          _stats.RecordFailure(nextphoto.path, ex.Message);
         }
 
         if (_disposed)
@@ -360,7 +378,12 @@ namespace PictureSlideshowScreensaver.ViewModels
       }
       catch (Exception ex)
       {
-        Log.Error(ex, "NextImage failed for {Desc}", nextphoto?.description);
+        // A photo that throws here never reached the screen even though
+        // GetNext counted it as picked — the registry's failure list is what
+        // separates "shown" from "tried and failed".
+        Log.Error(ex, "NextImage failed for {Image}", nextphoto?.path);
+        if (nextphoto != null)
+          _stats.RecordFailure(nextphoto.path, ex.Message);
       }
       finally
       {
@@ -392,10 +415,11 @@ namespace PictureSlideshowScreensaver.ViewModels
       _prefetchTask = Task.Run<PrefetchedPhoto>(() =>
       {
         var sw = System.Diagnostics.Stopwatch.StartNew();
+        ImageInfo photo = null;
         try
         {
           ct.ThrowIfCancellationRequested();
-          var photo = _images.GetNext();
+          photo = _images.GetNext();
           if (photo == null)
             return null;
 
@@ -418,7 +442,11 @@ namespace PictureSlideshowScreensaver.ViewModels
         }
         catch (Exception ex)
         {
-          Log.Error(ex, "Prefetch pipeline failed");
+          // This is where a corrupt / unreadable JPEG surfaces: the decode,
+          // the orientation model and face detection all run in here.
+          Log.Error(ex, "Prefetch pipeline failed for {Image}", photo?.path);
+          if (photo != null)
+            _stats.RecordFailure(photo.path, ex.Message);
           return null;
         }
       }, ct);

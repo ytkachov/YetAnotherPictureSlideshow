@@ -1,9 +1,12 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Core.Models.Stats;
 using Yaps.Core.Models.Weather;
 using Yaps.Infrastructure.Geocoding;
+using Yaps.Infrastructure.Statistics;
 using Yaps.Infrastructure.Weather;
 using Yaps.Infrastructure.Weather.Providers;
 
@@ -84,6 +87,27 @@ public static class ServiceCollectionExtensions
         });
         services.AddSingleton<ICurrentTemperatureOverride>(sp => sp.GetRequiredService<NsuTemperatureOverride>());
         services.AddSingleton<IWeatherProviderRegistry, WeatherProviderRegistry>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the photo show registry. Persistence (when and where the
+    /// counters are written) is driven by <see cref="PhotoStatisticsOptions"/>;
+    /// the hosted flusher is left to the caller, same as the weather poller —
+    /// a one-shot utility wants the counters without a background timer.
+    /// </summary>
+    public static IServiceCollection AddPhotoStatistics(
+        this IServiceCollection services,
+        Action<PhotoStatisticsOptions>? configure = null)
+    {
+        if (configure is not null)
+            services.Configure(configure);
+        else
+            services.AddOptions<PhotoStatisticsOptions>();
+
+        services.AddSingleton<IPhotoStatistics>(sp =>
+            new PhotoStatisticsStore(sp.GetRequiredService<IOptions<PhotoStatisticsOptions>>().Value));
 
         return services;
     }

@@ -17,10 +17,10 @@ class LocalImages : ImagesProvider
   private readonly IImageBitmapLoader _loader;
   private readonly IFinfoStore _finfoStore;
   private readonly Settings _settings;
+  private readonly IPhotoStatistics _stats;
 
   private readonly object _locker = new object();
   private readonly List<LocalImageInfo> _imagesTmp = new List<LocalImageInfo>();
-  private readonly List<string> _messages = new List<string>();
 
   private string _imagesPath;
   private volatile bool _scanCompleted;
@@ -35,14 +35,14 @@ class LocalImages : ImagesProvider
   private int[] _currentBatch;
   private int _currentBatchIdx;
 
-  private int _shownImages;
-
-  public LocalImages(IGeocoder geocoder, IImageBitmapLoader loader, IFinfoStore finfoStore, Settings settings)
+  public LocalImages(IGeocoder geocoder, IImageBitmapLoader loader, IFinfoStore finfoStore, Settings settings,
+                     IPhotoStatistics stats)
   {
     _geocoder = geocoder;
     _loader = loader;
     _finfoStore = finfoStore;
     _settings = settings;
+    _stats = stats;
   }
 
   public void init(string[] parameters)
@@ -63,6 +63,7 @@ class LocalImages : ImagesProvider
 
   public ImageInfo GetNext()
   {
+    LocalImageInfo info;
     lock (_locker)
     {
       if (!_scanCompleted || _folders == null || _folders.Length == 0)
@@ -77,55 +78,15 @@ class LocalImages : ImagesProvider
         _currentBatchIdx = 0;
       }
 
-      var info = _images[_currentBatch[_currentBatchIdx++]];
-      info._shown++;
-      _shownImages++;
-      return info;
+      info = _images[_currentBatch[_currentBatchIdx++]];
     }
-  }
 
-  public void WriteStat(string write_stat_path)
-  {
-    lock (_locker)
-    {
-      if (!Directory.Exists(write_stat_path) || _images == null)
-        return;
-
-      string fn = Path.Combine(write_stat_path, string.Format("pss_stat_{0}", DateTime.Now.ToString("yyyy-MM-dd-HHmm")));
-      using (StreamWriter tw = new StreamWriter(fn))
-      {
-        foreach (string s in _messages)
-          tw.WriteLine(s);
-
-        tw.Write("total pictures: {0}\n", _images.Length);
-        tw.Write("shown pictures: {0}\n", _shownImages);
-
-        int[] imgidx = new int[_images.Length];
-        for (int i = 0; i < _images.Length; i++)
-          imgidx[i] = i;
-
-        Array.Sort(imgidx, delegate (int ii1, int ii2)
-        {
-          return _images[ii1]._shown != _images[ii2]._shown ? -(_images[ii1]._shown.CompareTo(_images[ii2]._shown)) :
-                 _images[ii1]._name.CompareTo(_images[ii2]._name);
-        });
-
-        Dictionary<int, int> freq = new Dictionary<int, int>();
-        foreach (var img in _images)
-        {
-          if (!freq.ContainsKey(img._shown))
-            freq.Add(img._shown, 0);
-
-          freq[img._shown]++;
-        }
-
-        foreach (var f in freq)
-          tw.Write("shown {0} times : [{1}] images\n", f.Key, f.Value);
-
-        foreach (var img in imgidx)
-          tw.Write("{0} : [{2}] {1}\n", _images[img]._shown, _images[img]._name, _images[img]._dateTaken != null ? _images[img]._dateTaken.Value.ToString("yyyy-MM-dd") : "---- -- --");
-      }
-    }
+    // Outside the lock: the registry takes a lock of its own and there is no
+    // reason to hold two at once. What is counted here is "picked for
+    // display" — a photo that then fails to decode also lands in the
+    // registry's failure list, so the report can tell the two apart.
+    _stats.RecordShown(info.path);
+    return info;
   }
 
   private void scanForImages()
@@ -144,11 +105,21 @@ class LocalImages : ImagesProvider
       addImages(p, subdir);
     }
 
+    string[] paths;
     lock (_locker)
     {
       BuildIndex();
-      _scanCompleted = true;
+      paths = Array.ConvertAll(_images, i => i.path);
     }
+
+    // Deliberately outside _locker: the first call into the registry loads
+    // the JSON file from disk, and GetNext (UI thread) must not queue behind
+    // that. The slideshow keeps getting null until _scanCompleted is set.
+    _stats.RegisterLibrary(paths);
+
+    lock (_locker)
+      _scanCompleted = true;
+
     sw.Stop();
     Log.Information("Scan completed: {Photos} photos across {Folders} folders in {Ms} ms",
         _images?.Length ?? 0, _folders?.Length ?? 0, sw.ElapsedMilliseconds);
@@ -205,14 +176,12 @@ class LocalImages : ImagesProvider
 
   private void BuildIndex()
   {
-    _messages.Add(string.Format("Images: {0}", _imagesTmp.Count));
-
     _images = _imagesTmp.ToArray();
 
     var grouped = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
     for (int i = 0; i < _images.Length; i++)
     {
-      string folder = Path.GetDirectoryName(_images[i]._name) ?? string.Empty;
+      string folder = Path.GetDirectoryName(_images[i].path) ?? string.Empty;
       if (!grouped.TryGetValue(folder, out var list))
       {
         list = new List<int>();

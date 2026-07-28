@@ -25,8 +25,6 @@ using Yaps.Infrastructure.Images;
 public class LocalImageInfo : ImageInfo
 {
   public readonly ImageMetadata Meta;
-  internal int _shown;
-  internal List<string> _messages = new();
 
   private readonly IGeocoder _geocoder;
   private readonly IImageBitmapLoader _loader;
@@ -53,10 +51,7 @@ public class LocalImageInfo : ImageInfo
     _finfoStore = finfoStore ?? new FileFinfoStore();
   }
 
-  // Backwards-compatible accessor for the existing field-style read
-  // sites (LocalImages.Add / WriteStat / Composition).
-  internal string _name => Meta.Path;
-  internal DateTime? _dateTaken => Meta.DateTaken;
+  public string path => Meta.Path;
 
   public void EnsureMetadataLoaded()
   {
@@ -172,7 +167,6 @@ public class LocalImageInfo : ImageInfo
     catch (Exception ex)
     {
       Log.Error(ex, "Image: {Image}", Meta.Path);
-      _messages.Add("Exeption " + ex.ToString());
     }
   }
 
