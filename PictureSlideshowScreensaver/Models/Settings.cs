@@ -19,7 +19,6 @@ namespace PictureSlideshowScreensaver.Models
     public string _writeStatPath;
     public bool _writeLog = false;
     public string _writeLogPath;
-    public bool _dependOnBattery = false;
     public bool _workAtNight = true;
     public bool _noImageFading = false;
     public bool _noImageScaling = false;
@@ -104,7 +103,6 @@ namespace PictureSlideshowScreensaver.Models
       _writeStatPath = (string)key.GetValue("WriteStatFolder");
       _writeLog = ReadInt(key, "WriteLog", 0) == 1;
       _writeLogPath = (string)key.GetValue("WriteLogFolder");
-      _dependOnBattery = ReadInt(key, "DependOnBattery", 0) == 1;
 
       int dflt = (int)(PerfOptions.work_at_night | PerfOptions.no_night_image_accents | PerfOptions.no_night_image_fading | PerfOptions.no_night_image_scaling);
       int po = (int?)key.GetValue("PerformanceOptions") ?? dflt;
