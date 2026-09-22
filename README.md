@@ -58,8 +58,31 @@ to a permanent location (Microsoft no longer accepts `.scr` from
 arbitrary folders) or rename the binary to `.scr` and place it under
 `C:\Windows\System32\`.
 
-`SlideshowLouncher.exe` wraps the screensaver and relaunches it if it
-exits — useful on a kiosk-mode photo frame.
+`SlideshowLouncher.exe` starts the screensaver unless it is already
+running (or Visual Studio is open, so debugging isn't raced) — useful on
+a kiosk-mode photo frame. It is single-shot, not a watchdog: something
+has to call it repeatedly. It registers that caller itself:
+
+```pwsh
+SlideshowLouncher.exe --install                  # at logon, then every 5 min
+SlideshowLouncher.exe --install --every 15       # ...every 15 min instead
+SlideshowLouncher.exe --uninstall
+```
+
+`--install` writes the Task Scheduler entry
+`YetAnotherPictureSlideshow\SlideshowLauncher` for the current user, with
+the interactive token — a task started in session 0 never reaches the
+frame's desktop. The first timed run is one interval out, so installing
+it doesn't blank the desktop on the spot. No elevation needed. The
+screensaver path is resolved once at install time and baked into the
+task's action; override it with `--install --screensaver <path>`.
+
+Outside the task, the launcher takes the screensaver path as its first
+argument, and otherwise looks for `PictureSlideshowScreensaver.exe`
+beside itself. When it cannot find one it is a WinExe with no console to
+complain to, so it appends the reason to
+`%TEMP%\PictureSlideshow\launcher.log` — that file is where a frame that
+stopped showing photos explains itself.
 
 While the slideshow is running, four keys are bound:
 
