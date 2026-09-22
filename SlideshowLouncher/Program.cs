@@ -28,9 +28,8 @@ namespace SlideshowLouncher
             var exe = LocateScreensaver(args);
             if (exe == null)
             {
-                Console.Error.WriteLine(
-                    $"Could not find {TargetExe}. Pass its path as the first argument, " +
-                    "or place the launcher next to the screensaver executable.");
+                Fail($"Could not find {TargetExe}. Pass its path as the first argument, " +
+                     "or place the launcher next to the screensaver executable.");
                 return 1;
             }
 
@@ -42,11 +41,12 @@ namespace SlideshowLouncher
                     UseShellExecute = false,
                     WorkingDirectory = Path.GetDirectoryName(exe) ?? ""
                 });
+                Log($"started {exe}");
                 return 0;
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Failed to start {exe}: {ex.Message}");
+                Fail($"Failed to start {exe}: {ex.Message}");
                 return 1;
             }
         }
@@ -60,14 +60,17 @@ namespace SlideshowLouncher
             if (File.Exists(nextToLauncher))
                 return nextToLauncher;
 
-            // Dev-tree fallback: ..\PictureSlideshowScreensaver\bin\<config>\net8.0-windows\
-            var root = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(AppContext.BaseDirectory)));
-            if (root != null)
+            // Dev-tree fallback: walk up from bin\<Config>\<Tfm>\ looking for a
+            // sibling PictureSlideshowScreensaver output. Stripping a fixed
+            // number of segments was off by one — AppContext.BaseDirectory ends
+            // with a separator, so the first GetDirectoryName removed only that
+            // separator and the search landed inside the launcher's own folder.
+            for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)
             {
                 foreach (var config in new[] { "Release", "Debug" })
                 {
                     var candidate = Path.Combine(
-                        Path.GetDirectoryName(root) ?? "",
+                        dir.FullName,
                         "PictureSlideshowScreensaver",
                         "bin", config, "net8.0-windows",
                         TargetExe);
@@ -77,6 +80,33 @@ namespace SlideshowLouncher
             }
 
             return null;
+        }
+
+        private static void Fail(string message)
+        {
+            Console.Error.WriteLine(message);
+            Log(message);
+        }
+
+        // This is a WinExe, so Task Scheduler gives it no console and
+        // Console.Error goes nowhere — a launcher that cannot find the
+        // screensaver would fail silently forever. Mirror the screensaver's
+        // fallback log folder, but as .log: the in-app L-key viewer tails the
+        // newest *.txt there and must keep showing the Serilog file.
+        private static void Log(string message)
+        {
+            try
+            {
+                var folder = Path.Combine(Path.GetTempPath(), "PictureSlideshow");
+                Directory.CreateDirectory(folder);
+                File.AppendAllText(
+                    Path.Combine(folder, "launcher.log"),
+                    $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {message}{Environment.NewLine}");
+            }
+            catch
+            {
+                // Best effort — a launcher that can't write its log must still launch.
+            }
         }
     }
 }
