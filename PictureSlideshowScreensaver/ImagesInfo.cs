@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Drawing;
+using Yaps.Core.Video;
 
 public interface ImageInfo
 {
@@ -12,6 +13,12 @@ public interface ImageInfo
   // Full path of the photo. The show registry keys on it, so it is also
   // what a failed load is reported under.
   string path { get; }
+
+  // Non-null when this rotation item is a slice of a standalone video rather
+  // than a photo: the frame plays it instead of showing a bitmap, and
+  // `bitmap` is null. Distinct from has_accompanying_video, which means "a
+  // photo that has a video stuck to it" (the iPhone live-photo pairing).
+  VideoClip clip { get; }
 
   int accent_count { get; }
   RotateFlipType orientation { get; }

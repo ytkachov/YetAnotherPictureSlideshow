@@ -9,6 +9,7 @@ using File = System.IO.File;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
 using Yaps.Core.Selection;
+using Yaps.Core.Video;
 using Yaps.Infrastructure.Images;
 using PictureSlideshowScreensaver.Models;
 
@@ -19,9 +20,18 @@ class LocalImages : ImagesProvider
   private readonly IFinfoStore _finfoStore;
   private readonly Settings _settings;
   private readonly IPhotoStatistics _stats;
+  private readonly IVideoMetadataProvider _videoMetadata;
+
+  // Every standalone video in the library shares one bucket in the rotation,
+  // whatever folder it physically lives in: the user asked for "one virtual
+  // folder of videos" that takes its turn like any other folder. The name
+  // can't collide with a real directory — ':' is not legal in a Windows path
+  // component.
+  private const string VideoFolderKey = "::video-clips";
 
   private readonly object _locker = new object();
   private readonly List<LocalImageInfo> _imagesTmp = new List<LocalImageInfo>();
+  private readonly List<string> _videoPaths = new List<string>();
 
   private string _imagesPath;
   private volatile bool _scanCompleted;
@@ -29,7 +39,7 @@ class LocalImages : ImagesProvider
 
   public event EventHandler<ScanProgress> ScanProgressChanged;
 
-  private LocalImageInfo[] _images;
+  private ImageInfo[] _images;
   private Dictionary<string, int[]> _imagesByFolder;
   private PhotoRotation _rotation;
 
@@ -37,13 +47,14 @@ class LocalImages : ImagesProvider
   private int _currentBatchIdx;
 
   public LocalImages(IGeocoder geocoder, IImageBitmapLoader loader, IFinfoStore finfoStore, Settings settings,
-                     IPhotoStatistics stats)
+                     IPhotoStatistics stats, IVideoMetadataProvider videoMetadata)
   {
     _geocoder = geocoder;
     _loader = loader;
     _finfoStore = finfoStore;
     _settings = settings;
     _stats = stats;
+    _videoMetadata = videoMetadata;
   }
 
   public void init(string[] parameters)
@@ -64,7 +75,7 @@ class LocalImages : ImagesProvider
 
   public ImageInfo GetNext()
   {
-    LocalImageInfo info;
+    ImageInfo info;
     lock (_locker)
     {
       if (!_scanCompleted || _rotation == null)
@@ -105,10 +116,15 @@ class LocalImages : ImagesProvider
       addImages(p, subdir);
     }
 
+    // Video headers are read before the lock is taken: it is file I/O (a few
+    // small reads per file, bounded by video count rather than library size),
+    // and BuildIndex runs with _locker held.
+    var clips = BuildVideoClips();
+
     string[] paths;
     lock (_locker)
     {
-      BuildIndex();
+      BuildIndex(clips);
       paths = Array.ConvertAll(_images, i => i.path);
     }
 
@@ -121,8 +137,8 @@ class LocalImages : ImagesProvider
       _scanCompleted = true;
 
     sw.Stop();
-    Log.Information("Scan completed: {Photos} photos across {Folders} folders in {Ms} ms",
-        _images?.Length ?? 0, _imagesByFolder?.Count ?? 0, sw.ElapsedMilliseconds);
+    Log.Information("Scan completed: {Photos} photos, {Videos} videos as {Clips} clips, across {Folders} folders in {Ms} ms",
+        _imagesTmp.Count, _videoPaths.Count, clips.Count, _imagesByFolder?.Count ?? 0, sw.ElapsedMilliseconds);
   }
 
   private void addImages(string p, bool subdir)
@@ -139,6 +155,14 @@ class LocalImages : ImagesProvider
             Add(ss);
             // Only the scan thread touches _filesFound, so the bare ++ is safe.
             ScanProgressChanged?.Invoke(this, new ScanProgress(++_filesFound, p));
+          }
+          else if (VideoFileTypes.IsVideo(ss) && !HasPairedPhoto(ss))
+          {
+            // A video sitting next to a photo of the same name is that photo's
+            // companion clip (the live-photo pairing below) and is shown with
+            // it; only videos that stand alone become rotation items. Same
+            // thread as _filesFound, so the plain Add is safe.
+            _videoPaths.Add(ss);
           }
         }
       }
@@ -174,14 +198,87 @@ class LocalImages : ImagesProvider
     }
   }
 
-  private void BuildIndex()
+  private static bool HasPairedPhoto(string videoPath)
   {
-    _images = _imagesTmp.ToArray();
+    // A stat, not a read — cheap even on a network share.
+    return File.Exists(Path.ChangeExtension(videoPath, "jpg")) ||
+           File.Exists(Path.ChangeExtension(videoPath, "jpeg"));
+  }
+
+  // Turns each standalone video into the slices the rotation deals out. The
+  // container header carries the duration, so this is where a video that
+  // can't be measured drops out of the rotation entirely (logged by the
+  // provider) rather than stalling the frame later.
+  private List<LocalVideoClipInfo> BuildVideoClips()
+  {
+    var clips = new List<LocalVideoClipInfo>();
+    if (_videoPaths.Count == 0)
+      return clips;
+
+    if (_settings.VideoFolderWeight <= 0)
+    {
+      Log.Information("Found {Videos} videos but VideoFolderWeight is 0; videos stay out of the rotation", _videoPaths.Count);
+      return clips;
+    }
+
+    var chunk = TimeSpan.FromSeconds(_settings.VideoChunkSeconds);
+    // A trailing sliver is folded into the chunk before it instead of flashing
+    // by on its own; a third of the chunk length is short enough to still feel
+    // like a clip.
+    var minChunk = TimeSpan.FromSeconds(Math.Max(1.0, _settings.VideoChunkSeconds / 3.0));
+
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    foreach (var videoPath in _videoPaths)
+    {
+      var meta = _videoMetadata.TryRead(videoPath);
+      if (meta == null)
+        continue;
+
+      var recorded = meta.CreatedUtc?.ToLocalTime() ?? FileTimestamp(videoPath);
+      foreach (var (start, length) in VideoChunking.Split(meta.Duration, chunk, minChunk))
+        clips.Add(new LocalVideoClipInfo(new VideoClip(videoPath, start, length, meta.RotationDegrees), recorded));
+    }
+    sw.Stop();
+
+    Log.Information("Measured {Videos} videos into {Clips} clips of up to {Chunk}s in {Ms} ms",
+        _videoPaths.Count, clips.Count, _settings.VideoChunkSeconds, sw.ElapsedMilliseconds);
+    return clips;
+  }
+
+  private static DateTime? FileTimestamp(string path)
+  {
+    try
+    {
+      var write = File.GetLastWriteTime(path);
+      return write.Year > 1 ? write : (DateTime?)null;
+    }
+    catch
+    {
+      // Caption-only data; a video with no readable timestamp just shows none.
+      return null;
+    }
+  }
+
+  private void BuildIndex(List<LocalVideoClipInfo> clips)
+  {
+    var items = new ImageInfo[_imagesTmp.Count + clips.Count];
+    for (int i = 0; i < _imagesTmp.Count; i++)
+      items[i] = _imagesTmp[i];
+    for (int i = 0; i < clips.Count; i++)
+      items[_imagesTmp.Count + i] = clips[i];
+
+    _images = items;
 
     var grouped = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
     for (int i = 0; i < _images.Length; i++)
     {
-      string folder = Path.GetDirectoryName(_images[i].path) ?? string.Empty;
+      // Clips all land in the one virtual folder regardless of where the file
+      // sits, so videos take their turn as a group rather than inflating the
+      // photo folder they happen to share a directory with.
+      string folder = _images[i].clip != null
+          ? VideoFolderKey
+          : Path.GetDirectoryName(_images[i].path) ?? string.Empty;
+
       if (!grouped.TryGetValue(folder, out var list))
       {
         list = new List<int>();
@@ -192,13 +289,20 @@ class LocalImages : ImagesProvider
 
     _imagesByFolder = grouped.ToDictionary(kv => kv.Key, kv => kv.Value.ToArray(), StringComparer.OrdinalIgnoreCase);
 
+    // The video folder hands out one clip per visit (not a batch of ten) and
+    // carries a weight so a couple of minutes of video isn't drowned by tens
+    // of thousands of photos — see FolderRotationPolicy.
+    var policies = new Dictionary<string, FolderRotationPolicy>(StringComparer.OrdinalIgnoreCase);
+    if (_imagesByFolder.ContainsKey(VideoFolderKey))
+      policies[VideoFolderKey] = new FolderRotationPolicy(BatchSize: 1, WeightMultiplier: _settings.VideoFolderWeight);
+
     // Rotation deals folder visits proportionally to folder size and hands
     // out each folder's photos in a deck, so one pass covers the whole
     // library exactly once. Historical show counts come from the registry:
     // after a restart the photos that got least screen time are dealt first.
     _rotation = _imagesByFolder.Count == 0
         ? null
-        : new PhotoRotation(_imagesByFolder, id => _stats.GetShowCount(_images[id].path), _settings._photosPerFolder);
+        : new PhotoRotation(_imagesByFolder, id => _stats.GetShowCount(_images[id].path), _settings._photosPerFolder, policies);
     _currentBatch = null;
     _currentBatchIdx = 0;
   }

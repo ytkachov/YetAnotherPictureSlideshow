@@ -53,6 +53,9 @@ public class LocalImageInfo : ImageInfo
 
   public string path => Meta.Path;
 
+  // Photos are never clips; the standalone-video item is LocalVideoClipInfo.
+  public Yaps.Core.Video.VideoClip clip => null;
+
   public void EnsureMetadataLoaded()
   {
     if (_metadataLoaded)

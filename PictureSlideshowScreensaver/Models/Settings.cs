@@ -49,6 +49,25 @@ namespace PictureSlideshowScreensaver.Models
     public string WeatherProviderSecondary = "";
     public int WeatherPollingMinutesSecondary = 30;
 
+    // Standalone videos in the library are shown as clips of this many
+    // seconds, one clip per visit to the virtual video folder. Registry key
+    // "VideoChunkSeconds", clamped [3, 300]. A video shorter than a chunk
+    // (plus a third, see LocalImages) is simply shown whole.
+    public int VideoChunkSeconds = 15;
+
+    // How strongly the virtual video folder is favoured over its fair share
+    // of rotation visits. 1 = strictly proportional to clip count, which for
+    // a library of tens of thousands of photos and a couple of minutes of
+    // video means a clip roughly every five hours; 10 (the default) brings
+    // that to about every half hour. 0 switches video off entirely.
+    // Registry key "VideoFolderWeight", clamped [0, 1000].
+    public int VideoFolderWeight = 10;
+
+    // Playback volume for video, 0..100. Defaults to silent: a frame on the
+    // wall that suddenly starts making noise every half hour is worse than
+    // one that doesn't. Registry key "VideoVolume".
+    public int VideoVolume = 0;
+
     // How often the in-memory photo show registry is written to disk.
     // Coarse on purpose — the registry exists to answer "is the rotation
     // even over months", not to survive every second. A flush also happens
@@ -129,6 +148,9 @@ namespace PictureSlideshowScreensaver.Models
       WeatherPollingMinutesSecondary = Math.Clamp(ReadInt(key, "WeatherPollingMinutesSecondary", WeatherPollingMinutesSecondary), 1, 1440);
       WeatherShowProviderBadge = ReadInt(key, "WeatherShowProviderBadge", WeatherShowProviderBadge ? 1 : 0) != 0;
       StatsFlushHours = Math.Clamp(ReadInt(key, "StatsFlushHours", StatsFlushHours), 1, 168);
+      VideoChunkSeconds = Math.Clamp(ReadInt(key, "VideoChunkSeconds", VideoChunkSeconds), 3, 300);
+      VideoFolderWeight = Math.Clamp(ReadInt(key, "VideoFolderWeight", VideoFolderWeight), 0, 1000);
+      VideoVolume = Math.Clamp(ReadInt(key, "VideoVolume", VideoVolume), 0, 100);
 
       var logLevelRaw = (string)key.GetValue("LogLevel");
       if (!string.IsNullOrWhiteSpace(logLevelRaw) &&

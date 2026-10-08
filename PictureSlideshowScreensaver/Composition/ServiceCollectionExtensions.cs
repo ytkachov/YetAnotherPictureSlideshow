@@ -12,6 +12,7 @@ using Yaps.Infrastructure.Images;
 using Yaps.Infrastructure.Orientation;
 using Yaps.Infrastructure.Settings;
 using Yaps.Infrastructure.Statistics;
+using Yaps.Infrastructure.Video;
 using Yaps.Infrastructure.Weather;
 
 namespace PictureSlideshowScreensaver.Composition
@@ -41,6 +42,11 @@ namespace PictureSlideshowScreensaver.Composition
             services.AddSingleton<Serilog.Core.LoggingLevelSwitch>(
                 sp => sp.GetRequiredService<Settings>().LogLevelSwitch);
             services.AddSingleton<ImagesProvider, LocalImages>();
+
+            // Reads video duration / rotation / recording date out of the
+            // container header during the library scan, which is what lets a
+            // standalone video be split into clips and placed in the rotation.
+            services.AddSingleton<IVideoMetadataProvider, Mp4VideoMetadataProvider>();
 
             // Haar cascade XML is copied to output by the <Content> entry
             // in PictureSlideshowScreensaver.csproj. AppContext.BaseDirectory

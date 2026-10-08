@@ -40,6 +40,11 @@ namespace PictureSlideshowScreensaver.ViewModels
     private FrameViewModel _secondImage;
 
     private bool _isNightTime = false;
+
+    // A video clip holds the frame for its own length instead of the photo
+    // interval. The small margin keeps the switch just behind the end of the
+    // slice, so the player isn't cut off a frame early.
+    private static readonly TimeSpan ClipSwitchMargin = TimeSpan.FromMilliseconds(250);
     private bool _disposed;
 
     // Prefetch: the next photo's full bitmap pipeline (decode + ONNX
@@ -170,8 +175,8 @@ namespace PictureSlideshowScreensaver.ViewModels
       // the early progress events on a slow share.
       _images.ScanProgressChanged += OnScanProgress;
       _images.init(new string[] { _settings._path });
-      FirstImage = new FrameViewModel("one") { IsActive = true };
-      SecondImage = new FrameViewModel("two") { IsActive = false };
+      FirstImage = new FrameViewModel("one", _settings.VideoVolume) { IsActive = true };
+      SecondImage = new FrameViewModel("two", _settings.VideoVolume) { IsActive = false };
       PhotoProperties = new PhotoProperties();
 
       NextImage(); // to show from the very start
@@ -369,6 +374,12 @@ namespace PictureSlideshowScreensaver.ViewModels
         PhotoProperties.SetFacesFound(nextphoto.accent_count);
         PhotoProperties.SetRotation(nextphoto.orientation);
 
+        // Hand the frame over for exactly as long as the clip runs. fade_Tick
+        // puts the photo interval back on the next tick, so this doesn't need
+        // undoing.
+        if (nextphoto.clip is { } clip && _switchImage != null)
+          _switchImage.Interval = clip.Length + ClipSwitchMargin;
+
         // First real photo on screen — drop the scanning overlay.
         if (IsScanning)
         {
@@ -425,6 +436,11 @@ namespace PictureSlideshowScreensaver.ViewModels
 
           photo.EnsureMetadataLoaded();
           ct.ThrowIfCancellationRequested();
+
+          // A clip has no bitmap pipeline to run ahead: the player opens the
+          // file itself when the frame activates.
+          if (photo.clip != null)
+            return new PrefetchedPhoto(photo, null);
 
           // This is the heavy bit: triggers the JPEG decode, the ONNX
           // orientation detection (only when needed), and Haar face
