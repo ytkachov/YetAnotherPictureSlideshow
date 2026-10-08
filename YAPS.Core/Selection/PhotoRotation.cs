@@ -43,7 +43,8 @@ public sealed class PhotoRotation
 {
     private readonly IReadOnlyDictionary<string, int[]> _photosByFolder;
     private readonly Func<int, int> _showCountOf;
-    private readonly int _batchSize;
+    private readonly FolderRotationPolicy _defaultPolicy;
+    private readonly IReadOnlyDictionary<string, FolderRotationPolicy> _policies;
     private readonly Dictionary<string, Deck> _decks;
 
     private string[] _folderDeck = Array.Empty<string>();
@@ -59,13 +60,24 @@ public sealed class PhotoRotation
     /// registry). Called only while a folder's deck is being built.
     /// </param>
     /// <param name="photosPerFolder">Batch size; how many photos one folder visit yields.</param>
-    public PhotoRotation(IReadOnlyDictionary<string, int[]> photosByFolder, Func<int, int> showCountOf, int photosPerFolder)
+    /// <param name="policies">
+    /// Per-folder overrides of batch size and weight, for folders that don't
+    /// behave like a photo folder. The virtual video folder uses one, so that
+    /// a visit there yields a single clip and comes up more often than its
+    /// item count alone would earn. Folders without an entry get the default.
+    /// </param>
+    public PhotoRotation(IReadOnlyDictionary<string, int[]> photosByFolder, Func<int, int> showCountOf, int photosPerFolder,
+                         IReadOnlyDictionary<string, FolderRotationPolicy>? policies = null)
     {
         _photosByFolder = photosByFolder ?? throw new ArgumentNullException(nameof(photosByFolder));
         _showCountOf = showCountOf ?? throw new ArgumentNullException(nameof(showCountOf));
-        _batchSize = Math.Max(1, photosPerFolder);
+        _defaultPolicy = new FolderRotationPolicy(Math.Max(1, photosPerFolder), 1);
+        _policies = policies ?? new Dictionary<string, FolderRotationPolicy>(StringComparer.OrdinalIgnoreCase);
         _decks = new Dictionary<string, Deck>(photosByFolder.Count, StringComparer.OrdinalIgnoreCase);
     }
+
+    private FolderRotationPolicy PolicyFor(string folder)
+        => _policies.TryGetValue(folder, out var policy) ? policy : _defaultPolicy;
 
     /// <summary>
     /// Next mini-batch of photo ids, all from one folder. Empty only when the
@@ -83,7 +95,7 @@ public sealed class PhotoRotation
             _decks[folder] = deck;
         }
 
-        int take = Math.Min(_batchSize, deck.Order.Length - deck.Cursor);
+        int take = Math.Min(Math.Max(1, PolicyFor(folder).BatchSize), deck.Order.Length - deck.Cursor);
         var batch = new int[take];
         Array.Copy(deck.Order, deck.Cursor, batch, 0, take);
         deck.Cursor += take;
@@ -103,18 +115,20 @@ public sealed class PhotoRotation
 
     // One entry per batch the folder needs, so folder visits are proportional
     // to folder size — this is the actual fix for the old "random folder"
-    // bias. Shuffled so the visits are spread out rather than clustered.
+    // bias. A folder whose policy carries a weight above 1 gets that many
+    // times its fair share; weight 0 keeps it out. Shuffled so the visits are
+    // spread out rather than clustered.
     private string[] BuildFolderDeck()
     {
         int total = 0;
         foreach (var pair in _photosByFolder)
-            total += Visits(pair.Value.Length);
+            total += Visits(pair.Key, pair.Value.Length);
 
         var deck = new string[total];
         int at = 0;
         foreach (var pair in _photosByFolder)
         {
-            int visits = Visits(pair.Value.Length);
+            int visits = Visits(pair.Key, pair.Value.Length);
             for (int i = 0; i < visits; i++)
                 deck[at++] = pair.Key;
         }
@@ -123,7 +137,18 @@ public sealed class PhotoRotation
         return deck;
     }
 
-    private int Visits(int photoCount) => photoCount <= 0 ? 0 : (photoCount + _batchSize - 1) / _batchSize;
+    private int Visits(string folder, int itemCount)
+    {
+        if (itemCount <= 0)
+            return 0;
+
+        var policy = PolicyFor(folder);
+        if (policy.WeightMultiplier <= 0)
+            return 0;
+
+        int batch = Math.Max(1, policy.BatchSize);
+        return (itemCount + batch - 1) / batch * policy.WeightMultiplier;
+    }
 
     private int[] BuildPhotoDeck(string folder)
     {
