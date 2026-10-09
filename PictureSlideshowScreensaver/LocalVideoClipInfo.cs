@@ -4,7 +4,8 @@ using System.Windows.Media.Imaging;
 using Yaps.Core.Video;
 
 /// <summary>
-/// A standalone video slice taking its turn in the slideshow. Implements the
+/// A standalone video — a whole short clip, or one slice of a long-form
+/// video — taking its turn in the slideshow. Implements the
 /// same <see cref="ImageInfo"/> contract photos do, so the rotation, the show
 /// registry and the frame all treat it as an ordinary item — it just answers
 /// "I am a clip" instead of handing over a bitmap.
@@ -18,11 +19,17 @@ public sealed class LocalVideoClipInfo : ImageInfo
   private readonly VideoClip _clip;
   private readonly DateTime? _recorded;
 
-  public LocalVideoClipInfo(VideoClip clip, DateTime? recordedLocal)
+  public LocalVideoClipInfo(VideoClip clip, DateTime? recordedLocal, bool isLongForm)
   {
     _clip = clip ?? throw new ArgumentNullException(nameof(clip));
     _recorded = recordedLocal;
+    IsLongForm = isLongForm;
   }
+
+  // A slice of a video from Settings.VideoFolders, rotated through the shared
+  // virtual video folder, rather than a camera clip shown with its folder's
+  // photos.
+  public bool IsLongForm { get; }
 
   public VideoClip clip => _clip;
   public string path => _clip.Path;

@@ -129,15 +129,23 @@ free of file-system knowledge so the behaviour can be exercised on its own.
 ## Video
 
 A video that stands on its own in the library — no photo of the same name
-next to it — joins the rotation as well. All of them share one virtual
-folder, so video takes its turn as a group rather than inflating whatever
-photo folder it happens to sit in, and a visit there plays **one slice** of
-`VideoChunkSeconds` (15 by default) before the rotation moves on to the next
-folder. A long recording is therefore shown in pieces over time instead of
-holding the frame for minutes; a trailing sliver shorter than a third of a
-chunk is folded into the slice before it. A video sitting next to a photo of
-the same name is that photo's companion clip and is still played with it, as
-before.
+next to it — joins the rotation as well, in one of two ways.
+
+**Camera clips** (any video in a photo folder) are items of that folder like
+its photos: the folder's deck deals them in among the stills, and a clip plays
+**whole**, start to end, holding the frame for its own length.
+
+**Long-form video** — anything under a `VideoFolder` (home movies, edited
+films) — shares one virtual folder instead, so it takes its turn as a group,
+and a visit there plays **one slice** of `VideoChunkSeconds` (15 by default)
+before the rotation moves on. A long recording is therefore shown in pieces
+over time instead of holding the frame for minutes; a trailing sliver shorter
+than a third of a chunk is folded into the slice before it.
+
+iPhone Live Photo movies (the 1.5-3 s `.mov` next to an `IMG_1234.jpg`) are
+not shown for now: the photo appears as a still unless `ShowLivePhotoVideos=1`,
+and a Live Photo movie whose still is missing is recognised by its Apple
+metadata key and skipped either way.
 
 Duration, display rotation and recording date are read from the container
 header during the scan (`YAPS.Core/Video/Mp4MetadataReader.cs`) — box headers
@@ -146,12 +154,12 @@ needed. That also means the supported containers are the ISO base-media
 family (`.mp4`, `.m4v`, `.mov`); a video whose duration can't be measured is
 logged and left out of the rotation rather than risking a stalled frame.
 
-Strict proportionality would make video nearly invisible: a couple of minutes
-of it against 22 000 photos earns about one slice every four hours. Hence
-`VideoFolderWeight` (default 10), which deals the video folder that many
+Strict proportionality would make long-form video nearly invisible: a couple
+of minutes of it against 22 000 photos earns about one slice every four hours.
+Hence `VideoFolderWeight` (default 10), which deals the video folder that many
 times its fair share — a slice every 20-30 minutes on that library, with
-photos still shown exactly once per pass. `VideoFolderWeight=0` turns video
-off entirely. Playback is silent unless `VideoVolume` says otherwise.
+photos still shown exactly once per pass. `VideoFolderWeight=0` turns
+long-form video off; camera clips are unaffected. Playback is silent unless `VideoVolume` says otherwise.
 
 ## Configuration
 
@@ -169,8 +177,10 @@ double-click. Notable keys:
 | `WeatherProvider` | string | `open-meteo` (default) or `yandex-api` |
 | `YandexApiKey` | string | Yandex Weather API key (only needed by `yandex-api`) |
 | `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
-| `VideoChunkSeconds` | string | Length of one video slice (default `15`, clamped 3..300) |
-| `VideoFolderWeight` | string | How strongly video is favoured over its fair share of visits (default `10`, `0` turns video off) |
+| `VideoFolder` | string | `;`-separated folders of long-form video, searched with subfolders; played in slices (default empty) |
+| `VideoChunkSeconds` | string | Length of one long-form video slice (default `15`, clamped 3..300) |
+| `VideoFolderWeight` | string | How strongly long-form video is favoured over its fair share of visits (default `10`, `0` turns it off) |
+| `ShowLivePhotoVideos` | string `0`/`1` | Play a photo's Live Photo `.mov` in its place (default `0`) |
 | `VideoVolume` | string | Video volume 0..100 (default `0` — silent) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
 | `WriteLogFolder` | string | Where to write the log files |

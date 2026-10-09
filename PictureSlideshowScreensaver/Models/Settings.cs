@@ -49,19 +49,36 @@ namespace PictureSlideshowScreensaver.Models
     public string WeatherProviderSecondary = "";
     public int WeatherPollingMinutesSecondary = 30;
 
-    // Standalone videos in the library are shown as clips of this many
-    // seconds, one clip per visit to the virtual video folder. Registry key
-    // "VideoChunkSeconds", clamped [3, 300]. A video shorter than a chunk
-    // (plus a third, see LocalImages) is simply shown whole.
+    // Folders holding long-form video (home movies, edited films), as a
+    // ';'-separated list like ImageFolder; each is searched with its
+    // subfolders, and scanned even when it lies outside ImageFolder. Videos
+    // under these play in slices from one shared virtual folder (see
+    // VideoChunkSeconds / VideoFolderWeight). Every other video in the library
+    // is a short camera clip and plays whole, in turn with the photos of its
+    // own folder. Registry key "VideoFolder"; empty = no long-form video.
+    public string[] VideoFolders = [];
+
+    // Long-form videos are shown as clips of this many seconds, one clip per
+    // visit to the virtual video folder. Registry key "VideoChunkSeconds",
+    // clamped [3, 300]. A video shorter than a chunk (plus a third, see
+    // LocalImages) is simply shown whole.
     public int VideoChunkSeconds = 15;
 
-    // How strongly the virtual video folder is favoured over its fair share
-    // of rotation visits. 1 = strictly proportional to clip count, which for
-    // a library of tens of thousands of photos and a couple of minutes of
-    // video means a clip roughly every five hours; 10 (the default) brings
-    // that to about every half hour. 0 switches video off entirely.
+    // How strongly the virtual long-form video folder is favoured over its
+    // fair share of rotation visits. 1 = strictly proportional to clip count,
+    // which for a library of tens of thousands of photos and a couple of
+    // minutes of video means a clip roughly every five hours; 10 (the default)
+    // brings that to about every half hour. 0 switches long-form video off;
+    // short clips in photo folders are unaffected.
     // Registry key "VideoFolderWeight", clamped [0, 1000].
     public int VideoFolderWeight = 10;
+
+    // Whether a photo with an iPhone Live Photo movie next to it (IMG_1.jpg +
+    // IMG_1.mov) plays that movie in its place. Off by default until the
+    // Live Photo presentation is worked out; the photo is shown as a still.
+    // Live Photo movies whose still is missing never play either way.
+    // Registry key "ShowLivePhotoVideos", 0/1.
+    public bool ShowLivePhotoVideos = false;
 
     // Playback volume for video, 0..100. Defaults to silent: a frame on the
     // wall that suddenly starts making noise every half hour is worse than
@@ -148,6 +165,9 @@ namespace PictureSlideshowScreensaver.Models
       WeatherPollingMinutesSecondary = Math.Clamp(ReadInt(key, "WeatherPollingMinutesSecondary", WeatherPollingMinutesSecondary), 1, 1440);
       WeatherShowProviderBadge = ReadInt(key, "WeatherShowProviderBadge", WeatherShowProviderBadge ? 1 : 0) != 0;
       StatsFlushHours = Math.Clamp(ReadInt(key, "StatsFlushHours", StatsFlushHours), 1, 168);
+      VideoFolders = ((string)key.GetValue("VideoFolder") ?? "")
+          .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+      ShowLivePhotoVideos = ReadInt(key, "ShowLivePhotoVideos", 0) == 1;
       VideoChunkSeconds = Math.Clamp(ReadInt(key, "VideoChunkSeconds", VideoChunkSeconds), 3, 300);
       VideoFolderWeight = Math.Clamp(ReadInt(key, "VideoFolderWeight", VideoFolderWeight), 0, 1000);
       VideoVolume = Math.Clamp(ReadInt(key, "VideoVolume", VideoVolume), 0, 100);
