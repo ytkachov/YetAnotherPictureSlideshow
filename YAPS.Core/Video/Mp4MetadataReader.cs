@@ -7,7 +7,8 @@ namespace Yaps.Core.Video;
 
 /// <summary>
 /// Minimal ISO base-media (MP4 / M4V / QuickTime MOV) header reader: pulls
-/// duration, display rotation and creation time out of the <c>moov</c> box.
+/// duration, display rotation, creation time and the iPhone Live Photo marker
+/// out of the <c>moov</c> box.
 ///
 /// Why parse by hand instead of asking a media API: the duration has to be
 /// known during the library scan, on a background thread, before anything is
@@ -21,6 +22,14 @@ namespace Yaps.Core.Video;
 /// </summary>
 public static class Mp4MetadataReader
 {
+    // Every Live Photo movie carries this QuickTime metadata key (it links the
+    // clip to its still); ordinary iPhone recordings don't.
+    private const string LivePhotoKey = "com.apple.quicktime.content.identifier";
+
+    // Bounds on what a sane keys box holds — anything beyond is a broken file.
+    private const int MaxMetadataKeys = 256;
+    private const int MaxKeyLength = 512;
+
     private static readonly DateTime Epoch1904 = new(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     // A creation time outside this range is a muxer artefact, not a date.
@@ -50,7 +59,8 @@ public static class Mp4MetadataReader
                 return null;
 
             int rotation = ReadRotation(stream, moov);
-            return new VideoMetadata(duration, rotation, created);
+            bool livePhoto = IsLivePhoto(stream, moov);
+            return new VideoMetadata(duration, rotation, created, livePhoto);
         }
         catch (Exception)
         {
@@ -174,6 +184,46 @@ public static class Mp4MetadataReader
 
         rotation = snapped;
         return true;
+    }
+
+    // QuickTime metadata: moov/meta holds a keys box listing the key names
+    // (the values sit in ilst and aren't needed — the key's presence is the
+    // marker). A QuickTime-style meta has its children right after the header;
+    // the ISO-style variant puts 4 bytes of version/flags first, so try both.
+    private static bool IsLivePhoto(Stream stream, Box moov)
+    {
+        if (FindBox(stream, moov.PayloadStart, moov.PayloadEnd, "meta") is not { } meta)
+            return false;
+
+        var keys = FindBox(stream, meta.PayloadStart, meta.PayloadEnd, "keys")
+                   ?? FindBox(stream, meta.PayloadStart + 4, meta.PayloadEnd, "keys");
+        return keys is { } k && HasKey(stream, k, LivePhotoKey);
+    }
+
+    private static bool HasKey(Stream stream, Box keys, string wanted)
+    {
+        stream.Position = keys.PayloadStart;
+        Skip(stream, 4); // version, flags
+        uint count = ReadU32(stream);
+        if (count > MaxMetadataKeys)
+            return false;
+
+        Span<byte> name = stackalloc byte[MaxKeyLength];
+        for (uint i = 0; i < count; i++)
+        {
+            long entryStart = stream.Position;
+            uint size = ReadU32(stream);
+            Skip(stream, 4); // namespace, 'mdta'
+            if (size < 8 || size - 8 > MaxKeyLength || entryStart + size > keys.PayloadEnd)
+                return false;
+
+            var value = name[..(int)(size - 8)];
+            stream.ReadExactly(value);
+            if (Encoding.ASCII.GetString(value) == wanted)
+                return true;
+        }
+
+        return false;
     }
 
     private readonly record struct Box(string Type, long PayloadStart, long PayloadEnd);

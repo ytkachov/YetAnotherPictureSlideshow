@@ -18,4 +18,9 @@ namespace Yaps.Core.Video;
 /// Container creation time, or null when the file doesn't carry a plausible
 /// one (plenty of muxers leave it at zero).
 /// </param>
-public sealed record VideoMetadata(TimeSpan Duration, int RotationDegrees, DateTime? CreatedUtc);
+/// <param name="IsLivePhoto">
+/// The file is the movie half of an iPhone Live Photo (a 1.5-3 s clip around
+/// a still), not a recording in its own right — even when its still is
+/// missing from the folder.
+/// </param>
+public sealed record VideoMetadata(TimeSpan Duration, int RotationDegrees, DateTime? CreatedUtc, bool IsLivePhoto = false);
