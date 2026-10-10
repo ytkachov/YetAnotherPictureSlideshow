@@ -163,12 +163,15 @@ needed. That also means the supported containers are the ISO base-media
 family (`.mp4`, `.m4v`, `.mov`); a video whose duration can't be measured is
 logged and left out of the rotation rather than risking a stalled frame.
 
-Strict proportionality would make long-form video nearly invisible: a couple
-of minutes of it against 22 000 photos earns about one slice every four hours.
-Hence `VideoFolderWeight` (default 10), which deals the video folder that many
-times its fair share — a slice every 20-30 minutes on that library, with
-photos still shown exactly once per pass. `VideoFolderWeight=0` turns
-long-form video off; camera clips are unaffected. Playback is silent unless `VideoVolume` says otherwise.
+The share of long-form video is set in time, not in items:
+`VideoEveryMinutes` (default 20) is how often, on average, a slice comes up.
+One pass over the photo library lasts about photos x `Interval`, so the video
+folder gets that pass's length divided by `VideoEveryMinutes` visits per pass,
+and its deck simply carries on into the next pass. Counting visits per slice
+instead would let the amount of video decide: 15 hours of home movies is ~3900
+slices, which dealt one visit each would crowd the photos out entirely.
+`VideoEveryMinutes=0` turns long-form video off; camera clips are unaffected.
+Playback is silent unless `VideoVolume` says otherwise.
 
 ## Configuration
 
@@ -188,7 +191,7 @@ double-click. Notable keys:
 | `WeatherPollingMinutes` | string | Minutes between provider polls (default `60`, clamped 1..1440) |
 | `VideoFolder` | string | `;`-separated folders of long-form video, searched with subfolders; played in slices (default empty) |
 | `VideoChunkSeconds` | string | Length of one long-form video slice (default `15`, clamped 3..300) |
-| `VideoFolderWeight` | string | How strongly long-form video is favoured over its fair share of visits (default `10`, `0` turns it off) |
+| `VideoEveryMinutes` | string | A long-form video slice about every N minutes (default `20`, `0` turns it off) |
 | `ShowLivePhotoVideos` | string `0`/`1` | Play a photo's Live Photo `.mov` before its still (default `1`) |
 | `VideoVolume` | string | Video volume 0..100 (default `0` — silent) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |

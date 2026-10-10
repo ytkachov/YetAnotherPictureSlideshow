@@ -29,7 +29,9 @@ namespace Yaps.Core.Selection;
 /// The two stay in lockstep — the folder deck grants a folder exactly as many
 /// visits as its photo deck has batches — so over one pass <b>every photo in
 /// the library is shown exactly once</b>, no matter how the photos are spread
-/// across folders.
+/// across folders. The exception is a folder whose policy fixes its visits
+/// per pass (the long-form video folder): it gets that many visits and its
+/// deck carries on into the next pass where it left off.
 ///
 /// A photo deck is (re)built least-shown-first, with a random tiebreak inside
 /// equal counts. Within a pass that's just a shuffle (all counts are equal by
@@ -61,17 +63,18 @@ public sealed class PhotoRotation
     /// </param>
     /// <param name="photosPerFolder">Batch size; how many photos one folder visit yields.</param>
     /// <param name="policies">
-    /// Per-folder overrides of batch size and weight, for folders that don't
-    /// behave like a photo folder. The virtual video folder uses one, so that
-    /// a visit there yields a single clip and comes up more often than its
-    /// item count alone would earn. Folders without an entry get the default.
+    /// Per-folder overrides of batch size and visits per pass, for folders
+    /// that don't behave like a photo folder. The virtual video folder uses
+    /// one, so that a visit there yields a single clip and the folder comes up
+    /// a set number of times per pass rather than once per clip. Folders
+    /// without an entry get the default.
     /// </param>
     public PhotoRotation(IReadOnlyDictionary<string, int[]> photosByFolder, Func<int, int> showCountOf, int photosPerFolder,
                          IReadOnlyDictionary<string, FolderRotationPolicy>? policies = null)
     {
         _photosByFolder = photosByFolder ?? throw new ArgumentNullException(nameof(photosByFolder));
         _showCountOf = showCountOf ?? throw new ArgumentNullException(nameof(showCountOf));
-        _defaultPolicy = new FolderRotationPolicy(Math.Max(1, photosPerFolder), 1);
+        _defaultPolicy = new FolderRotationPolicy(Math.Max(1, photosPerFolder));
         _policies = policies ?? new Dictionary<string, FolderRotationPolicy>(StringComparer.OrdinalIgnoreCase);
         _decks = new Dictionary<string, Deck>(photosByFolder.Count, StringComparer.OrdinalIgnoreCase);
     }
@@ -115,9 +118,9 @@ public sealed class PhotoRotation
 
     // One entry per batch the folder needs, so folder visits are proportional
     // to folder size — this is the actual fix for the old "random folder"
-    // bias. A folder whose policy carries a weight above 1 gets that many
-    // times its fair share; weight 0 keeps it out. Shuffled so the visits are
-    // spread out rather than clustered.
+    // bias. A folder whose policy fixes its visits per pass gets exactly that
+    // many (0 keeps it out). Shuffled so the visits are spread out rather
+    // than clustered.
     private string[] BuildFolderDeck()
     {
         int total = 0;
@@ -143,11 +146,11 @@ public sealed class PhotoRotation
             return 0;
 
         var policy = PolicyFor(folder);
-        if (policy.WeightMultiplier <= 0)
-            return 0;
+        if (policy.VisitsPerPass is int fixedVisits)
+            return Math.Max(0, fixedVisits);
 
         int batch = Math.Max(1, policy.BatchSize);
-        return (itemCount + batch - 1) / batch * policy.WeightMultiplier;
+        return (itemCount + batch - 1) / batch;
     }
 
     private int[] BuildPhotoDeck(string folder)

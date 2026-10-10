@@ -53,7 +53,7 @@ namespace PictureSlideshowScreensaver.Models
     // ';'-separated list like ImageFolder; each is searched with its
     // subfolders, and scanned even when it lies outside ImageFolder. Videos
     // under these play in slices from one shared virtual folder (see
-    // VideoChunkSeconds / VideoFolderWeight). Every other video in the library
+    // VideoChunkSeconds / VideoEveryMinutes). Every other video in the library
     // is a short camera clip and plays whole, in turn with the photos of its
     // own folder. Registry key "VideoFolder"; empty = no long-form video.
     public string[] VideoFolders = [];
@@ -64,14 +64,14 @@ namespace PictureSlideshowScreensaver.Models
     // LocalImages) is simply shown whole.
     public int VideoChunkSeconds = 15;
 
-    // How strongly the virtual long-form video folder is favoured over its
-    // fair share of rotation visits. 1 = strictly proportional to clip count,
-    // which for a library of tens of thousands of photos and a couple of
-    // minutes of video means a clip roughly every five hours; 10 (the default)
-    // brings that to about every half hour. 0 switches long-form video off;
-    // short clips in photo folders are unaffected.
-    // Registry key "VideoFolderWeight", clamped [0, 1000].
-    public int VideoFolderWeight = 10;
+    // How often a long-form video slice comes up, on average, in minutes of
+    // slideshow — whatever the amount of video. Set as time rather than as a
+    // share of the rotation because the video library can be anything from a
+    // few clips to many hours (15 h of home movies is ~3900 slices; dealt one
+    // visit per slice they'd crowd the photos out). 0 switches long-form
+    // video off; short clips in photo folders are unaffected.
+    // Registry key "VideoEveryMinutes", clamped [0, 1440].
+    public int VideoEveryMinutes = 20;
 
     // Whether a photo with an iPhone Live Photo movie next to it (IMG_1.jpg +
     // IMG_1.mov) plays that movie first and then dissolves into the still.
@@ -168,7 +168,7 @@ namespace PictureSlideshowScreensaver.Models
           .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
       ShowLivePhotoVideos = ReadInt(key, "ShowLivePhotoVideos", ShowLivePhotoVideos ? 1 : 0) == 1;
       VideoChunkSeconds = Math.Clamp(ReadInt(key, "VideoChunkSeconds", VideoChunkSeconds), 3, 300);
-      VideoFolderWeight = Math.Clamp(ReadInt(key, "VideoFolderWeight", VideoFolderWeight), 0, 1000);
+      VideoEveryMinutes = Math.Clamp(ReadInt(key, "VideoEveryMinutes", VideoEveryMinutes), 0, 1440);
       VideoVolume = Math.Clamp(ReadInt(key, "VideoVolume", VideoVolume), 0, 100);
 
       var logLevelRaw = (string)key.GetValue("LogLevel");

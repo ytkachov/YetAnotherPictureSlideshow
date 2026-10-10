@@ -245,9 +245,9 @@ class LocalImages : ImagesProvider
     }
 
     int shortClips = clips.Count;
-    if (longFormPaths.Count > 0 && _settings.VideoFolderWeight <= 0)
+    if (longFormPaths.Count > 0 && _settings.VideoEveryMinutes <= 0)
     {
-      Log.Information("{Videos} long-form videos stay out of the rotation: VideoFolderWeight is 0", longFormPaths.Count);
+      Log.Information("{Videos} long-form videos stay out of the rotation: VideoEveryMinutes is 0", longFormPaths.Count);
       longFormPaths.Clear();
     }
 
@@ -335,6 +335,17 @@ class LocalImages : ImagesProvider
     return roots.ToArray();
   }
 
+  // A pass shows every photo once, so it lasts about photos x Interval;
+  // spreading this many slices over it puts one every VideoEveryMinutes on
+  // average. Never more than the folder holds (a pass would then repeat a
+  // slice), never less than one.
+  private int LongFormVisitsPerPass()
+  {
+    double passSeconds = _imagesTmp.Count * Math.Max(1.0, _settings._updateInterval);
+    int visits = (int)Math.Round(passSeconds / (Math.Max(1, _settings.VideoEveryMinutes) * 60.0));
+    return Math.Clamp(visits, 1, Math.Max(1, _imagesByFolder[VideoFolderKey].Length));
+  }
+
   private void BuildIndex(List<LocalVideoClipInfo> clips)
   {
     var items = new ImageInfo[_imagesTmp.Count + clips.Count];
@@ -365,12 +376,17 @@ class LocalImages : ImagesProvider
 
     _imagesByFolder = grouped.ToDictionary(kv => kv.Key, kv => kv.Value.ToArray(), StringComparer.OrdinalIgnoreCase);
 
-    // The long-form video folder hands out one slice per visit (not a batch
-    // of ten) and carries a weight so a couple of minutes of video isn't
-    // drowned by tens of thousands of photos — see FolderRotationPolicy.
+    // The long-form video folder hands out one slice per visit and comes up a
+    // set number of times per pass, sized so a slice appears about every
+    // VideoEveryMinutes — see LongFormVisitsPerPass.
     var policies = new Dictionary<string, FolderRotationPolicy>(StringComparer.OrdinalIgnoreCase);
     if (_imagesByFolder.ContainsKey(VideoFolderKey))
-      policies[VideoFolderKey] = new FolderRotationPolicy(BatchSize: 1, WeightMultiplier: _settings.VideoFolderWeight);
+    {
+      int visits = LongFormVisitsPerPass();
+      policies[VideoFolderKey] = new FolderRotationPolicy(BatchSize: 1, VisitsPerPass: visits);
+      Log.Information("Long-form video: {Slices} slices, {Visits} per pass of the photo library (one about every {Minutes} min)",
+          _imagesByFolder[VideoFolderKey].Length, visits, _settings.VideoEveryMinutes);
+    }
 
     // Rotation deals folder visits proportionally to folder size and hands
     // out each folder's photos in a deck, so one pass covers the whole
