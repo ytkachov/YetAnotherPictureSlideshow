@@ -23,6 +23,11 @@ public interface ImageInfo
   // movie's header is read there, off the UI thread).
   VideoClip live_video { get; }
 
+  // False once EnsureMetadataLoaded has found the item can't be shown (a
+  // video whose header is unreadable, or a Live Photo movie without its
+  // still). The slideshow then deals the next item instead.
+  bool usable { get; }
+
   int accent_count { get; }
   RotateFlipType orientation { get; }
   PointF accent { get; }
@@ -39,14 +44,21 @@ public interface ImageInfo
 // handed across the scan thread / UI thread boundary safely.
 public sealed class ScanProgress
 {
-  public ScanProgress(int filesFound, string currentFolder)
+  public ScanProgress(int filesFound, string currentFolder, int videosRead = 0, int videosTotal = 0)
   {
     FilesFound = filesFound;
     CurrentFolder = currentFolder;
+    VideosRead = videosRead;
+    VideosTotal = videosTotal;
   }
 
   public int FilesFound { get; }
   public string CurrentFolder { get; }
+
+  // Second phase, after the walk: long-form videos being measured. Zero
+  // total while the walk is still going.
+  public int VideosRead { get; }
+  public int VideosTotal { get; }
 }
 
 

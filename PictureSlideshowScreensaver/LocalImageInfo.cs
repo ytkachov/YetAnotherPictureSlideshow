@@ -66,6 +66,9 @@ public class LocalImageInfo : ImageInfo
 
   public VideoClip live_video => _liveVideo;
 
+  // A photo that fails to load is reported by the bitmap pipeline, not here.
+  public bool usable => true;
+
   public void EnsureMetadataLoaded()
   {
     if (_metadataLoaded)

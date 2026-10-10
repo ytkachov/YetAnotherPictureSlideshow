@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PictureSlideshowScreensaver.Composition;
+using PictureSlideshowScreensaver.Models;
 using Serilog;
 
 namespace PictureSlideshowScreensaver
@@ -21,6 +22,8 @@ namespace PictureSlideshowScreensaver
     // the configuration window out of the container; nothing else needs
     // to reach back into the host's services from XAML-instantiated code.
     public IServiceProvider Services => _host?.Services;
+
+    private const string FolderArg = "/folder:";
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
@@ -42,6 +45,13 @@ namespace PictureSlideshowScreensaver
       _host = Host.CreateApplicationBuilder()
           .ConfigureServices()
           .Build();
+
+      // Debugging aid: "/s /folder:D:\some\photos" shows just that folder,
+      // whatever the registry says. Applied before Start so the hosted
+      // services (stats flush) already see the redirected stats location.
+      if (Array.Find(e.Args, a => a.StartsWith(FolderArg, StringComparison.OrdinalIgnoreCase)) is { } folderArg)
+        _host.Services.GetRequiredService<Settings>().UseDebugFolder(folderArg.Substring(FolderArg.Length).Trim('"'));
+
       _host.Start();
 
       if (e.Args.Length > 0)

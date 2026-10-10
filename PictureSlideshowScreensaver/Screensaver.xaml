@@ -125,7 +125,7 @@
                      Foreground="#FFD70000" Background="#FF202020" BorderThickness="0" />
         <TextBlock HorizontalAlignment="Center" Margin="0,24,0,0" Foreground="White"
                    FontFamily="Segoe UI Light" FontSize="24"
-                   Text="{Binding ScanFileCount, StringFormat='Сканирую: {0} фото'}" />
+                   Text="{Binding ScanStatus}" />
         <TextBlock HorizontalAlignment="Center" Margin="0,8,0,0" Foreground="#FFAAAAAA"
                    FontFamily="Segoe UI Light" FontSize="16" TextTrimming="CharacterEllipsis"
                    Text="{Binding ScanFolder}" />

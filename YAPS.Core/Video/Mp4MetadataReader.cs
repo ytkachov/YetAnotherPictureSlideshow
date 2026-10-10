@@ -14,9 +14,11 @@ namespace Yaps.Core.Video;
 /// known during the library scan, on a background thread, before anything is
 /// on screen — WPF's MediaElement only reports NaturalDuration once it has
 /// opened the media on the UI thread, and an external probe (ffprobe) isn't
-/// installed on the photo frame. This walks box headers only and seeks past
-/// each payload, so the media data itself is never read: a handful of small
-/// reads per file, which matters when the library sits on an SMB share.
+/// installed on the photo frame. This walks the top-level box headers only and
+/// seeks past each payload, so the media data itself is never read; the
+/// <c>moov</c> box is then pulled into memory in one read and parsed there.
+/// That keeps it to a few round trips per file, which is what matters when the
+/// library sits on an SMB share — parsing moov in place cost ~19 reads a file.
 ///
 /// Pure stream work, no file-system knowledge — that lives in Infrastructure.
 /// </summary>
@@ -29,6 +31,10 @@ public static class Mp4MetadataReader
     // Bounds on what a sane keys box holds — anything beyond is a broken file.
     private const int MaxMetadataKeys = 256;
     private const int MaxKeyLength = 512;
+
+    // moov of a camera clip is a few KB, of a long recording a few hundred KB.
+    // Anything bigger is not a file this reader should be buffering.
+    private const long MaxMoovBytes = 32L * 1024 * 1024;
 
     private static readonly DateTime Epoch1904 = new(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -49,8 +55,20 @@ public static class Mp4MetadataReader
         try
         {
             long end = stream.Length;
-            if (FindBox(stream, 0, end, "moov") is not { } moov)
+            if (FindBox(stream, 0, end, "moov") is not { } fileMoov)
                 return null;
+
+            long moovLength = fileMoov.PayloadEnd - fileMoov.PayloadStart;
+            if (moovLength <= 0 || moovLength > MaxMoovBytes)
+                return null;
+
+            var buffer = new byte[moovLength];
+            stream.Position = fileMoov.PayloadStart;
+            stream.ReadExactly(buffer);
+
+            // From here on everything is inside moov: parse the in-memory copy.
+            stream = new MemoryStream(buffer, writable: false);
+            var moov = new Box("moov", 0, moovLength);
 
             if (FindBox(stream, moov.PayloadStart, moov.PayloadEnd, "mvhd") is not { } mvhd)
                 return null;
