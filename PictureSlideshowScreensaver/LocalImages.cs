@@ -30,6 +30,11 @@ class LocalImages : ImagesProvider
   // — ':' is not legal in a Windows path component.
   private const string VideoFolderKey = "::video-clips";
 
+  // Concurrent header reads for long-form videos at startup. Latency-bound
+  // (file open over SMB), so a few in flight hide most of it without
+  // swamping a NAS.
+  private const int VideoProbeParallelism = 4;
+
   private readonly object _locker = new object();
   private readonly List<LocalImageInfo> _imagesTmp = new List<LocalImageInfo>();
   private readonly List<string> _videoPaths = new List<string>();
@@ -158,16 +163,21 @@ class LocalImages : ImagesProvider
     {
       try
       {
-        foreach (string s in Directory.GetFiles(p))
+        // Pairings (photo + Live Photo movie) are decided from this listing
+        // rather than by a File.Exists per file: on an SMB share every stat is
+        // a round trip, and the library has tens of thousands of photos.
+        string[] files = Directory.GetFiles(p);
+        var listed = new HashSet<string>(files, StringComparer.OrdinalIgnoreCase);
+        foreach (string s in files)
         {
           string ss = s.ToLower();
           if (ss.EndsWith(".jpg") || ss.EndsWith(".jpeg"))
           {
-            Add(ss);
+            Add(ss, listed);
             // Only the scan thread touches _filesFound, so the bare ++ is safe.
             ScanProgressChanged?.Invoke(this, new ScanProgress(++_filesFound, p));
           }
-          else if (VideoFileTypes.IsVideo(ss) && !HasPairedPhoto(ss))
+          else if (VideoFileTypes.IsVideo(ss) && !HasPairedPhoto(ss, listed))
           {
             // A video sitting next to a photo of the same name is that photo's
             // Live Photo movie (the pairing in Add below), never an item of its
@@ -195,7 +205,7 @@ class LocalImages : ImagesProvider
     }
   }
 
-  private void Add(string name)
+  private void Add(string name, HashSet<string> listed)
   {
     lock (_locker)
     {
@@ -204,30 +214,45 @@ class LocalImages : ImagesProvider
       // just before the photo is shown — see EnsureMetadataLoaded — so the
       // scan no longer pulls every file over the network.
       string movfile = Path.ChangeExtension(name, "mov");
-      bool companion = _settings.ShowLivePhotoVideos && File.Exists(movfile);
-      LocalImageInfo ii = new LocalImageInfo(name, companion ? movfile : null, _geocoder, _loader, _finfoStore);
+      bool companion = _settings.ShowLivePhotoVideos && listed.Contains(movfile);
+      LocalImageInfo ii = new LocalImageInfo(name, companion ? movfile : null, _geocoder, _loader, _finfoStore, _videoMetadata);
       _imagesTmp.Add(ii);
     }
   }
 
-  private static bool HasPairedPhoto(string videoPath)
+  private static bool HasPairedPhoto(string videoPath, HashSet<string> listed)
   {
-    // A stat, not a read — cheap even on a network share.
-    return File.Exists(Path.ChangeExtension(videoPath, "jpg")) ||
-           File.Exists(Path.ChangeExtension(videoPath, "jpeg"));
+    return listed.Contains(Path.ChangeExtension(videoPath, "jpg")) ||
+           listed.Contains(Path.ChangeExtension(videoPath, "jpeg"));
   }
 
-  // Turns each standalone video into rotation items. The container header
-  // carries the duration, so this is where a video that can't be measured
-  // drops out of the rotation entirely (logged by the provider) rather than
-  // stalling the frame later. A short camera clip becomes one item that plays
-  // start to end; a long-form video becomes the slices the virtual video
-  // folder deals out.
+  // Turns each standalone video into rotation items. A short camera clip is
+  // one item however long it runs, so it isn't opened here at all — its
+  // header is read just before it's shown (LocalVideoClipInfo). A long-form
+  // video has to be measured now: its duration decides how many slices it
+  // becomes and so its share of the rotation. One that can't be measured
+  // drops out (logged by the provider) rather than stalling the frame later.
   private List<LocalVideoClipInfo> BuildVideoClips()
   {
     var clips = new List<LocalVideoClipInfo>();
-    if (_videoPaths.Count == 0)
-      return clips;
+    var longFormPaths = new List<string>();
+    foreach (var videoPath in _videoPaths)
+    {
+      if (IsLongForm(videoPath))
+        longFormPaths.Add(videoPath);
+      else
+        clips.Add(new LocalVideoClipInfo(videoPath, _videoMetadata));
+    }
+
+    int shortClips = clips.Count;
+    if (longFormPaths.Count > 0 && _settings.VideoFolderWeight <= 0)
+    {
+      Log.Information("{Videos} long-form videos stay out of the rotation: VideoFolderWeight is 0", longFormPaths.Count);
+      longFormPaths.Clear();
+    }
+
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    var metas = MeasureLongForm(longFormPaths);
 
     var chunk = TimeSpan.FromSeconds(_settings.VideoChunkSeconds);
     // A trailing sliver is folded into the chunk before it instead of flashing
@@ -235,51 +260,46 @@ class LocalImages : ImagesProvider
     // like a clip.
     var minChunk = TimeSpan.FromSeconds(Math.Max(1.0, _settings.VideoChunkSeconds / 3.0));
 
-    int whole = 0, longForm = 0, slices = 0, livePhotos = 0, longFormOff = 0;
-    var sw = System.Diagnostics.Stopwatch.StartNew();
-    foreach (var videoPath in _videoPaths)
+    int longForm = 0, slices = 0;
+    for (int i = 0; i < longFormPaths.Count; i++)
     {
-      bool isLongForm = IsLongForm(videoPath);
-      if (isLongForm && _settings.VideoFolderWeight <= 0)
-      {
-        longFormOff++;
-        continue;
-      }
-
-      var meta = _videoMetadata.TryRead(videoPath);
-      if (meta == null)
+      var meta = metas[i];
+      if (meta == null || meta.IsLivePhoto)
         continue;
 
-      // A Live Photo movie whose still is missing: a 2-second fragment, not a
-      // recording anyone meant to watch on its own.
-      if (meta.IsLivePhoto)
-      {
-        livePhotos++;
-        continue;
-      }
-
-      var recorded = meta.CreatedUtc?.ToLocalTime() ?? FileTimestamp(videoPath);
-      if (!isLongForm)
-      {
-        clips.Add(new LocalVideoClipInfo(new VideoClip(videoPath, TimeSpan.Zero, meta.Duration, meta.RotationDegrees), recorded, isLongForm: false));
-        whole++;
-        continue;
-      }
-
+      var recorded = meta.CreatedUtc?.ToLocalTime() ?? LocalVideoClipInfo.FileTimestamp(longFormPaths[i]);
       longForm++;
       foreach (var (start, length) in VideoChunking.Split(meta.Duration, chunk, minChunk))
       {
-        clips.Add(new LocalVideoClipInfo(new VideoClip(videoPath, start, length, meta.RotationDegrees), recorded, isLongForm: true));
+        clips.Add(new LocalVideoClipInfo(new VideoClip(longFormPaths[i], start, length, meta.RotationDegrees), recorded));
         slices++;
       }
     }
     sw.Stop();
 
-    Log.Information("Measured {Videos} videos in {Ms} ms: {Whole} clips play whole, {LongForm} long-form videos as {Slices} slices of up to {Chunk}s, {Live} orphaned Live Photo movies skipped",
-        _videoPaths.Count, sw.ElapsedMilliseconds, whole, longForm, slices, _settings.VideoChunkSeconds, livePhotos);
-    if (longFormOff > 0)
-      Log.Information("{Videos} long-form videos stay out of the rotation: VideoFolderWeight is 0", longFormOff);
+    Log.Information("Videos: {Short} short clips (measured when shown), {LongForm} long-form videos measured into {Slices} slices of up to {Chunk}s in {Ms} ms",
+        shortClips, longForm, slices, _settings.VideoChunkSeconds, sw.ElapsedMilliseconds);
     return clips;
+  }
+
+  // Opening a file on an SMB share costs tens of milliseconds whatever is
+  // read from it, so the headers are read a few at a time; the overlay shows
+  // how far along it is.
+  private VideoMetadata[] MeasureLongForm(List<string> paths)
+  {
+    var metas = new VideoMetadata[paths.Count];
+    if (paths.Count == 0)
+      return metas;
+
+    int done = 0;
+    ScanProgressChanged?.Invoke(this, new ScanProgress(_filesFound, Path.GetDirectoryName(paths[0]), 0, paths.Count));
+    Parallel.For(0, paths.Count, new ParallelOptions { MaxDegreeOfParallelism = VideoProbeParallelism }, i =>
+    {
+      metas[i] = _videoMetadata.TryRead(paths[i]);
+      int n = Interlocked.Increment(ref done);
+      ScanProgressChanged?.Invoke(this, new ScanProgress(_filesFound, paths[i], n, paths.Count));
+    });
+    return metas;
   }
 
   private bool IsLongForm(string videoPath)
@@ -313,20 +333,6 @@ class LocalImages : ImagesProvider
       }
     }
     return roots.ToArray();
-  }
-
-  private static DateTime? FileTimestamp(string path)
-  {
-    try
-    {
-      var write = File.GetLastWriteTime(path);
-      return write.Year > 1 ? write : (DateTime?)null;
-    }
-    catch
-    {
-      // Caption-only data; a video with no readable timestamp just shows none.
-      return null;
-    }
   }
 
   private void BuildIndex(List<LocalVideoClipInfo> clips)

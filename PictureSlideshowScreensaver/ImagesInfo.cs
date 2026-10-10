@@ -6,8 +6,6 @@ using Yaps.Core.Video;
 public interface ImageInfo
 {
   BitmapImage bitmap { get; }
-  bool has_accompanying_video { get; }
-  string video_name { get; }
   string description { get; }
 
   // Full path of the photo. The show registry keys on it, so it is also
@@ -16,9 +14,20 @@ public interface ImageInfo
 
   // Non-null when this rotation item is a slice of a standalone video rather
   // than a photo: the frame plays it instead of showing a bitmap, and
-  // `bitmap` is null. Distinct from has_accompanying_video, which means "a
-  // photo that has a video stuck to it" (the iPhone live-photo pairing).
+  // `bitmap` is null.
   VideoClip clip { get; }
+
+  // Non-null when this photo is an iPhone Live Photo whose movie should play
+  // first: the frame runs the movie over the still up to the moment the
+  // still was taken (the clip's Length), cuts to the still and pans it as
+  // usual. Known only after EnsureMetadataLoaded (the
+  // movie's header is read there, off the UI thread).
+  VideoClip live_video { get; }
+
+  // False once EnsureMetadataLoaded has found the item can't be shown (a
+  // video whose header is unreadable, or a Live Photo movie without its
+  // still). The slideshow then deals the next item instead.
+  bool usable { get; }
 
   int accent_count { get; }
   RotateFlipType orientation { get; }
@@ -36,14 +45,21 @@ public interface ImageInfo
 // handed across the scan thread / UI thread boundary safely.
 public sealed class ScanProgress
 {
-  public ScanProgress(int filesFound, string currentFolder)
+  public ScanProgress(int filesFound, string currentFolder, int videosRead = 0, int videosTotal = 0)
   {
     FilesFound = filesFound;
     CurrentFolder = currentFolder;
+    VideosRead = videosRead;
+    VideosTotal = videosTotal;
   }
 
   public int FilesFound { get; }
   public string CurrentFolder { get; }
+
+  // Second phase, after the walk: long-form videos being measured. Zero
+  // total while the walk is still going.
+  public int VideosRead { get; }
+  public int VideosTotal { get; }
 }
 
 

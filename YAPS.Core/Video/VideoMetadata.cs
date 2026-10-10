@@ -23,4 +23,11 @@ namespace Yaps.Core.Video;
 /// a still), not a recording in its own right — even when its still is
 /// missing from the folder.
 /// </param>
-public sealed record VideoMetadata(TimeSpan Duration, int RotationDegrees, DateTime? CreatedUtc, bool IsLivePhoto = false);
+/// <param name="StillImageTime">
+/// For a Live Photo movie: the moment the still was taken, from the
+/// <c>com.apple.quicktime.still-image-time</c> metadata track. The still is
+/// taken mid-movie, not at its end, so this is where playback has to stop for
+/// the last frame shown to be the photo. Null when the file doesn't say.
+/// </param>
+public sealed record VideoMetadata(TimeSpan Duration, int RotationDegrees, DateTime? CreatedUtc,
+                                   bool IsLivePhoto = false, TimeSpan? StillImageTime = null);

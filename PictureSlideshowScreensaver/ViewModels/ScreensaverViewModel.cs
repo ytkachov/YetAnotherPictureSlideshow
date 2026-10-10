@@ -45,6 +45,9 @@ namespace PictureSlideshowScreensaver.ViewModels
     // interval. The small margin keeps the switch just behind the end of the
     // slice, so the player isn't cut off a frame early.
     private static readonly TimeSpan ClipSwitchMargin = TimeSpan.FromMilliseconds(250);
+
+    // See NextUsable.
+    private const int MaxSkippedItems = 50;
     private bool _disposed;
 
     // Prefetch: the next photo's full bitmap pipeline (decode + ONNX
@@ -60,10 +63,12 @@ namespace PictureSlideshowScreensaver.ViewModels
     // and read back when the throttled dispatcher callback fires; the public
     // properties are only ever touched on the UI thread.
     private bool _isScanning = true;
-    private int _scanFileCount;
+    private string _scanStatus = "Сканирую…";
     private string _scanFolder;
     private volatile int _pendingCount;
     private volatile string _pendingFolder;
+    private volatile int _pendingVideosRead;
+    private volatile int _pendingVideosTotal;
     private long _lastScanUiTicks;
 
     public PhotoProperties PhotoProperties { get { return _photo_properties; } set { _photo_properties = value; RaisePropertyChanged(); } }
@@ -78,7 +83,7 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     public Visibility ScanOverlayVisibility => _isScanning ? Visibility.Visible : Visibility.Collapsed;
 
-    public int ScanFileCount { get { return _scanFileCount; } set { _scanFileCount = value; RaisePropertyChanged(); } }
+    public string ScanStatus { get { return _scanStatus; } set { _scanStatus = value; RaisePropertyChanged(); } }
     public string ScanFolder { get { return _scanFolder; } set { _scanFolder = value; RaisePropertyChanged(); } }
 
     // Bound to the forecast overlay's visibility; toggled by the F key via
@@ -232,6 +237,8 @@ namespace PictureSlideshowScreensaver.ViewModels
 
       _pendingCount = e.FilesFound;
       _pendingFolder = e.CurrentFolder;
+      _pendingVideosRead = e.VideosRead;
+      _pendingVideosTotal = e.VideosTotal;
 
       long now = Environment.TickCount64;
       if (now - Interlocked.Read(ref _lastScanUiTicks) < 250)
@@ -242,7 +249,9 @@ namespace PictureSlideshowScreensaver.ViewModels
       {
         if (_disposed || !IsScanning)
           return;
-        ScanFileCount = _pendingCount;
+        ScanStatus = _pendingVideosTotal > 0
+            ? $"Найдено {_pendingCount} фото. Читаю видео: {_pendingVideosRead} из {_pendingVideosTotal}"
+            : $"Сканирую: {_pendingCount} фото";
         ScanFolder = ShortenFolder(_pendingFolder);
       }));
     }
@@ -292,27 +301,46 @@ namespace PictureSlideshowScreensaver.ViewModels
     // the slideshow interval is many seconds).
     private void LoadFreshPhoto()
     {
-      ImageInfo nextphoto = _images.GetNext();
-      if (nextphoto == null)
-        return;
-
       Task.Run(() =>
       {
-        try
-        {
-          nextphoto.EnsureMetadataLoaded();
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex, "Metadata load failed for {Image}", nextphoto.path);
-          _stats.RecordFailure(nextphoto.path, ex.Message);
-        }
-
-        if (_disposed)
+        ImageInfo nextphoto = NextUsable(CancellationToken.None);
+        if (nextphoto == null || _disposed)
           return;
 
         _dispatcher.BeginInvoke(new Action(() => ActivatePhoto(nextphoto, null)));
       });
+    }
+
+    // Deals items until one can be shown, loading each one's metadata on the
+    // calling (worker) thread. A short video is only measured here, so this is
+    // where one that turns out unplayable — unreadable header, or a Live Photo
+    // movie whose still is missing — is passed over. Bounded so a library of
+    // nothing but broken files can't spin a worker forever.
+    private ImageInfo NextUsable(CancellationToken ct)
+    {
+      for (int attempt = 0; attempt < MaxSkippedItems; attempt++)
+      {
+        ct.ThrowIfCancellationRequested();
+        ImageInfo next = _images.GetNext();
+        if (next == null)
+          return null;
+
+        try
+        {
+          next.EnsureMetadataLoaded();
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, "Metadata load failed for {Image}", next.path);
+          _stats.RecordFailure(next.path, ex.Message);
+        }
+
+        if (next.usable)
+          return next;
+      }
+
+      Log.Warning("{Count} items in a row could not be shown", MaxSkippedItems);
+      return null;
     }
 
     // Runs on whichever thread completed the prefetch task (worker most of
@@ -374,11 +402,16 @@ namespace PictureSlideshowScreensaver.ViewModels
         PhotoProperties.SetFacesFound(nextphoto.accent_count);
         PhotoProperties.SetRotation(nextphoto.orientation);
 
-        // Hand the frame over for exactly as long as the clip runs. fade_Tick
+        // Hand the frame over for exactly as long as the item needs. fade_Tick
         // puts the photo interval back on the next tick, so this doesn't need
         // undoing.
         if (nextphoto.clip is { } clip && _switchImage != null)
           _switchImage.Interval = clip.Length + ClipSwitchMargin;
+
+        // A Live Photo plays its movie first and only then becomes the still,
+        // which gets the full photo interval of its own, Ken Burns included.
+        else if (nextphoto.live_video is { } live && _switchImage != null)
+          _switchImage.Interval = live.Length + TimeSpan.FromSeconds(_settings._updateInterval);
 
         // First real photo on screen — drop the scanning overlay.
         if (IsScanning)
@@ -429,12 +462,9 @@ namespace PictureSlideshowScreensaver.ViewModels
         ImageInfo photo = null;
         try
         {
-          ct.ThrowIfCancellationRequested();
-          photo = _images.GetNext();
+          photo = NextUsable(ct);
           if (photo == null)
             return null;
-
-          photo.EnsureMetadataLoaded();
           ct.ThrowIfCancellationRequested();
 
           // A clip has no bitmap pipeline to run ahead: the player opens the

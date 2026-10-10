@@ -9,6 +9,7 @@ using ExifLibrary;
 using Serilog;
 using Yaps.Core.Abstractions;
 using Yaps.Core.Models;
+using Yaps.Core.Video;
 using Yaps.Infrastructure.Images;
 
 /// <summary>
@@ -29,6 +30,7 @@ public class LocalImageInfo : ImageInfo
   private readonly IGeocoder _geocoder;
   private readonly IImageBitmapLoader _loader;
   private readonly IFinfoStore _finfoStore;
+  private readonly IVideoMetadataProvider _videoMetadata;
 
   private readonly object _metaLock = new();
   private volatile bool _metadataLoaded;
@@ -39,22 +41,33 @@ public class LocalImageInfo : ImageInfo
   // worker can publish to the UI thread without a lock.
   private IReadOnlyList<PointF> _accents = Array.Empty<PointF>();
 
+  // The Live Photo movie, measured by EnsureMetadataLoaded on a worker and
+  // read by the frame on the UI thread — hence volatile.
+  private volatile VideoClip _liveVideo;
+
   // EXIF date helpers and the geocoder are optional so this class
   // stays constructable from one-off scripts that don't run the DI
   // container. Production paths (LocalImages) pass everything.
   public LocalImageInfo(string nm, string videoname = null, IGeocoder geocoder = null,
-                        IImageBitmapLoader loader = null, IFinfoStore finfoStore = null)
+                        IImageBitmapLoader loader = null, IFinfoStore finfoStore = null,
+                        IVideoMetadataProvider videoMetadata = null)
   {
     Meta = new ImageMetadata(nm, videoname);
     _geocoder = geocoder;
     _loader = loader;
     _finfoStore = finfoStore ?? new FileFinfoStore();
+    _videoMetadata = videoMetadata;
   }
 
   public string path => Meta.Path;
 
   // Photos are never clips; the standalone-video item is LocalVideoClipInfo.
-  public Yaps.Core.Video.VideoClip clip => null;
+  public VideoClip clip => null;
+
+  public VideoClip live_video => _liveVideo;
+
+  // A photo that fails to load is reported by the bitmap pipeline, not here.
+  public bool usable => true;
 
   public void EnsureMetadataLoaded()
   {
@@ -67,8 +80,31 @@ public class LocalImageInfo : ImageInfo
         return;
 
       ReadExif();
+      MeasureLiveVideo();
       _metadataLoaded = true;
     }
+  }
+
+  // The frame needs the movie's length (the slideshow holds the photo that
+  // much longer) and its rotation (iPhone stores portrait movies sideways
+  // with the turn in the track matrix, independent of the still's EXIF).
+  // A movie that can't be measured is dropped: the photo still shows, just
+  // without it — better than a frame waiting on a player that never opens.
+  private void MeasureLiveVideo()
+  {
+    if (!Meta.HasAccompanyingVideo || _videoMetadata == null)
+      return;
+
+    var meta = _videoMetadata.TryRead(Meta.VideoPath);
+    if (meta == null)
+    {
+      Log.Warning("Live Photo movie {Video} is unreadable; showing {Image} as a still", Meta.VideoPath, Meta.Path);
+      return;
+    }
+
+    // The still was taken mid-movie; the clip ends there so its last frame
+    // is the photo. Without the marker the whole movie plays.
+    _liveVideo = new VideoClip(Meta.VideoPath, TimeSpan.Zero, meta.StillImageTime ?? meta.Duration, meta.RotationDegrees);
   }
 
   // EXIF used to be read for every photo up front during the library
@@ -215,9 +251,6 @@ public class LocalImageInfo : ImageInfo
       };
     }
   }
-
-  public bool has_accompanying_video => Meta.HasAccompanyingVideo;
-  public string video_name => Meta.VideoPath;
 
   public string description
   {
