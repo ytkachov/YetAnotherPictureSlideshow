@@ -11,8 +11,9 @@ Windows Registry Editor Version 5.00
 "VideoChunkSeconds"="15"
 "VideoFolderWeight"="10"
 "VideoVolume"="0"
-"ShowLivePhotoVideos"="0"
+"ShowLivePhotoVideos"="1"
 "ImageFolder"="Z:\\PHOTO_FRAME_STORE\\*"
+"VideoFolder"="Z:\\Home_Video_MP4\\*"
 "ImageFolder1"="D:\\PHOTO_RESIZED\\*"
 "PerformanceOptions"=dword:00000001
 "YandexApiKeyComment"="get_from_bitwarden"
