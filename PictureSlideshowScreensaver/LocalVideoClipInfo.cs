@@ -38,8 +38,7 @@ public sealed class LocalVideoClipInfo : ImageInfo
   public BitmapImage bitmap => null;
 
   // This is a video in its own right, not a video attached to a photo.
-  public bool has_accompanying_video => false;
-  public string video_name => _clip.Path;
+  public VideoClip live_video => null;
 
   // Same caption shape as a photo's: the recording date. There is no place
   // name — videos carry no GPS tags we read, and reverse-geocoding one frame

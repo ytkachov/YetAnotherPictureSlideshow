@@ -74,11 +74,10 @@ namespace PictureSlideshowScreensaver.Models
     public int VideoFolderWeight = 10;
 
     // Whether a photo with an iPhone Live Photo movie next to it (IMG_1.jpg +
-    // IMG_1.mov) plays that movie in its place. Off by default until the
-    // Live Photo presentation is worked out; the photo is shown as a still.
-    // Live Photo movies whose still is missing never play either way.
-    // Registry key "ShowLivePhotoVideos", 0/1.
-    public bool ShowLivePhotoVideos = false;
+    // IMG_1.mov) plays that movie first and then dissolves into the still.
+    // 0 shows the photo as a plain still. Live Photo movies whose still is
+    // missing never play either way. Registry key "ShowLivePhotoVideos", 0/1.
+    public bool ShowLivePhotoVideos = true;
 
     // Playback volume for video, 0..100. Defaults to silent: a frame on the
     // wall that suddenly starts making noise every half hour is worse than
@@ -167,7 +166,7 @@ namespace PictureSlideshowScreensaver.Models
       StatsFlushHours = Math.Clamp(ReadInt(key, "StatsFlushHours", StatsFlushHours), 1, 168);
       VideoFolders = ((string)key.GetValue("VideoFolder") ?? "")
           .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-      ShowLivePhotoVideos = ReadInt(key, "ShowLivePhotoVideos", 0) == 1;
+      ShowLivePhotoVideos = ReadInt(key, "ShowLivePhotoVideos", ShowLivePhotoVideos ? 1 : 0) == 1;
       VideoChunkSeconds = Math.Clamp(ReadInt(key, "VideoChunkSeconds", VideoChunkSeconds), 3, 300);
       VideoFolderWeight = Math.Clamp(ReadInt(key, "VideoFolderWeight", VideoFolderWeight), 0, 1000);
       VideoVolume = Math.Clamp(ReadInt(key, "VideoVolume", VideoVolume), 0, 100);

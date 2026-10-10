@@ -12,7 +12,6 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <vm:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
-      <vm:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" Inverse="True"/>
 
     </ResourceDictionary>
   </UserControl.Resources>
@@ -25,11 +24,13 @@
     </i:Interaction.Triggers>
 
     <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" RenderOptions.BitmapScalingMode="Fant" Visibility="{Binding ImageVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
-    <!-- LoadedBehavior=Manual: a standalone clip is played from an offset, so
-         the frame has to drive Position/Play itself. That makes starting
-         playback the view model's job for companion videos too (see
-         FrameViewModel.VideoOpened). -->
-    <MediaElement x:Name="VideoElement" Stretch="Uniform" LoadedBehavior="Manual" Volume="{Binding VideoVolume}" Source="{Binding VideoSource}" Visibility="{Binding ImageVisible, Converter={StaticResource inverseBooleanToVisibilityConverter}}" >
+    <!-- Declared after the Image, so it draws on top: a Live Photo movie
+         plays over its still and is dissolved away to reveal it.
+         LoadedBehavior=Manual: a standalone clip is played from an offset and
+         a Live Photo movie is held on its last frame, so the frame drives
+         Position/Play/Pause itself (see FrameViewModel.VideoOpened). Stretch
+         is bound so a Live Photo movie matches its still's framing. -->
+    <MediaElement x:Name="VideoElement" Stretch="{Binding VideoStretch}" LoadedBehavior="Manual" Volume="{Binding VideoVolume}" Source="{Binding VideoSource}" Visibility="{Binding VideoVisible, Converter={StaticResource booleanToVisibilityConverter}}" >
       <MediaElement.LayoutTransform>
         <TransformGroup>
           <RotateTransform Angle="{Binding VideoRotationAngle}"/>
@@ -44,6 +45,9 @@
         </i:EventTrigger>
         <i:EventTrigger EventName="MediaEnded">
           <i:InvokeCommandAction Command="{Binding Path=OnVideoEnded}" CommandParameter="{Binding ElementName=VideoElement}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MediaFailed">
+          <i:InvokeCommandAction Command="{Binding Path=OnVideoFailed}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
       </i:Interaction.Triggers>
 

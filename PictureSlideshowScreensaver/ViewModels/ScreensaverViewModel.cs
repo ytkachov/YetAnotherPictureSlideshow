@@ -374,11 +374,17 @@ namespace PictureSlideshowScreensaver.ViewModels
         PhotoProperties.SetFacesFound(nextphoto.accent_count);
         PhotoProperties.SetRotation(nextphoto.orientation);
 
-        // Hand the frame over for exactly as long as the clip runs. fade_Tick
+        // Hand the frame over for exactly as long as the item needs. fade_Tick
         // puts the photo interval back on the next tick, so this doesn't need
         // undoing.
         if (nextphoto.clip is { } clip && _switchImage != null)
           _switchImage.Interval = clip.Length + ClipSwitchMargin;
+
+        // A Live Photo fades in on the movie's first frame, plays the movie,
+        // and only then becomes the still — which gets the full photo
+        // interval of its own, Ken Burns included.
+        else if (nextphoto.live_video is { } live && _switchImage != null)
+          _switchImage.Interval = ft + live.Length + TimeSpan.FromSeconds(_settings._updateInterval);
 
         // First real photo on screen — drop the scanning overlay.
         if (IsScanning)

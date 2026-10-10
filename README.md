@@ -142,10 +142,16 @@ before the rotation moves on. A long recording is therefore shown in pieces
 over time instead of holding the frame for minutes; a trailing sliver shorter
 than a third of a chunk is folded into the slice before it.
 
-iPhone Live Photo movies (the 1.5-3 s `.mov` next to an `IMG_1234.jpg`) are
-not shown for now: the photo appears as a still unless `ShowLivePhotoVideos=1`,
-and a Live Photo movie whose still is missing is recognised by its Apple
-metadata key and skipped either way.
+**iPhone Live Photos** (an `IMG_1234.jpg` with its 1.5-3 s `IMG_1234.mov`
+next to it) play the way the phone shows them: the frame fades in on the
+movie's first frame, the movie plays, and its last frame dissolves into the
+still, which then pans and zooms like any photo. The movie is laid over the
+still in the same geometry — the photo's stretch, the movie's own rotation
+from its track matrix, no zoom — so nothing jumps at the hand-over, and the
+photo keeps its full `Interval` after the movie. A movie that can't be read or
+won't play falls back to the still. `ShowLivePhotoVideos=0` shows such photos
+as plain stills; a Live Photo movie whose still is missing is recognised by
+its Apple metadata key and never shown on its own.
 
 Duration, display rotation and recording date are read from the container
 header during the scan (`YAPS.Core/Video/Mp4MetadataReader.cs`) — box headers
@@ -180,7 +186,7 @@ double-click. Notable keys:
 | `VideoFolder` | string | `;`-separated folders of long-form video, searched with subfolders; played in slices (default empty) |
 | `VideoChunkSeconds` | string | Length of one long-form video slice (default `15`, clamped 3..300) |
 | `VideoFolderWeight` | string | How strongly long-form video is favoured over its fair share of visits (default `10`, `0` turns it off) |
-| `ShowLivePhotoVideos` | string `0`/`1` | Play a photo's Live Photo `.mov` in its place (default `0`) |
+| `ShowLivePhotoVideos` | string `0`/`1` | Play a photo's Live Photo `.mov` before its still (default `1`) |
 | `VideoVolume` | string | Video volume 0..100 (default `0` — silent) |
 | `WriteLog` | string `0`/`1` | Enable structured Serilog file output |
 | `WriteLogFolder` | string | Where to write the log files |

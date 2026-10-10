@@ -205,7 +205,7 @@ class LocalImages : ImagesProvider
       // scan no longer pulls every file over the network.
       string movfile = Path.ChangeExtension(name, "mov");
       bool companion = _settings.ShowLivePhotoVideos && File.Exists(movfile);
-      LocalImageInfo ii = new LocalImageInfo(name, companion ? movfile : null, _geocoder, _loader, _finfoStore);
+      LocalImageInfo ii = new LocalImageInfo(name, companion ? movfile : null, _geocoder, _loader, _finfoStore, _videoMetadata);
       _imagesTmp.Add(ii);
     }
   }
