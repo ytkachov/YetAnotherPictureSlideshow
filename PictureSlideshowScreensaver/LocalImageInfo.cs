@@ -102,7 +102,9 @@ public class LocalImageInfo : ImageInfo
       return;
     }
 
-    _liveVideo = new VideoClip(Meta.VideoPath, TimeSpan.Zero, meta.Duration, meta.RotationDegrees);
+    // The still was taken mid-movie; the clip ends there so its last frame
+    // is the photo. Without the marker the whole movie plays.
+    _liveVideo = new VideoClip(Meta.VideoPath, TimeSpan.Zero, meta.StillImageTime ?? meta.Duration, meta.RotationDegrees);
   }
 
   // EXIF used to be read for every photo up front during the library

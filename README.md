@@ -143,15 +143,18 @@ over time instead of holding the frame for minutes; a trailing sliver shorter
 than a third of a chunk is folded into the slice before it.
 
 **iPhone Live Photos** (an `IMG_1234.jpg` with its 1.5-3 s `IMG_1234.mov`
-next to it) play the way the phone shows them: the frame fades in on the
-movie's first frame, the movie plays, and its last frame dissolves into the
-still, which then pans and zooms like any photo. The movie is laid over the
-still in the same geometry — the photo's stretch, the movie's own rotation
-from its track matrix, no zoom — so nothing jumps at the hand-over, and the
-photo keeps its full `Interval` after the movie. A movie that can't be read or
-won't play falls back to the still. `ShowLivePhotoVideos=0` shows such photos
-as plain stills; a Live Photo movie whose still is missing is recognised by
-its Apple metadata key and never shown on its own.
+next to it) play the way the phone shows them: the movie appears at once, with
+no fade from the previous photo, plays up to the moment the still was taken, and
+the frame cuts to the still, which then pans and zooms like any photo. The
+still is taken mid-movie, not at its end; the moment comes from the movie's
+`com.apple.quicktime.still-image-time` metadata track (when it's missing the
+whole movie plays). The movie is laid over the still in the same geometry —
+the photo's stretch, the movie's own rotation from its track matrix, no zoom —
+so nothing jumps at the cut, and the photo keeps its full `Interval` after the
+movie. A movie that can't be read or won't play falls back to the still.
+`ShowLivePhotoVideos=0` shows such photos as plain stills; a Live Photo movie
+whose still is missing is recognised by its Apple metadata key and never shown
+on its own.
 
 Duration, display rotation and recording date are read from the container
 header during the scan (`YAPS.Core/Video/Mp4MetadataReader.cs`) — box headers

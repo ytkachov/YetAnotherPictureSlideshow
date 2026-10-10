@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Serilog;
 using Yaps.Core.Video;
 
@@ -56,11 +57,9 @@ namespace PictureSlideshowScreensaver.ViewModels
 
   public class FrameViewModel : BaseViewModel
   {
-    // How long a finished Live Photo movie takes to dissolve into its still.
-    // Short on purpose: the movie's last frame and the still are nearly the
-    // same picture, so this only has to hide the small difference between
-    // them, not be a transition of its own.
-    private static readonly TimeSpan LiveRevealTime = TimeSpan.FromMilliseconds(600);
+    // How often the playing Live Photo movie is checked against the moment of
+    // its still. A frame of a Live Photo movie lasts 33-67 ms.
+    private static readonly TimeSpan StillWatchInterval = TimeSpan.FromMilliseconds(15);
 
     private bool _isActive;
     private Random _rand;
@@ -86,22 +85,22 @@ namespace PictureSlideshowScreensaver.ViewModels
     private ICommand _onVideoFailed;
 
     // The player itself, handed over by the view's Loaded trigger. A clip has
-    // to be seeked to its start offset and a Live Photo movie faded out, which
-    // the bindings can't express, so this frame drives the element directly —
+    // to be seeked to its start offset and a Live Photo movie stopped on the
+    // frame of its still, which the bindings can't express, so this frame drives the element directly —
     // the same arrangement the Grid already uses for the Ken Burns animations.
     private MediaElement _videoElement;
 
     // What the player is doing for this frame. At most one is non-null:
     // _playingClip — a standalone video, the whole item;
     // _liveVideo   — a Live Photo movie playing over its still, which is
-    //                revealed when the movie ends.
+    //                revealed when the movie reaches it.
     private VideoClip _playingClip;
     private VideoClip _liveVideo;
-    private TimeSpan _liveRevealTime;
 
-    // The dissolve currently running, so a dissolve that completes after the
-    // frame has moved on to another item doesn't hide the new item's video.
-    private DoubleAnimation _revealAnimation;
+    // Stops the Live Photo movie at the moment its still was taken (the clip's
+    // Length) — MediaElement has no "play until" of its own. Runs only while
+    // a movie plays; stopped by StopStillWatch on every way out.
+    private DispatcherTimer _stillWatch;
 
     private readonly double _videoVolume;
 
@@ -155,7 +154,7 @@ namespace PictureSlideshowScreensaver.ViewModels
 
       if (nextphoto.live_video is { } live)
       {
-        ActivateLive(live, fadetime);
+        ActivateLive(live);
         return;
       }
 
@@ -183,12 +182,10 @@ namespace PictureSlideshowScreensaver.ViewModels
       _scaleAnimation = null;
       _scaleTransform = null;
       _liveVideo = null;
-      _revealAnimation = null;
 
       ImageSource = null;
       ImageVisible = false;
       ResetGrid(opacity: 1.0);
-      ResetVideoOpacity();
       VideoStretch = Stretch.Uniform;
       VideoRotationAngle = clip.RotationDegrees;
       VideoVisible = true;
@@ -207,28 +204,29 @@ namespace PictureSlideshowScreensaver.ViewModels
 
       if (alreadyOpen)
         StartClip();
+      else
+        OpenVideo();
     }
 
     // A Live Photo: the movie plays over its own still in exactly the same
     // geometry — same stretch as the photo, rotation from the movie's own
-    // track matrix, no zoom — so when it ends and dissolves away the still
-    // underneath is the same picture, and the Ken Burns pan starts from 1.0x
-    // with nothing jumping.
-    private void ActivateLive(VideoClip live, TimeSpan fadetime)
+    // track matrix, no zoom — so when it stops on the frame the still was
+    // taken from and is hidden, the still underneath is the same picture, and
+    // the Ken Burns pan starts from 1.0x with nothing jumping.
+    private void ActivateLive(VideoClip live)
     {
       _liveVideo = live;
-      _liveRevealTime = fadetime == TimeSpan.Zero ? TimeSpan.Zero : LiveRevealTime;
 
       // Invisible until the movie's first frame is ready. The frame goes on
       // top right away (IsActive) — at opacity 0 the previous photo keeps
       // showing through, instead of the new still flashing before its movie.
       ResetGrid(opacity: 0.0);
-      ResetVideoOpacity();
       VideoStretch = ImageStretch;
       VideoRotationAngle = live.RotationDegrees;
       VideoVisible = true;
       VideoSource = live.Path;   // StopVideo cleared it, so this always re-opens
       IsActive = true;
+      OpenVideo();
     }
 
     private void StartClip()
@@ -253,10 +251,9 @@ namespace PictureSlideshowScreensaver.ViewModels
       IsActive = true;
     }
 
-    // The frame fades in on the movie's first frame, held still, and the
-    // movie only starts once the fade is done — a Live Photo movie is about
-    // as long as the fade itself, so playing it underneath would spend most
-    // of it half-transparent.
+    // Video is its own transition: no fade from the previous photo, the frame
+    // just appears with the movie running. Until now it sat at opacity 0, so
+    // the still underneath couldn't flash before its movie was ready.
     private void StartLive()
     {
       var player = _videoElement;
@@ -264,91 +261,101 @@ namespace PictureSlideshowScreensaver.ViewModels
       if (player == null || live == null)
         return;
 
+      if (_gridControl != null)
+        _gridControl.Opacity = 1.0;
+      PlayLive(live);
+    }
+
+    // With LoadedBehavior=Manual, assigning Source doesn't open the media:
+    // nothing is read and MediaOpened never fires until the player is told to
+    // play or pause. Pause opens the file and renders its first frame without
+    // starting it; MediaOpened then takes it from there. The binding has
+    // already pushed VideoSource into the element by the time this runs.
+    private void OpenVideo()
+    {
+      Log.Debug("Opening {Video} on frame {Frame}", VideoSource, _frameName);
       try
       {
-        player.Position = TimeSpan.Zero;
-        player.Play();
-        player.Pause();   // Manual mode renders nothing until played; this shows frame one
+        _videoElement?.Pause();
       }
       catch (Exception ex)
       {
-        Log.Warning(ex, "Could not start Live Photo movie {Video}", live.Path);
-        RevealStill(immediately: true);
-        return;
+        Log.Warning(ex, "Could not open {Video}", VideoSource);
+        RevealStill();
       }
-
-      if (_fadeAnimation == null || _fadeAnimation.Duration.TimeSpan == TimeSpan.Zero)
-      {
-        StartFadeIn();
-        PlayLive(live);
-        return;
-      }
-
-      _fadeAnimation.Completed += (_, _) => PlayLive(live);
-      StartFadeIn();
     }
 
     private void PlayLive(VideoClip live)
     {
-      // The frame may have moved on while the fade ran.
-      if (!ReferenceEquals(_liveVideo, live))
-        return;
-
       try
       {
-        _videoElement?.Play();
+        _videoElement.Position = TimeSpan.Zero;
+        _videoElement.Play();
       }
       catch (Exception ex)
       {
         Log.Warning(ex, "Could not play Live Photo movie {Video}", live.Path);
-        RevealStill(immediately: true);
+        RevealStill();
+        return;
       }
+
+      StopStillWatch();
+      _stillWatch = new DispatcherTimer(DispatcherPriority.Render) { Interval = StillWatchInterval };
+      _stillWatch.Tick += StillWatchTick;
+      _stillWatch.Start();
+    }
+
+    // Stops within a tick (15 ms) of the still's moment, i.e. on the still's
+    // own frame or the one before it.
+    private void StillWatchTick(object sender, EventArgs e)
+    {
+      var live = _liveVideo;
+      var player = _videoElement;
+      if (live == null || player == null)
+      {
+        StopStillWatch();
+        return;
+      }
+
+      if (player.Position >= live.Length - TimeSpan.FromMilliseconds(20))
+        RevealStill();
+    }
+
+    private void StopStillWatch()
+    {
+      if (_stillWatch == null)
+        return;
+
+      _stillWatch.Stop();
+      _stillWatch.Tick -= StillWatchTick;
+      _stillWatch = null;
     }
 
     // The movie is over (or never started): hand the frame to the still.
-    private void RevealStill(bool immediately)
+    private void RevealStill()
     {
-      if (_liveVideo == null)
-        return;   // already revealed — MediaEnded and MediaFailed can both arrive
+      StopStillWatch();
+      var live = _liveVideo;
+      if (live == null)
+        return;   // already revealed — the watch, MediaEnded and MediaFailed can all arrive
+      Log.Debug("Revealing still under {Video} at {Position} (still at {Still})",
+          live.Path, _videoElement?.Position, live.Length);
       _liveVideo = null;
 
       // If the movie never got as far as opening, the frame is still at
       // opacity 0 — the still has to fade in the way a plain photo would.
-      if (_gridControl != null && _gridControl.Opacity < 1.0 && !_gridControl.HasAnimatedProperties)
+      if (_gridControl != null && _gridControl.Opacity < 1.0)
         StartFadeIn();
 
+      // A hard cut, like the phone: the movie is on the frame the still was
+      // taken from, so hiding it shows the same picture — just the phone's
+      // processed still instead of the movie frame.
+      HideVideo();
       StartKenBurns();
-
-      var player = _videoElement;
-      if (immediately || player == null || _liveRevealTime == TimeSpan.Zero)
-      {
-        HideVideo();
-        return;
-      }
-
-      // Hold the last frame and dissolve it into the still.
-      try
-      {
-        player.Pause();
-      }
-      catch (Exception ex)
-      {
-        Log.Warning(ex, "Could not pause finished Live Photo movie");
-      }
-
-      var dissolve = new DoubleAnimation(1.0, 0.0, _liveRevealTime);
-      dissolve.Completed += (_, _) =>
-      {
-        if (ReferenceEquals(_revealAnimation, dissolve))
-          HideVideo();
-      };
-      _revealAnimation = dissolve;
-      player.BeginAnimation(UIElement.OpacityProperty, dissolve);
     }
 
     private void HideVideo()
     {
-      _revealAnimation = null;
       VideoVisible = false;
       try
       {
@@ -364,13 +371,12 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private void StopVideo()
     {
+      StopStillWatch();
       bool hadVideo = _playingClip != null || _liveVideo != null || VideoSource != null;
       _playingClip = null;
       _liveVideo = null;
       if (hadVideo)
         HideVideo();
-      else
-        _revealAnimation = null;
       VideoVisible = false;
     }
 
@@ -401,16 +407,6 @@ namespace PictureSlideshowScreensaver.ViewModels
       _gridControl.BeginAnimation(Grid.OpacityProperty, null);
       _gridControl.Opacity = opacity;
       _gridControl.RenderTransform = Transform.Identity;
-    }
-
-    // Same reason: the last dissolve left the player at opacity 0.
-    private void ResetVideoOpacity()
-    {
-      if (_videoElement == null)
-        return;
-
-      _videoElement.BeginAnimation(UIElement.OpacityProperty, null);
-      _videoElement.Opacity = 1.0;
     }
 
     // prebuiltBitmap is supplied when ScreensaverViewModel pre-decoded this
@@ -458,6 +454,8 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private void VideoOpened(object videoControl)
     {
+      Log.Debug("Opened {Video} on frame {Frame} ({Width}x{Height}, {Duration})", VideoSource, _frameName,
+          _videoElement?.NaturalVideoWidth, _videoElement?.NaturalVideoHeight, _videoElement?.NaturalDuration);
       _videoElement = videoControl as MediaElement ?? _videoElement;
 
       if (_playingClip != null)
@@ -468,6 +466,7 @@ namespace PictureSlideshowScreensaver.ViewModels
 
     private void VideoEnded()
     {
+      Log.Debug("Ended {Video} on frame {Frame}", VideoSource, _frameName);
       if (_playingClip != null)
       {
         // A clip whose slice reaches the end of the file: hold the last frame
@@ -485,7 +484,7 @@ namespace PictureSlideshowScreensaver.ViewModels
         return;
       }
 
-      RevealStill(immediately: false);
+      RevealStill();
     }
 
     private void VideoFailed(ExceptionRoutedEventArgs args)
@@ -494,7 +493,7 @@ namespace PictureSlideshowScreensaver.ViewModels
 
       // A Live Photo falls back to its still; a broken standalone clip just
       // leaves the frame black until the next tick moves on.
-      RevealStill(immediately: true);
+      RevealStill();
     }
 
     private void StartFadeIn()

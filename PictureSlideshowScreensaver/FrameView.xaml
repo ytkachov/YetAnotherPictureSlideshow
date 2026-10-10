@@ -25,9 +25,9 @@
 
     <Image Source="{Binding ImageSource}" Stretch="{Binding ImageStretch}" RenderOptions.BitmapScalingMode="Fant" Visibility="{Binding ImageVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
     <!-- Declared after the Image, so it draws on top: a Live Photo movie
-         plays over its still and is dissolved away to reveal it.
+         plays over its still and is hidden to reveal it.
          LoadedBehavior=Manual: a standalone clip is played from an offset and
-         a Live Photo movie is held on its last frame, so the frame drives
+         a Live Photo movie is stopped on the frame of its still, so the frame drives
          Position/Play/Pause itself (see FrameViewModel.VideoOpened). Stretch
          is bound so a Live Photo movie matches its still's framing. -->
     <MediaElement x:Name="VideoElement" Stretch="{Binding VideoStretch}" LoadedBehavior="Manual" Volume="{Binding VideoVolume}" Source="{Binding VideoSource}" Visibility="{Binding VideoVisible, Converter={StaticResource booleanToVisibilityConverter}}" >

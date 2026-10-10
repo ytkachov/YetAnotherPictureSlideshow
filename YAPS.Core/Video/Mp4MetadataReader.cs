@@ -28,6 +28,10 @@ public static class Mp4MetadataReader
     // clip to its still); ordinary iPhone recordings don't.
     private const string LivePhotoKey = "com.apple.quicktime.content.identifier";
 
+    // Key of the timed-metadata track whose single sample marks the moment
+    // the still was taken.
+    private static readonly byte[] StillImageTimeKey = Encoding.ASCII.GetBytes("com.apple.quicktime.still-image-time");
+
     // Bounds on what a sane keys box holds — anything beyond is a broken file.
     private const int MaxMetadataKeys = 256;
     private const int MaxKeyLength = 512;
@@ -73,12 +77,13 @@ public static class Mp4MetadataReader
             if (FindBox(stream, moov.PayloadStart, moov.PayloadEnd, "mvhd") is not { } mvhd)
                 return null;
 
-            if (!TryReadMovieHeader(stream, mvhd, out TimeSpan duration, out DateTime? created))
+            if (!TryReadMovieHeader(stream, mvhd, out TimeSpan duration, out DateTime? created, out uint movieTimescale))
                 return null;
 
             int rotation = ReadRotation(stream, moov);
             bool livePhoto = IsLivePhoto(stream, moov);
-            return new VideoMetadata(duration, rotation, created, livePhoto);
+            TimeSpan? still = livePhoto ? ReadStillImageTime(stream, moov, movieTimescale, duration) : null;
+            return new VideoMetadata(duration, rotation, created, livePhoto, still);
         }
         catch (Exception)
         {
@@ -89,7 +94,7 @@ public static class Mp4MetadataReader
         }
     }
 
-    private static bool TryReadMovieHeader(Stream stream, Box mvhd, out TimeSpan duration, out DateTime? created)
+    private static bool TryReadMovieHeader(Stream stream, Box mvhd, out TimeSpan duration, out DateTime? created, out uint timescale)
     {
         duration = default;
         created = null;
@@ -99,7 +104,6 @@ public static class Mp4MetadataReader
         Skip(stream, 3); // flags
 
         ulong creationSeconds;
-        uint timescale;
         ulong units;
         if (version == 1)
         {
@@ -216,6 +220,91 @@ public static class Mp4MetadataReader
         var keys = FindBox(stream, meta.PayloadStart, meta.PayloadEnd, "keys")
                    ?? FindBox(stream, meta.PayloadStart + 4, meta.PayloadEnd, "keys");
         return keys is { } k && HasKey(stream, k, LivePhotoKey);
+    }
+
+    // The still-image-time track holds one metadata sample, placed on the
+    // movie timeline by its edit list: a leading empty edit (media time -1)
+    // as long as the moment of the still, then the one-tick sample. So the
+    // still's time is the total length of the leading empty edits, in movie
+    // (mvhd) timescale units. Checked on every Live Photo in the archive
+    // against ffprobe's start_time for that stream.
+    private static TimeSpan? ReadStillImageTime(Stream stream, Box moov, uint movieTimescale, TimeSpan duration)
+    {
+        long cursor = moov.PayloadStart;
+        while (cursor < moov.PayloadEnd)
+        {
+            stream.Position = cursor;
+            if (!TryReadHeader(stream, moov.PayloadEnd, out Box trak) || trak.PayloadEnd <= cursor)
+                break;
+            cursor = trak.PayloadEnd;
+
+            if (trak.Type != "trak" || !IsStillImageTimeTrack(stream, trak))
+                continue;
+
+            if (FindBox(stream, trak.PayloadStart, trak.PayloadEnd, "edts") is not { } edts ||
+                FindBox(stream, edts.PayloadStart, edts.PayloadEnd, "elst") is not { } elst)
+                return null;
+
+            stream.Position = elst.PayloadStart;
+            int version = ReadByte(stream);
+            Skip(stream, 3);
+            uint count = ReadU32(stream);
+            ulong emptyUnits = 0;
+            for (uint i = 0; i < count && i < 16; i++)
+            {
+                ulong segment;
+                long mediaTime;
+                if (version == 1)
+                {
+                    segment = ReadU64(stream);
+                    mediaTime = (long)ReadU64(stream);
+                }
+                else
+                {
+                    segment = ReadU32(stream);
+                    mediaTime = ReadI32(stream);
+                }
+                Skip(stream, 4); // media rate
+
+                if (mediaTime != -1)
+                    break;
+                emptyUnits += segment;
+            }
+
+            var still = TimeSpan.FromSeconds((double)emptyUnits / movieTimescale);
+            return still > TimeSpan.Zero && still < duration ? still : null;
+        }
+
+        return null;
+    }
+
+    // A timed-metadata track ('meta' handler) whose sample description
+    // declares the still-image-time key.
+    private static bool IsStillImageTimeTrack(Stream stream, Box trak)
+    {
+        if (FindBox(stream, trak.PayloadStart, trak.PayloadEnd, "mdia") is not { } mdia ||
+            FindBox(stream, mdia.PayloadStart, mdia.PayloadEnd, "hdlr") is not { } hdlr)
+            return false;
+
+        stream.Position = hdlr.PayloadStart + 8; // version/flags, pre_defined
+        Span<byte> handler = stackalloc byte[4];
+        stream.ReadExactly(handler);
+        if (!handler.SequenceEqual("meta"u8))
+            return false;
+
+        if (FindBox(stream, mdia.PayloadStart, mdia.PayloadEnd, "minf") is not { } minf ||
+            FindBox(stream, minf.PayloadStart, minf.PayloadEnd, "stbl") is not { } stbl ||
+            FindBox(stream, stbl.PayloadStart, stbl.PayloadEnd, "stsd") is not { } stsd)
+            return false;
+
+        long length = stsd.PayloadEnd - stsd.PayloadStart;
+        if (length <= 0 || length > 64 * 1024)
+            return false;
+
+        var description = new byte[length];
+        stream.Position = stsd.PayloadStart;
+        stream.ReadExactly(description);
+        return description.AsSpan().IndexOf(StillImageTimeKey) >= 0;
     }
 
     private static bool HasKey(Stream stream, Box keys, string wanted)

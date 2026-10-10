@@ -18,8 +18,9 @@ public interface ImageInfo
   VideoClip clip { get; }
 
   // Non-null when this photo is an iPhone Live Photo whose movie should play
-  // first: the frame runs the movie over the still, then dissolves into the
-  // still and pans it as usual. Known only after EnsureMetadataLoaded (the
+  // first: the frame runs the movie over the still up to the moment the
+  // still was taken (the clip's Length), cuts to the still and pans it as
+  // usual. Known only after EnsureMetadataLoaded (the
   // movie's header is read there, off the UI thread).
   VideoClip live_video { get; }
 
